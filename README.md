@@ -8,6 +8,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Moedas nas fases e bônus de rapidez
 - Loja do Herói: chapéus, capas e rastros mágicos (fica salvo no aparelho)
 - Criar fase (botão no canto de cima, à direita): desenhe, teste e salve suas próprias fases
+- Trilha sonora: música de cada mundo, batalha nos chefões e música da estrela (botão ♪ liga e desliga)
 - 3 corações; GAME OVER volta pro Mundo 1
 - Modo de lado para tablet e celular
 - Tutorial no começo (botão **?** abre de novo)

@@ -168,6 +168,12 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .mk-row .nm{font-weight:800;overflow-wrap:anywhere}
 .mk-row .sub{color:var(--muted);font-size:.85rem}
 .mk-row .btns{display:flex;gap:6px;flex-wrap:wrap}
+.mus-btn{display:inline-flex;align-items:center;justify-content:center;padding:0}
+.mus-btn svg{width:19px;height:19px}
+.mus-btn .mute{display:none}
+.mus-btn.off{color:var(--muted)}
+.mus-btn.off .mute{display:inline}
+.adm-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -186,6 +192,7 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
     <h1>Missão <span>Resgate</span></h1>
     <div class="tools">
       <button class="make-btn" id="makeBtn" type="button" aria-label="Criar fase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.2-5L15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L8 19.8z" fill="currentColor"/><path d="M13.8 6.4l3.8 3.8" stroke="#ffd23f" stroke-width="1.8"/></svg><span>Criar fase</span></button>
+      <button class="adm-btn mus-btn" id="musBtn" type="button" aria-label="Desligar a música" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.8" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff8a70" stroke-width="2.6" stroke-linecap="round"/></svg></button>
       <button class="adm-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
       <button class="adm-btn" id="adminBtn" type="button" aria-label="Painel de admin">⚙</button>
     </div>
@@ -494,7 +501,7 @@ let cell=40,G=null,last=0,ovAction=null,FONT='"Baloo 2",sans-serif';
 
 /* ---------- som ---------- */
 let ac=null;
-function unlockAudio(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();}catch(e){}}
+function unlockAudio(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();musInit();}catch(e){}}
 function tone(f,d=.12,type='square',vol=.05,delay=0){
   try{if(!ac)return;const t=ac.currentTime+delay;const o=ac.createOscillator(),g=ac.createGain();
   o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
@@ -512,6 +519,106 @@ const sfx={
   buy(){[659,880,1319].forEach((f,i)=>tone(f,.1,'square',.04,i*.07))},
   boss(){tone(120,.3,'sawtooth',.07);tone(600,.15,'square',.05,.1);tone(900,.2,'square',.05,.22)}
 };
+
+/* ---------- trilha sonora (feita na hora pelo próprio jogo) ---------- */
+const TRACKS={
+ calm:{bpm:100,lead:'triangle',lv:.09,echo:true,drum:'k . . . h . . .',
+  mel:'G4 . C5 . E5 . . . | A4 . C5 . E5 . D5 . | F4 . A4 . C5 . . . | G4 . B4 . D5 . C5 B4 | E5 . . . G5 . E5 . | C5 . . . A4 . C5 . | D5 . F5 . A5 . G5 F5 | E5 . D5 . C5 . . .',
+  bass:'C3 . . . G2 . . . | A2 . . . E2 . . . | F2 . . . C3 . . . | G2 . . . D3 . . . | C3 . . . G2 . . . | A2 . . . E2 . . . | D3 . . . A2 . . . | G2 . . . C3 . . .'},
+ noite:{bpm:132,lead:'square',lv:.045,drum:'k . h . s . h h',
+  mel:'E5 . G5 . C6 . G5 E5 | A4 . C5 . E5 . D5 C5 | F5 . A5 . F5 E5 D5 C5 | D5 . G5 . B4 . D5 . | A5 . G5 F5 . E5 F5 . | G5 . F5 E5 . D5 E5 . | E5 . D5 C5 . B4 C5 . | D5 . . . G4 . B4 D5',
+  bass:'C3 . C4 . C3 . C4 . | A2 . A3 . A2 . A3 . | F2 . F3 . F2 . F3 . | G2 . G3 . G2 . G3 . | F2 . F3 . F2 . F3 . | G2 . G3 . G2 . G3 . | E2 . E3 . E2 . E3 . | G2 . G3 . G2 . B2 .'},
+ vulcao:{bpm:140,lead:'square',lv:.045,drum:'k h s h k k s h',
+  mel:'A4 . C5 E5 A5 . G5 E5 | F5 . E5 C5 A4 . C5 . | G4 . B4 D5 G5 . F5 D5 | E5 . G#5 . B5 . G#5 E5 | C6 . B5 A5 . E5 A5 . | A5 . G5 F5 . C5 F5 . | F5 . E5 D5 . A4 D5 . | E5 . D5 . B4 . G#4 .',
+  bass:'A2 A2 A3 A2 A2 A2 A3 A2 | F2 F2 F3 F2 F2 F2 F3 F2 | G2 G2 G3 G2 G2 G2 G3 G2 | E2 E2 E3 E2 E2 E2 E3 E2 | A2 A2 A3 A2 A2 A2 A3 A2 | F2 F2 F3 F2 F2 F2 F3 F2 | D2 D2 D3 D2 D2 D2 D3 D2 | E2 E2 E3 E2 E2 E2 E3 E2'},
+ gelo:{bpm:118,lead:'triangle',lv:.1,echo:true,drum:'k . h . s . h .',
+  mel:'B5 . G5 . E5 . G5 B5 | C6 . G5 . E5 . G5 C6 | D6 . B5 . G5 . B5 D6 | A5 . F#5 . D5 . F#5 A5 | G5 . F#5 E5 . B4 E5 . | E5 . D5 C5 . G4 C5 . | D5 . B4 G4 . D5 G5 . | F#5 . E5 D5 . A4 F#5 .',
+  bass:'E2 . . . B2 . . . | C3 . . . G2 . . . | G2 . . . D3 . . . | D3 . . . A2 . . .'},
+ boss:{bpm:156,lead:'sawtooth',lv:.035,drum:'k h s h k h s s',
+  mel:'D5 D5 . D5 F5 . E5 D5 | D5 D5 . D5 F5 . G5 F5 | E5 E5 . E5 G5 . F5 E5 | C#5 . E5 . A5 . G5 E5 | A5 . G5 F5 E5 D5 E5 F5 | F5 . E5 D5 C5 Bb4 C5 D5 | D5 . C5 Bb4 A4 G4 A4 Bb4 | A4 . C#5 . E5 . A5 .',
+  bass:'D2 D3 D2 D3 D2 D3 D2 D3 | Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 | C2 C3 C2 C3 C2 C3 C2 C3 | A1 A2 A1 A2 A1 A2 A1 A2 | D2 D3 D2 D3 D2 D3 D2 D3 | Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 | G1 G2 G1 G2 G1 G2 G1 G2 | A1 A2 A1 A2 A1 A2 A1 A2'},
+ star:{bpm:176,lead:'square',lv:.04,drum:'k h s h k h s h',
+  mel:'C5 E5 G5 C6 G5 E5 C5 E5 | D5 F5 A5 D6 A5 F5 D5 F5',
+  bass:'C3 . C3 . C3 . C3 . | D3 . D3 . D3 . D3 .'}
+};
+const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function noteFreq(t){const m=/^([A-G])(#|b)?(\d)$/.exec(t);if(!m)return 440;const n=12*(+m[3]+1)+SEMI[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0);return 440*Math.pow(2,(n-69)/12);}
+function compileLine(str){
+  const tk=str.split(/\s+/).filter(x=>x&&x!=='|');
+  return tk.map((t,i)=>{if(t==='.')return null;let n=1;while(n<4&&tk[i+n]==='.')n++;return {f:noteFreq(t),n};});
+}
+for(const k in TRACKS){const T=TRACKS[k];T.melEv=compileLine(T.mel);T.bassEv=compileLine(T.bass);T.drumPat=T.drum.replace(/\s+/g,'');}
+const MUS={on:true,track:null,step:0,next:0,bus:null,echo:null,noise:null,timer:null};
+try{MUS.on=localStorage.getItem('missao-resgate-musica')!=='off';}catch(e){}
+function musInit(){
+  if(!ac||MUS.bus)return;
+  MUS.bus=ac.createGain();MUS.bus.gain.value=MUS.on?.55:0;MUS.bus.connect(ac.destination);
+  const d=ac.createDelay(1),fb=ac.createGain(),wet=ac.createGain();
+  d.delayTime.value=.27;fb.gain.value=.32;wet.gain.value=.35;
+  d.connect(fb).connect(d);d.connect(wet).connect(MUS.bus);MUS.echo=d;
+  const buf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate),ch=buf.getChannelData(0);
+  for(let i=0;i<ch.length;i++)ch[i]=Math.random()*2-1;
+  MUS.noise=buf;
+  MUS.timer=setInterval(musTick,25);
+}
+function musNote(f,t,len,type,vol,echo){
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.01);
+  g.gain.setValueAtTime(vol,t+Math.max(.02,len*.55));g.gain.exponentialRampToValueAtTime(.0001,t+len);
+  o.connect(g);g.connect(MUS.bus);if(echo)g.connect(MUS.echo);
+  o.start(t);o.stop(t+len+.03);
+}
+function musNoise(t,len,vol,ftype,freq){
+  const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();
+  s.buffer=MUS.noise;f.type=ftype;f.frequency.value=freq;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+len);
+  s.connect(f).connect(g).connect(MUS.bus);s.start(t);s.stop(t+len+.02);
+}
+function musKick(t){
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);
+  g.gain.setValueAtTime(.38,t);g.gain.exponentialRampToValueAtTime(.0001,t+.16);
+  o.connect(g).connect(MUS.bus);o.start(t);o.stop(t+.18);
+}
+function musWanted(){
+  if(!G)return 'calm';
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden)return 'calm';
+  if(G.state==='lost')return null;
+  if(G.power>0)return 'star';
+  if(bossAlive())return 'boss';
+  const th=G.custom?G.custom.theme:Math.floor(G.i/PER_WORLD);
+  return ['noite','vulcao','gelo'][th]||'noite';
+}
+function musTick(){
+  if(!ac||ac.state!=='running'||!MUS.on)return;
+  const want=musWanted();
+  if(want!==MUS.track){MUS.track=want;MUS.step=0;MUS.next=Math.max(MUS.next,ac.currentTime+.06);}
+  const T=TRACKS[MUS.track];if(!T)return;
+  const dur=60/T.bpm/2;
+  if(MUS.next<ac.currentTime-.25)MUS.next=ac.currentTime+.06;
+  while(MUS.next<ac.currentTime+.14){
+    const t=MUS.next,s=MUS.step;
+    const m=T.melEv[s%T.melEv.length];if(m)musNote(m.f,t,m.n*dur*.92,T.lead,T.lv,T.echo);
+    const b=T.bassEv[s%T.bassEv.length];if(b)musNote(b.f,t,b.n*dur*.85,'triangle',.11,false);
+    const d=T.drumPat[s%T.drumPat.length];
+    if(d==='k')musKick(t);else if(d==='s')musNoise(t,.12,.13,'highpass',1500);else if(d==='h')musNoise(t,.04,.05,'highpass',7000);
+    MUS.step=(s+1)%T.melEv.length;MUS.next+=dur;
+  }
+}
+function musRender(){
+  const b=document.getElementById('musBtn');
+  b.classList.toggle('off',!MUS.on);b.setAttribute('aria-pressed',MUS.on);
+  b.setAttribute('aria-label',MUS.on?'Desligar a música':'Ligar a música');b.title=MUS.on?'Música ligada':'Música desligada';
+}
+function musToggle(){
+  MUS.on=!MUS.on;
+  try{localStorage.setItem('missao-resgate-musica',MUS.on?'on':'off');}catch(e){}
+  unlockAudio();
+  if(MUS.bus){const t=ac.currentTime;MUS.bus.gain.cancelScheduledValues(t);MUS.bus.gain.setTargetAtTime(MUS.on?.55:0,t,.05);}
+  if(MUS.on){MUS.track=null;}
+  musRender();
+}
 
 /* ---------- moedas e loja (ficam salvas neste aparelho) ---------- */
 const SHOP=[
@@ -732,8 +839,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=10;
-const NEWS=['Criar fase: monte suas próprias fases!','Salve suas fases e jogue quando quiser.','Escolha o mundo e a velocidade do fogo da sua fase.'];
+const VERSION=11;
+const NEWS=['Trilha sonora! Cada mundo tem sua própria música.','Música de batalha nos chefões e música de super-herói com a estrela.','Botão de música lá em cima pra ligar e desligar.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -748,6 +855,7 @@ const ICON={
  worlds:`<svg viewBox="0 0 64 64"><rect x="2" y="20" width="18" height="24" rx="4" fill="#4a5ea6"/><rect x="23" y="20" width="18" height="24" rx="4" fill="#9a4a3a"/><rect x="44" y="20" width="18" height="24" rx="4" fill="#4aa3b8"/><g fill="#f4f1ff" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="15" text-anchor="middle"><text x="11" y="37">1</text><text x="32" y="37">2</text><text x="53" y="37">3</text></g></svg>`,
  tablet:`<svg viewBox="0 0 64 64"><rect x="3" y="14" width="58" height="38" rx="6" fill="#26335f" stroke="#aab4de" stroke-width="2.5"/><rect x="9" y="19" width="22" height="28" rx="3" fill="#4a5ea6"/><rect x="16" y="30" width="7" height="7" rx="2" fill="#ffd23f"/><g fill="#ffd23f"><path d="M46 21 L50 27 H42Z"/><path d="M37 36 L43 32 V40Z"/><path d="M46 45 L50 39 H42Z"/><path d="M55 36 L49 32 V40Z"/></g></svg>`,
  maker:`<svg viewBox="0 0 64 64"><rect x="3" y="4" width="44" height="54" rx="6" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="8" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="32" y="9" width="10" height="10" rx="2" fill="#3ccf7a"/><rect x="8" y="21" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="33" width="10" height="10" rx="2" fill="#ff5a36"/><rect x="8" y="45" width="10" height="10" rx="2" fill="#ffd23f"/><path d="M34 60 L36 49 L54 31 L61 38 L43 56Z" fill="#ffd23f"/><path d="M34 60 L36 49 L43 56Z" fill="#f2c09a"/><path d="M51 34 L58 41" stroke="#1b2547" stroke-width="2"/></svg>`,
+ music:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#7a4cff" opacity=".3"/><path d="M24 46V16l24-5v30" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linejoin="round"/><circle cx="18" cy="46" r="7" fill="#ffd23f"/><circle cx="42" cy="41" r="7" fill="#ffd23f"/><path d="M24 24l24-5" stroke="#ffd23f" stroke-width="5"/></svg>`,
  gear:`<span class="tut-big">⚙</span>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
@@ -764,6 +872,7 @@ const TUTORIAL=[
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
  {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Os chefões são o Rei Fogão, o Fogão de Lava e o Fogão de Gelo.'},
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
+ {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão com a notinha musical, lá em cima, liga e desliga a música.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
  {icon:'gear',title:'Painel de admin',text:'O botão ⚙ abre o painel de admin. Lá dá pra pular pra qualquer fase e usar truques: vidas infinitas, fogo parado, estrela na hora e 50 moedas.'},
  {icon:'news',title:`Novidades da versão ${VERSION}`,text:`<ul>${NEWS.map(n=>`<li>${n}</li>`).join('')}</ul>`}
@@ -1379,6 +1488,7 @@ function closeMaker(){
   if(G.custom&&G.state!=='play'){ov.hidden=true;ovAction=null;loadLevel(MK.camp);}
 }
 document.getElementById('makeBtn').addEventListener('click',openMaker);
+document.getElementById('musBtn').addEventListener('click',musToggle);
 document.getElementById('makerClose').addEventListener('click',closeMaker);
 document.getElementById('mkTest').addEventListener('click',()=>{const err=mkCheck();if(err){mkMsg(err,'bad');return;}playCustom(mkLevel());});
 document.getElementById('mkSave').addEventListener('click',mkSave);
@@ -1431,7 +1541,7 @@ document.getElementById('optCoins').addEventListener('click',()=>{addCoins(50);s
 
 /* ---------- início ---------- */
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
-resize();loadLevel(0);buildShop();buildMaker();coinHud();
+resize();loadLevel(0);buildShop();buildMaker();coinHud();musRender();
 ov.hidden=true;
 openTutorial();
 requestAnimationFrame(frame);
