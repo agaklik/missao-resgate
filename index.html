@@ -174,6 +174,24 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .mus-btn.off{color:var(--muted)}
 .mus-btn.off .mute{display:inline}
 .adm-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.fade{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px));
+  background-color:#070a18;background-image:radial-gradient(circle at 50% 46%,var(--glow,#26335f66) 0,transparent 60%);
+  opacity:0;transition:opacity .38s ease}
+.fade.show{opacity:1}
+.fade-card{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(16px) scale(.94);transition:opacity .35s ease,transform .5s cubic-bezier(.2,.9,.3,1.25)}
+.fade.ready .fade-card{opacity:1;transform:none}
+.fade-world{margin:0;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-size:.95rem}
+.fade-num{margin:0;font:800 clamp(2.8rem,13vw,4.2rem)/1 var(--display);color:var(--hero)}
+.fade-num.boss{color:var(--fire)}
+.fade-name{margin:0;font-weight:800;font-size:clamp(1.35rem,6vw,2rem);line-height:1.15;color:var(--ink);text-wrap:balance;max-width:18ch}
+.fade-dots{display:flex;gap:10px;align-items:center;margin-top:10px}
+.fade-dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.18)}
+.fade-dots i.done{background:var(--safe)}
+.fade-dots i.cur{background:var(--hero);box-shadow:0 0 0 5px rgba(255,210,63,.22)}
+.fade-dots i.last{border-radius:3px;transform:rotate(45deg)}
+.fade-dots i.last.cur{background:var(--fire);box-shadow:0 0 0 5px rgba(255,90,54,.25)}
+@media (prefers-reduced-motion:reduce){.fade-card{transform:none;transition:opacity .2s linear}}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -293,6 +311,14 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
   </div>
 </div>
 
+<div class="fade" id="fade" hidden aria-live="polite">
+  <div class="fade-card">
+    <p class="fade-world" id="fadeWorld"></p>
+    <p class="fade-num" id="fadeNum"></p>
+    <p class="fade-name" id="fadeName"></p>
+    <div class="fade-dots" id="fadeDots"></div>
+  </div>
+</div>
 <script>
 const LEVELS=[
  {speed:520,map:[
@@ -517,7 +543,8 @@ const sfx={
   eat(){tone(300,.08,'square',.05);tone(900,.12,'square',.05,.06)},
   coin(){tone(988,.06,'square',.035);tone(1319,.12,'square',.035,.06)},
   buy(){[659,880,1319].forEach((f,i)=>tone(f,.1,'square',.04,i*.07))},
-  boss(){tone(120,.3,'sawtooth',.07);tone(600,.15,'square',.05,.1);tone(900,.2,'square',.05,.22)}
+  boss(){tone(120,.3,'sawtooth',.07);tone(600,.15,'square',.05,.1);tone(900,.2,'square',.05,.22)},
+  start(){[392,523,659,784].forEach((f,i)=>tone(f,.14,'triangle',.07,i*.09));tone(1047,.35,'triangle',.06,.38)}
 };
 
 /* ---------- trilha sonora (feita na hora pelo próprio jogo) ---------- */
@@ -582,7 +609,7 @@ function musKick(t){
   o.connect(g).connect(MUS.bus);o.start(t);o.stop(t+.18);
 }
 function musWanted(){
-  if(!G)return 'calm';
+  if(!G||TRANS.on)return G?null:'calm';
   if(TUT.on||!makerEl.hidden||!shopEl.hidden)return 'calm';
   if(G.state==='lost')return null;
   if(G.power>0)return 'star';
@@ -646,6 +673,55 @@ function coinHud(){
 }
 function addCoins(n){SAVE.coins+=n;persist();coinHud();}
 
+
+/* ---------- transição de fase ---------- */
+const WORLD_NAMES=['A Noite','O Vulcão','A Caverna de Gelo'];
+const LEVEL_NAMES=[
+ 'Primeiro Resgate','Corredor Escuro','Labirinto da Lua','Ponte das Estrelas','Castelo do Rei Fogão',
+ 'Pedras Quentes','Rio de Lava','Túnel de Fogo','Cratera Vermelha','Covil do Fogão de Lava',
+ 'Chão Escorregadio','Cristais Azuis','Pilares Congelados','Vento Gelado','Trono do Fogão de Gelo'
+];
+const fadeEl=document.getElementById('fade');
+const TRANS={on:false,stage:0,timer:null};
+function cardInfo(i,custom){
+  if(custom)return {world:'Fase criada por você',num:'✏',name:custom.name,dots:null,glow:(THEMES[custom.theme]||THEMES[0]).wall};
+  const w=Math.floor(i/PER_WORLD),f=i%PER_WORLD,boss=!!LEVELS[i].boss;
+  return {world:`Mundo ${w+1} · ${WORLD_NAMES[w]}`,num:boss?'Chefão!':`Fase ${f+1}`,name:LEVEL_NAMES[i],dots:f,boss,glow:THEMES[w].wall};
+}
+function fillCard(c){
+  document.getElementById('fadeWorld').textContent=c.world;
+  const num=document.getElementById('fadeNum');num.textContent=c.num;num.classList.toggle('boss',!!c.boss);
+  document.getElementById('fadeName').textContent=c.name;
+  const dots=document.getElementById('fadeDots');dots.innerHTML='';dots.hidden=c.dots===null;
+  if(c.dots!==null)for(let k=0;k<PER_WORLD;k++){
+    const d=document.createElement('i');
+    d.className=(k<c.dots?'done':k===c.dots?'cur':'')+(k===PER_WORLD-1?' last':'');
+    dots.appendChild(d);
+  }
+  fadeEl.style.setProperty('--glow',c.glow+'66');
+}
+function transition(fn,i,custom){
+  clearTimeout(TRANS.timer);
+  TRANS.on=true;TRANS.stage=0;
+  fillCard(cardInfo(i,custom));
+  fadeEl.hidden=false;fadeEl.classList.remove('ready');
+  void fadeEl.offsetWidth;
+  fadeEl.classList.add('show');
+  TRANS.timer=setTimeout(()=>{
+    if(fn)fn();
+    fadeEl.classList.add('ready');sfx.start();TRANS.stage=1;
+    TRANS.timer=setTimeout(endTransition,1600);
+  },400);
+}
+function endTransition(){
+  clearTimeout(TRANS.timer);TRANS.stage=2;
+  fadeEl.classList.remove('ready','show');
+  TRANS.timer=setTimeout(()=>{fadeEl.hidden=true;TRANS.on=false;TRANS.stage=0;},400);
+}
+function startLevel(i,custom){transition(()=>loadLevel(i,custom),i,custom);}
+fadeEl.addEventListener('click',()=>{if(TRANS.stage===1)endTransition();});
+document.addEventListener('pointerdown',()=>unlockAudio(),{passive:true});
+
 /* ---------- tamanho ---------- */
 function resize(){
   const w=cv.clientWidth||360;const dpr=Math.min(window.devicePixelRatio||1,3);
@@ -688,7 +764,6 @@ function loadLevel(i,custom){
      p:{x:start.x,y:start.y,rx:start.x,ry:start.y,face:1},
      carry:false,lives:3,inv:0,acc:0,speed:L.speed,state:'play',shake:0,elapsed:0,got:0,starWait:0,t:G?G.t:0};
   if(boss)G.banner={text:L.boss.name,sub:'Pegue a estrela e encoste nele!',t:2600};
-  if(custom)G.banner={text:custom.name,sub:'Fase criada por você!',t:1800};
   hud();
 }
 function isWall(x,y){return x<0||y<0||x>=COLS||y>=ROWS||G.walls[y*COLS+x]}
@@ -713,7 +788,7 @@ function hud(){
 
 /* ---------- regras ---------- */
 function move(d){
-  if(!G||G.state!=='play')return;
+  if(!G||G.state!=='play'||TRANS.on)return;
   const v={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[d];if(!v)return;
   const p=G.p,nx=p.x+v[0],ny=p.y+v[1];
   if(v[0])p.face=v[0];
@@ -808,8 +883,8 @@ function hit(){
   const p=G.p;p.x=p.rx=G.start.x;p.y=p.ry=G.start.y;G.inv=1500;
   if(G.lives<=0){
     G.state='lost';sfx.lose();hud();
-    if(G.custom){const cu=G.custom;show('GAME OVER','<p>O fogo te pegou! Tente sua fase de novo.</p>','Tentar de novo',()=>loadLevel(-1,cu));return;}
-    show('GAME OVER','<p>O fogo te pegou! Agora você volta lá pra Fase 1.</p><p class="coinline">Suas moedas continuam guardadas.</p>','Começar de novo',()=>loadLevel(0));
+    if(G.custom){const cu=G.custom;show('GAME OVER','<p>O fogo te pegou! Tente sua fase de novo.</p>','Tentar de novo',()=>startLevel(-1,cu));return;}
+    show('GAME OVER','<p>O fogo te pegou! Agora você volta lá pra Fase 1.</p><p class="coinline">Suas moedas continuam guardadas.</p>','Começar de novo',()=>startLevel(0));
   }else{sfx.hit();hud();}
 }
 function win(){
@@ -820,11 +895,11 @@ function win(){
   if(G.custom){show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker());return;}
   const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,bossName=G.boss?G.boss.name:'chefão';
   if(G.i===LEVELS.length-1){
-    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}`,'Jogar de novo',()=>loadLevel(0));
+    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}`,'Jogar de novo',()=>startLevel(0));
   }else if(f===PER_WORLD){
-    show(`Mundo ${w} completo!`,`<p>Você venceu o ${bossName} e salvou todo mundo do Mundo ${w}. Agora vem o Mundo ${w+1}!</p>${line}`,`Ir pro Mundo ${w+1}`,()=>loadLevel(G.i+1));
+    show(`Mundo ${w} completo!`,`<p>Você venceu o ${bossName} e salvou todo mundo do Mundo ${w}. Agora vem o Mundo ${w+1}!</p>${line}`,`Ir pro Mundo ${w+1}`,()=>startLevel(G.i+1));
   }else{
-    show('Pessoa salva!',`<p>Fase ${f} completa. A próxima é mais difícil!</p>${line}`,'Próxima fase',()=>loadLevel(G.i+1));
+    show('Pessoa salva!',`<p>Fase ${f} completa. A próxima é mais difícil!</p>${line}`,'Próxima fase',()=>startLevel(G.i+1));
   }
 }
 function show(title,body,btn,fn){
@@ -839,8 +914,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=11;
-const NEWS=['Trilha sonora! Cada mundo tem sua própria música.','Música de batalha nos chefões e música de super-herói com a estrela.','Botão de música lá em cima pra ligar e desligar.'];
+const VERSION=12;
+const NEWS=['Transição entre as fases: a tela escurece e mostra o mundo e o nome da fase.','Cada fase agora tem um nome!','Toque na tela escura pra começar mais rápido.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -870,7 +945,7 @@ const TUTORIAL=[
  {icon:'coin',title:'Moedas',text:'Cada fase tem 5 moedinhas espalhadas. E quanto mais rápido você salvar a pessoa, maior o bônus de rapidez!'},
  {icon:'shop',title:'Loja do Herói',text:'Toque no botão de moedas lá em cima pra abrir a loja. Compre chapéus, capas e rastros mágicos pro seu quadradinho.'},
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
- {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Os chefões são o Rei Fogão, o Fogão de Lava e o Fogão de Gelo.'},
+ {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Os chefões são o Rei Fogão, o Fogão de Lava e o Fogão de Gelo. Antes de cada fase a tela escurece e mostra o nome dela!'},
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
  {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão com a notinha musical, lá em cima, liga e desliga a música.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
@@ -879,8 +954,9 @@ const TUTORIAL=[
 ];
 const ovBack=document.getElementById('ovBack'),ovSkip=document.getElementById('ovSkip');
 const TUT={on:false,i:0,prev:null};
-function openTutorial(){
+function openTutorial(first){
   if(TUT.on)return;
+  TUT.first=!!first;
   TUT.prev=ov.hidden?null:{t:ovTitle.textContent,b:ovBody.innerHTML,btn:ovBtn.textContent,a:ovAction};
   TUT.on=true;TUT.i=0;ov.hidden=false;renderTut();
 }
@@ -898,7 +974,7 @@ function renderTut(){
 function endTut(){
   TUT.on=false;ovBack.hidden=true;ovSkip.hidden=true;ovBody.removeAttribute('style');
   if(TUT.prev){const p=TUT.prev;TUT.prev=null;show(p.t,p.b,p.btn,p.a);}
-  else{ov.hidden=true;ovAction=null;}
+  else{ov.hidden=true;ovAction=null;if(TUT.first){TUT.first=false;transition(null,G.i,G.custom);}}
 }
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
@@ -1138,7 +1214,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&ov.hidden&&adm.hidden&&shopEl.hidden&&makerEl.hidden){
+  if(G.state==='play'&&!TRANS.on&&ov.hidden&&adm.hidden&&shopEl.hidden&&makerEl.hidden){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -1183,6 +1259,7 @@ function frame(ts){
 /* ---------- controles ---------- */
 const KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right',W:'up',S:'down',A:'left',D:'right'};
 document.addEventListener('keydown',e=>{
+  if(TRANS.on){if(TRANS.stage===1&&(e.key==='Enter'||e.key===' '))endTransition();e.preventDefault();return;}
   if(!adm.hidden){if(e.key==='Escape')closeAdmin();return;}
   if(!makerEl.hidden){if(e.key==='Escape')closeMaker();return;}
   if(!shopEl.hidden){if(e.key==='Escape')closeShop();return;}
@@ -1395,7 +1472,7 @@ function toLevel(f){return {name:f.name,theme:f.theme,speed:(SPEEDS[f.speed]||SP
 function playCustom(L){
   if(!G.custom)MK.camp=G.i;
   makerEl.hidden=true;if(TUT.on)endTut();
-  ov.hidden=true;ovAction=null;loadLevel(-1,L);
+  ov.hidden=true;ovAction=null;startLevel(-1,L);
 }
 function mkSave(){
   const err=mkCheck();if(err){mkMsg(err,'bad');return;}
@@ -1476,7 +1553,7 @@ function buildMaker(){
 function openMaker(){
   unlockAudio();
   if(!adm.hidden||!shopEl.hidden)return;
-  if(TUT.on)endTut();
+  if(TUT.on){TUT.first=false;endTut();}
   makerEl.hidden=false;
   document.getElementById('mkBack').hidden=!G.custom;
   mkResize();renderSegs();renderTools();renderList();
@@ -1485,7 +1562,7 @@ function openMaker(){
 }
 function closeMaker(){
   makerEl.hidden=true;
-  if(G.custom&&G.state!=='play'){ov.hidden=true;ovAction=null;loadLevel(MK.camp);}
+  if(G.custom&&G.state!=='play'){ov.hidden=true;ovAction=null;startLevel(MK.camp);}
 }
 document.getElementById('makeBtn').addEventListener('click',openMaker);
 document.getElementById('musBtn').addEventListener('click',musToggle);
@@ -1506,7 +1583,7 @@ mkClearBtn.addEventListener('click',()=>{
     setTimeout(()=>{mkClearBtn.classList.remove('sure');mkClearBtn.textContent='Limpar';},2500);
   }
 });
-document.getElementById('mkBack').addEventListener('click',()=>{makerEl.hidden=true;ov.hidden=true;ovAction=null;loadLevel(MK.camp);});
+document.getElementById('mkBack').addEventListener('click',()=>{makerEl.hidden=true;ov.hidden=true;ovAction=null;startLevel(MK.camp);});
 
 /* ---------- painel de admin ---------- */
 const lvgrid=document.getElementById('lvgrid');
@@ -1515,8 +1592,8 @@ for(let w=0;w<LEVELS.length/PER_WORLD;w++){
   row.innerHTML=`<span>Mundo ${w+1}</span>`;
   for(let f=0;f<PER_WORLD;f++){
     const b=document.createElement('button');b.type='button';b.textContent=f===PER_WORLD-1?'★':f+1;
-    b.dataset.i=w*PER_WORLD+f;b.setAttribute('aria-label',f===PER_WORLD-1?`Mundo ${w+1}, chefão`:`Mundo ${w+1}, fase ${f+1}`);
-    b.addEventListener('click',()=>{closeAdmin();ov.hidden=true;ovAction=null;loadLevel(+b.dataset.i);});
+    b.dataset.i=w*PER_WORLD+f;b.title=LEVEL_NAMES[w*PER_WORLD+f];b.setAttribute('aria-label',`Mundo ${w+1}, ${f===PER_WORLD-1?'chefão':'fase '+(f+1)}: ${LEVEL_NAMES[w*PER_WORLD+f]}`);
+    b.addEventListener('click',()=>{closeAdmin();ov.hidden=true;ovAction=null;startLevel(+b.dataset.i);});
     row.appendChild(b);
   }
   lvgrid.appendChild(row);
@@ -1543,7 +1620,7 @@ document.getElementById('optCoins').addEventListener('click',()=>{addCoins(50);s
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
 resize();loadLevel(0);buildShop();buildMaker();coinHud();musRender();
 ov.hidden=true;
-openTutorial();
+openTutorial(true);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(shopList.children.length)buildShop();});
 </script>
