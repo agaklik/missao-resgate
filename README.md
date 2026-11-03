@@ -10,6 +10,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Loja do Herói: chapéus, capas e rastros mágicos (fica salvo no aparelho)
 - Criar fase (botão no canto de cima, à direita): desenhe, teste e salve suas próprias fases
 - Trilha sonora: música de cada mundo, batalha nos chefões e música da estrela (botão ♪ liga e desliga)
+- Cena de viagem entre os mundos: o herói anda e o chão muda de pedras azuis pra vermelhas (Mundo 1 → 2) e de vermelhas pra gelo (Mundo 2 → 3)
 - Transição entre as fases: a tela escurece e mostra o mundo e o nome da fase
 - 3 corações; GAME OVER volta pra Fase 1 do mundo em que você está
 - O jogo lembra o mundo em que você parou
