@@ -78,7 +78,7 @@ canvas{display:block;width:100%;touch-action:none}
 .skip{background:none;border:0;color:var(--muted);font:600 .95rem var(--display);text-decoration:underline;cursor:pointer;padding:4px}
 .ghost:focus-visible,.skip:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .adm-btn{background:var(--night-2);color:var(--ink);border:0;border-radius:999px;width:36px;height:30px;font:700 1.05rem var(--display);cursor:pointer}
-.adm-btn:focus-visible,.admin button:focus-visible,.admin input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.adm-btn:focus-visible,.admin button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .admin{position:fixed;inset:0;z-index:20;background:rgba(10,14,32,.82);display:flex;align-items:center;justify-content:center;
   padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .admin-card{background:var(--night-2);border:3px solid var(--wall-edge);border-radius:18px;padding:16px 18px;width:100%;max-width:420px;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px}
@@ -86,14 +86,6 @@ canvas{display:block;width:100%;touch-action:none}
 .admin h3{margin:0;font-size:1.4rem;color:var(--hero)}
 .admin h4{margin:4px 0 0;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .x{background:var(--night);color:var(--ink);border:0;border-radius:10px;width:36px;height:36px;font:700 1.1rem var(--display);cursor:pointer}
-#adminLogin{display:flex;flex-direction:column;gap:8px}
-#adminLogin label{font-weight:700}
-.passrow{display:flex;gap:8px}
-#adminPass{flex:1;font:600 1.1rem var(--display);padding:8px 12px;border-radius:10px;border:2px solid var(--wall-edge);background:var(--night);color:var(--ink);min-width:0}
-.eye{flex:none;width:48px;border:2px solid var(--wall-edge);border-radius:10px;background:var(--night);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.eye[aria-pressed="true"]{background:var(--hero);color:var(--night);border-color:#c99a12}
-.eye[aria-pressed="true"] .slash{display:none}
-.err{color:#ff8a70;margin:0;font-weight:700}
 #adminTools{display:flex;flex-direction:column;gap:10px}
 .lvrow{display:grid;grid-template-columns:70px repeat(5,minmax(0,1fr));gap:6px;align-items:center}
 .lvrow span{font-weight:700;color:var(--muted);font-size:.9rem}
@@ -153,22 +145,7 @@ canvas{display:block;width:100%;touch-action:none}
       <h3 id="admTitle">Painel de Admin</h3>
       <button class="x" id="adminClose" type="button" aria-label="Fechar">✕</button>
     </div>
-    <form id="adminLogin" autocomplete="off">
-      <label for="adminPass">Senha</label>
-      <div class="passrow">
-        <input id="adminPass" type="password" autocomplete="off">
-        <button class="eye" id="adminEye" type="button" aria-label="Mostrar senha" aria-pressed="false">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/>
-            <circle cx="12" cy="12" r="3"/>
-            <line class="slash" x1="3" y1="3" x2="21" y2="21"/>
-          </svg>
-        </button>
-      </div>
-      <p class="err" id="adminErr" hidden>Senha errada. Tente de novo.</p>
-      <button class="big" type="submit">Entrar</button>
-    </form>
-    <div id="adminTools" hidden>
+    <div id="adminTools">
       <h4>Pular para a fase</h4>
       <div id="lvgrid" style="display:flex;flex-direction:column;gap:6px"></div>
       <h4>Truques</h4>
@@ -371,7 +348,7 @@ const THEMES=[
  {edge:'#235465',wall:'#4aa3b8',f1:'#16314a',f2:'#1a3752'}
 ];
 const POWER_MS=4000;
-const ADM={on:false,inf:false,freeze:false};
+const ADM={inf:false,freeze:false};
 const adm=document.getElementById('admin');
 const COLS=9,ROWS=11;
 const cv=document.getElementById('game'),ctx=cv.getContext('2d');
@@ -530,8 +507,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=7;
-const NEWS=['Tutorial novo pra aprender a jogar.','Botão ? lá em cima pra ver o tutorial quando quiser.'];
+const VERSION=8;
+const NEWS=['O painel de admin agora abre direto, sem senha.','O jogo está no GitHub!'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -555,7 +532,7 @@ const TUTORIAL=[
  {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles pra fazer PUF!'},
  {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Cada fase é mais difícil que a outra.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
- {icon:'gear',title:'Painel de admin',text:'O botão ⚙ abre o painel secreto. Só entra quem sabe a senha! Lá dá pra pular de fase e usar truques. O olhinho mostra a senha que você digitou.'},
+ {icon:'gear',title:'Painel de admin',text:'O botão ⚙ abre o painel de admin. Lá dá pra pular pra qualquer fase e usar truques: vidas infinitas, fogo parado e ganhar a estrela na hora.'},
  {icon:'news',title:`Novidades da versão ${VERSION}`,text:`<ul>${NEWS.map(n=>`<li>${n}</li>`).join('')}</ul>`}
 ];
 const ovBack=document.getElementById('ovBack'),ovSkip=document.getElementById('ovSkip');
@@ -795,29 +772,13 @@ for(let w=0;w<LEVELS.length/PER_WORLD;w++){
 }
 function openAdmin(){
   adm.hidden=false;
-  document.getElementById('adminLogin').hidden=ADM.on;
-  document.getElementById('adminTools').hidden=!ADM.on;
-  document.getElementById('adminErr').hidden=true;
   lvgrid.querySelectorAll('button').forEach(b=>b.classList.toggle('cur',+b.dataset.i===G.i));
-  setTimeout(()=>{try{(ADM.on?document.getElementById('adminClose'):document.getElementById('adminPass')).focus()}catch(e){}},30);
+  setTimeout(()=>{try{document.getElementById('adminClose').focus()}catch(e){}},30);
 }
-const passEl=document.getElementById('adminPass'),eyeEl=document.getElementById('adminEye');
-function setEye(show){
-  passEl.type=show?'text':'password';
-  eyeEl.setAttribute('aria-pressed',show);
-  eyeEl.setAttribute('aria-label',show?'Esconder senha':'Mostrar senha');
-}
-eyeEl.addEventListener('click',()=>{setEye(passEl.type==='password');passEl.focus();});
-function closeAdmin(){adm.hidden=true;passEl.value='';setEye(false);}
+function closeAdmin(){adm.hidden=true;}
 document.getElementById('adminBtn').addEventListener('click',openAdmin);
 document.getElementById('adminClose').addEventListener('click',closeAdmin);
 adm.addEventListener('click',e=>{if(e.target===adm)closeAdmin();});
-document.getElementById('adminLogin').addEventListener('submit',e=>{
-  e.preventDefault();
-  const v=document.getElementById('adminPass').value.trim().replace(/\s+/g,' ').toLowerCase();
-  if(v==='administrador ufc'){ADM.on=true;openAdmin();}
-  else{document.getElementById('adminErr').hidden=false;document.getElementById('adminPass').select();}
-});
 document.getElementById('optLives').addEventListener('change',e=>{ADM.inf=e.target.checked;if(!ADM.inf)G.lives=Math.max(G.lives,1);hud();});
 document.getElementById('optFreeze').addEventListener('change',e=>{ADM.freeze=e.target.checked;});
 document.getElementById('optStar').addEventListener('click',()=>{

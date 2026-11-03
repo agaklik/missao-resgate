@@ -7,6 +7,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - 3 corações; GAME OVER volta pro Mundo 1
 - Modo de lado para tablet e celular
 - Tutorial no começo (botão **?** abre de novo)
+- Painel de admin (botão ⚙): pular de fase, vidas infinitas, fogo parado e estrela na hora
 
 ## Como jogar
 
