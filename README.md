@@ -7,6 +7,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Estrela mágica: 4 segundos invencível e os foguinhos fogem
 - Moedas nas fases e bônus de rapidez
 - Loja do Herói: chapéus, capas e rastros mágicos (fica salvo no aparelho)
+- Criar fase (botão no canto de cima, à direita): desenhe, teste e salve suas próprias fases
 - 3 corações; GAME OVER volta pro Mundo 1
 - Modo de lado para tablet e celular
 - Tutorial no começo (botão **?** abre de novo)

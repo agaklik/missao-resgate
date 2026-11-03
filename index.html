@@ -117,6 +117,57 @@ canvas{display:block;width:100%;touch-action:none}
 .item.on .st{color:var(--safe)}
 .item.poor .st{color:var(--muted)}
 .item.poor .coin{opacity:.6}
+header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
+.tools{display:flex;gap:6px;align-items:center}
+.stats{grid-column:1 / -1;flex-wrap:wrap;justify-content:flex-start}
+#lvl{max-width:62vw;overflow:hidden;text-overflow:ellipsis}
+.make-btn{display:inline-flex;align-items:center;gap:6px;background:var(--hero);color:var(--night);border:0;border-bottom:3px solid #c99a12;border-radius:999px;height:32px;padding:0 12px 0 10px;font:800 .95rem var(--display);cursor:pointer;white-space:nowrap}
+.make-btn svg{width:18px;height:18px;flex:none}
+.make-btn:active{transform:translateY(2px);border-bottom-width:1px}
+@media (max-width:370px){.make-btn span{display:none}.make-btn{padding:0 9px}}
+.make-btn:focus-visible,.tool:focus-visible,.seg button:focus-visible,.mini:focus-visible,.mk-field input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.admin-card.maker-card{max-width:780px}
+.maker-body{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media (min-width:660px){.maker-body{grid-template-columns:auto minmax(0,1fr);align-items:start}}
+.maker-board{width:100%;max-width:min(340px,max(210px,calc((100vh - 140px) * 9 / 11)));justify-self:center;border:3px solid var(--wall-edge);border-radius:14px;overflow:hidden;background:var(--night)}
+@media (min-width:660px){.maker-board{width:min(340px,max(210px,calc((100vh - 140px) * 9 / 11)))}}
+#makerCv{display:block;width:100%;touch-action:none;cursor:crosshair}
+.maker-side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.maker-side h4{margin:0}
+.mk-hint{margin:-4px 0 0;color:var(--muted);font-size:.92rem}
+.tool-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tool{display:flex;align-items:center;gap:6px;text-align:left;background:var(--night);color:var(--ink);border:2px solid var(--wall-edge);border-radius:12px;padding:5px 6px;font:700 .85rem/1.1 var(--display);cursor:pointer;min-width:0}
+.tool canvas{width:30px;height:30px;flex:none;border-radius:6px}
+.tool span{min-width:0;overflow-wrap:anywhere}
+.tool.on{border-color:var(--hero);background:#2f3a6b;box-shadow:0 0 0 2px rgba(255,210,63,.35)}
+.mk-field{display:flex;flex-direction:column;gap:4px;font-weight:700}
+.mk-field input{font:600 1rem var(--display);padding:7px 10px;border-radius:10px;border:2px solid var(--wall-edge);background:var(--night);color:var(--ink);min-width:0}
+.mk-field input::placeholder{color:var(--muted)}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;min-width:0;background:var(--night);color:var(--ink);border:2px solid var(--wall-edge);border-radius:10px;padding:6px 4px;font:700 .92rem var(--display);cursor:pointer}
+.seg button.on{background:var(--hero);border-color:#c99a12;color:var(--night)}
+.mk-msg{margin:0;min-height:1.3em;font-weight:700;color:var(--muted)}
+.mk-msg.bad{color:#ff8a70}
+.mk-msg.good{color:var(--safe)}
+.mk-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mk-actions .big{margin:0;padding:8px 20px;font-size:1.1rem}
+.mini{font:800 .92rem var(--display);padding:7px 12px;border-radius:10px;border:2px solid var(--wall);cursor:pointer;background:var(--wall);color:var(--ink)}
+.mini.play,.mini.save{background:var(--safe);border-color:#2a9a5b;color:var(--night)}
+.mini.del{background:transparent;border-color:#ff8a70;color:#ff8a70}
+.mini.del.sure{background:#ff8a70;color:var(--night)}
+#mkBack{align-self:flex-start}
+.mk-list-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+.mk-list-head h4{margin:0}
+.mk-list{display:flex;flex-direction:column;gap:8px}
+.mk-empty{margin:0;color:var(--muted)}
+.mk-row{display:flex;gap:10px;align-items:center;background:var(--night);border:2px solid transparent;border-radius:12px;padding:8px;flex-wrap:wrap}
+.mk-row.cur{border-color:var(--hero)}
+.mk-row canvas{width:45px;height:55px;border-radius:6px;flex:none}
+.mk-row .info{flex:1 1 120px;min-width:0;display:flex;flex-direction:column}
+.mk-row .nm{font-weight:800;overflow-wrap:anywhere}
+.mk-row .sub{color:var(--muted);font-size:.85rem}
+.mk-row .btns{display:flex;gap:6px;flex-wrap:wrap}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -133,12 +184,15 @@ canvas{display:block;width:100%;touch-action:none}
 <div class="app">
   <header>
     <h1>Missão <span>Resgate</span></h1>
+    <div class="tools">
+      <button class="make-btn" id="makeBtn" type="button" aria-label="Criar fase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.2-5L15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L8 19.8z" fill="currentColor"/><path d="M13.8 6.4l3.8 3.8" stroke="#ffd23f" stroke-width="1.8"/></svg><span>Criar fase</span></button>
+      <button class="adm-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
+      <button class="adm-btn" id="adminBtn" type="button" aria-label="Painel de admin">⚙</button>
+    </div>
     <div class="stats">
       <span class="chip" id="lvl">Fase 1/5</span>
       <button class="chip coinchip" id="shopBtn" type="button" aria-label="Abrir a loja"><span class="coin"></span><span id="coinTxt">0</span></button>
       <span class="hearts" id="hearts" aria-label="vidas"></span>
-      <button class="adm-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
-      <button class="adm-btn" id="adminBtn" type="button" aria-label="Painel de admin">⚙</button>
     </div>
   </header>
   <p class="goal" id="goal"></p>
@@ -195,6 +249,40 @@ canvas{display:block;width:100%;touch-action:none}
       </div>
     </div>
     <div id="shopList"></div>
+  </div>
+</div>
+
+<div class="admin" id="maker" hidden>
+  <div class="admin-card maker-card" id="makerCard" role="dialog" aria-labelledby="makerTitle">
+    <div class="admin-head">
+      <h3 id="makerTitle">Criar fase</h3>
+      <button class="x" id="makerClose" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <div class="maker-body">
+      <div class="maker-board"><canvas id="makerCv" aria-label="Tabuleiro da sua fase"></canvas></div>
+      <div class="maker-side">
+        <h4>Ferramentas</h4>
+        <p class="mk-hint">Escolha uma e toque no tabuleiro. Arraste o dedo pra fazer várias paredes de uma vez.</p>
+        <div class="tool-grid" id="toolGrid"></div>
+        <label class="mk-field" for="mkName">Nome da fase
+          <input id="mkName" type="text" maxlength="20" placeholder="Minha fase" autocomplete="off">
+        </label>
+        <div class="mk-field"><span>Mundo</span><div class="seg" id="mkTheme"></div></div>
+        <div class="mk-field"><span>Velocidade do fogo</span><div class="seg" id="mkSpeed"></div></div>
+        <p class="mk-msg" id="mkMsg" role="status"></p>
+        <div class="mk-actions">
+          <button class="big" id="mkTest" type="button">▶ Testar</button>
+          <button class="mini save" id="mkSave" type="button">Salvar</button>
+          <button class="mini del" id="mkClear" type="button">Limpar</button>
+        </div>
+        <button class="skip" id="mkBack" type="button" hidden>Voltar pras fases do jogo</button>
+      </div>
+    </div>
+    <div class="mk-list-head">
+      <h4>Minhas fases</h4>
+      <button class="mini" id="mkNew" type="button">+ Nova fase</button>
+    </div>
+    <div class="mk-list" id="mkList"></div>
   </div>
 </div>
 
@@ -397,7 +485,7 @@ const BOSS_PAL=[
 ];
 const POWER_MS=4000;
 const ADM={inf:false,freeze:false};
-const adm=document.getElementById('admin'),shopEl=document.getElementById('shop');
+const adm=document.getElementById('admin'),shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker');
 const COLS=9,ROWS=11;
 const cv=document.getElementById('game');
 let ctx=cv.getContext('2d');
@@ -462,13 +550,15 @@ window.addEventListener('resize',resize);
 
 /* ---------- fases ---------- */
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function loadLevel(i){
-  const L=LEVELS[i],walls=[],enemies=[];let start,hpos,safe,boss=null;
+function loadLevel(i,custom){
+  const L=custom||LEVELS[i],walls=[],enemies=[],fixedCoins=[];let start,hpos,safe,boss=null,fixedStar=null;
   L.map.forEach((row,y)=>[...row].forEach((c,x)=>{
     walls[y*COLS+x]=c==='#';
     if(c==='P')start={x,y};
     if(c==='H')hpos={x,y};
     if(c==='S')safe={x,y};
+    if(c==='*')fixedStar={x,y};
+    if(c==='o')fixedCoins.push({x,y});
     if(c==='h')enemies.push({x,y,dx:1,dy:0,rx:x,ry:y,sx:x,sy:y});
     if(c==='v')enemies.push({x,y,dx:0,dy:1,rx:x,ry:y,sx:x,sy:y});
     if(c==='B')boss={x,y,sx:x,sy:y,rx:x,ry:y,hp:3,stun:0,acc:0,dead:false,speed:L.boss.speed,name:L.boss.name,pal:L.boss.pal};
@@ -485,12 +575,13 @@ function loadLevel(i){
     }
   }
   const pool=shuffle(spots.slice());
-  const item=pool.pop()||null;
-  const coins=pool.splice(0,5);
-  G={i,walls,enemies,boss,start,hpos,safe,item,coins,spots,power:0,puffs:[],floats:[],trail:[],trailAcc:0,banner:null,
+  const item=fixedStar||pool.pop()||null;
+  const coins=fixedCoins.length?fixedCoins:pool.splice(0,5);
+  G={i,custom:custom||null,walls,enemies,boss,start,hpos,safe,item,coins,spots,power:0,puffs:[],floats:[],trail:[],trailAcc:0,banner:null,
      p:{x:start.x,y:start.y,rx:start.x,ry:start.y,face:1},
      carry:false,lives:3,inv:0,acc:0,speed:L.speed,state:'play',shake:0,elapsed:0,got:0,starWait:0,t:G?G.t:0};
   if(boss)G.banner={text:L.boss.name,sub:'Pegue a estrela e encoste nele!',t:2600};
+  if(custom)G.banner={text:custom.name,sub:'Fase criada por você!',t:1800};
   hud();
 }
 function isWall(x,y){return x<0||y<0||x>=COLS||y>=ROWS||G.walls[y*COLS+x]}
@@ -500,7 +591,7 @@ function isBossAt(x,y){const b=G.boss;return bossAlive()&&x>=b.x&&x<=b.x+1&&y>=b
 function bossFits(x,y){return !enemyBlocked(x,y)&&!enemyBlocked(x+1,y)&&!enemyBlocked(x,y+1)&&!enemyBlocked(x+1,y+1)}
 
 function hud(){
-  document.getElementById('lvl').textContent=`Mundo ${Math.floor(G.i/PER_WORLD)+1} · Fase ${G.i%PER_WORLD+1}/${PER_WORLD}`;
+  document.getElementById('lvl').textContent=G.custom?`✏ ${G.custom.name}`:`Mundo ${Math.floor(G.i/PER_WORLD)+1} · Fase ${G.i%PER_WORLD+1}/${PER_WORLD}`;
   let h='';
   if(ADM.inf)h='<span>♥</span> ∞';
   else for(let k=0;k<3;k++)h+=`<span class="${k<G.lives?'':'gone'}">♥</span>`;
@@ -610,6 +701,7 @@ function hit(){
   const p=G.p;p.x=p.rx=G.start.x;p.y=p.ry=G.start.y;G.inv=1500;
   if(G.lives<=0){
     G.state='lost';sfx.lose();hud();
+    if(G.custom){const cu=G.custom;show('GAME OVER','<p>O fogo te pegou! Tente sua fase de novo.</p>','Tentar de novo',()=>loadLevel(-1,cu));return;}
     show('GAME OVER','<p>O fogo te pegou! Agora você volta lá pra Fase 1.</p><p class="coinline">Suas moedas continuam guardadas.</p>','Começar de novo',()=>loadLevel(0));
   }else{sfx.hit();hud();}
 }
@@ -618,6 +710,7 @@ function win(){
   const sec=G.elapsed/1000,bonus=Math.max(1,10-Math.floor(sec/6));
   addCoins(bonus);
   const line=`<p class="coinline"><span class="coin"></span>Moedas pegas: <b>${G.got}</b> · Bônus de rapidez: <b>+${bonus}</b></p>`;
+  if(G.custom){show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker());return;}
   const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,bossName=G.boss?G.boss.name:'chefão';
   if(G.i===LEVELS.length-1){
     show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}`,'Jogar de novo',()=>loadLevel(0));
@@ -639,8 +732,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=9;
-const NEWS=['Chefões gigantes no fim de cada mundo!','Moedas nas fases e bônus de rapidez.','Loja do Herói com chapéus, capas e rastros mágicos.'];
+const VERSION=10;
+const NEWS=['Criar fase: monte suas próprias fases!','Salve suas fases e jogue quando quiser.','Escolha o mundo e a velocidade do fogo da sua fase.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -654,6 +747,7 @@ const ICON={
  boss:`<svg viewBox="0 0 64 64"><path d="M6 40 Q12 18 20 40Z M22 40 Q32 14 42 40Z M44 40 Q52 18 58 40Z" fill="#ff7a2e"/><rect x="6" y="30" width="52" height="30" rx="10" fill="#ff5a36"/><path d="M20 31 L20 16 L26 22 L32 10 L38 22 L44 16 L44 31Z" fill="#ffcc33"/><circle cx="32" cy="24" r="2.5" fill="#e0322b"/><circle cx="22" cy="46" r="4" fill="#2a0c06"/><circle cx="42" cy="46" r="4" fill="#2a0c06"/><path d="M14 38 L26 42 M50 38 L38 42" stroke="#2a0c06" stroke-width="3.5" stroke-linecap="round"/></svg>`,
  worlds:`<svg viewBox="0 0 64 64"><rect x="2" y="20" width="18" height="24" rx="4" fill="#4a5ea6"/><rect x="23" y="20" width="18" height="24" rx="4" fill="#9a4a3a"/><rect x="44" y="20" width="18" height="24" rx="4" fill="#4aa3b8"/><g fill="#f4f1ff" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="15" text-anchor="middle"><text x="11" y="37">1</text><text x="32" y="37">2</text><text x="53" y="37">3</text></g></svg>`,
  tablet:`<svg viewBox="0 0 64 64"><rect x="3" y="14" width="58" height="38" rx="6" fill="#26335f" stroke="#aab4de" stroke-width="2.5"/><rect x="9" y="19" width="22" height="28" rx="3" fill="#4a5ea6"/><rect x="16" y="30" width="7" height="7" rx="2" fill="#ffd23f"/><g fill="#ffd23f"><path d="M46 21 L50 27 H42Z"/><path d="M37 36 L43 32 V40Z"/><path d="M46 45 L50 39 H42Z"/><path d="M55 36 L49 32 V40Z"/></g></svg>`,
+ maker:`<svg viewBox="0 0 64 64"><rect x="3" y="4" width="44" height="54" rx="6" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="8" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="32" y="9" width="10" height="10" rx="2" fill="#3ccf7a"/><rect x="8" y="21" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="33" width="10" height="10" rx="2" fill="#ff5a36"/><rect x="8" y="45" width="10" height="10" rx="2" fill="#ffd23f"/><path d="M34 60 L36 49 L54 31 L61 38 L43 56Z" fill="#ffd23f"/><path d="M34 60 L36 49 L43 56Z" fill="#f2c09a"/><path d="M51 34 L58 41" stroke="#1b2547" stroke-width="2"/></svg>`,
  gear:`<span class="tut-big">⚙</span>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
@@ -669,6 +763,7 @@ const TUTORIAL=[
  {icon:'shop',title:'Loja do Herói',text:'Toque no botão de moedas lá em cima pra abrir a loja. Compre chapéus, capas e rastros mágicos pro seu quadradinho.'},
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
  {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Os chefões são o Rei Fogão, o Fogão de Lava e o Fogão de Gelo.'},
+ {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
  {icon:'gear',title:'Painel de admin',text:'O botão ⚙ abre o painel de admin. Lá dá pra pular pra qualquer fase e usar truques: vidas infinitas, fogo parado, estrela na hora e 50 moedas.'},
  {icon:'news',title:`Novidades da versão ${VERSION}`,text:`<ul>${NEWS.map(n=>`<li>${n}</li>`).join('')}</ul>`}
@@ -698,7 +793,7 @@ function endTut(){
 }
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
-document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(adm.hidden&&shopEl.hidden)openTutorial();});
+document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(adm.hidden&&shopEl.hidden&&makerEl.hidden)openTutorial();});
 document.getElementById('verTxt').textContent=`Versão ${VERSION}`;
 
 /* ---------- desenho ---------- */
@@ -744,9 +839,9 @@ function drawCrown(cx,b,w){
   ctx.fillStyle='#e0322b';ctx.beginPath();ctx.arc(cx,b-h*.28,w*.075,0,Math.PI*2);ctx.fill();
 }
 function powerBlink(){return G.power>0&&!(G.power<1000&&Math.floor(G.power/130)%2)}
-function drawFire(e,t,size=1,pal=null){
+function drawFire(e,t,size=1,pal=null,calm=false){
   const c=cell*size,x=e.rx*cell,y=e.ry*cell,cx=x+c/2,cy=y+c/2;
-  if(powerBlink()){
+  if(!calm&&powerBlink()){
     // foguinho com medo
     const wob=Math.sin(t*.03+e.x)*c*.03;
     for(let k=0;k<3;k++){
@@ -851,7 +946,7 @@ function drawHero(t){
   }
 }
 function draw(){
-  const c=cell,t=G.t,TH=THEMES[Math.floor(G.i/PER_WORLD)]||THEMES[0];
+  const c=cell,t=G.t,TH=THEMES[G.custom?G.custom.theme:Math.floor(G.i/PER_WORLD)]||THEMES[0];
   ctx.save();
   if(G.shake>0){ctx.translate((Math.random()-.5)*c*.18,(Math.random()-.5)*c*.18);}
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
@@ -934,7 +1029,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&ov.hidden&&adm.hidden&&shopEl.hidden){
+  if(G.state==='play'&&ov.hidden&&adm.hidden&&shopEl.hidden&&makerEl.hidden){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -971,6 +1066,7 @@ function frame(ts){
     }
   }
   draw();
+  if(!makerEl.hidden)drawMaker(G.t);
   if(!shopEl.hidden)drawHeroPreview(document.getElementById('shopPrev'),SAVE.eq,G.t);
   requestAnimationFrame(frame);
 }
@@ -979,6 +1075,7 @@ function frame(ts){
 const KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right',W:'up',S:'down',A:'left',D:'right'};
 document.addEventListener('keydown',e=>{
   if(!adm.hidden){if(e.key==='Escape')closeAdmin();return;}
+  if(!makerEl.hidden){if(e.key==='Escape')closeMaker();return;}
   if(!shopEl.hidden){if(e.key==='Escape')closeShop();return;}
   unlockAudio();
   if(!ov.hidden){
@@ -1068,7 +1165,7 @@ function shopClick(it){
 }
 function openShop(){
   unlockAudio();
-  if(TUT.on||!adm.hidden)return;
+  if(TUT.on||!adm.hidden||!makerEl.hidden)return;
   shopEl.hidden=false;shopMsg.textContent='Toque num item pra comprar ou usar.';renderShop();
   setTimeout(()=>{try{document.getElementById('shopClose').focus()}catch(e){}},30);
 }
@@ -1076,6 +1173,230 @@ function closeShop(){shopEl.hidden=true;}
 document.getElementById('shopBtn').addEventListener('click',openShop);
 document.getElementById('shopClose').addEventListener('click',closeShop);
 shopEl.addEventListener('click',e=>{if(e.target===shopEl)closeShop();});
+
+/* ---------- criar fases ---------- */
+const makerCv=document.getElementById('makerCv'),toolGrid=document.getElementById('toolGrid'),mkList=document.getElementById('mkList'),mkMsgEl=document.getElementById('mkMsg'),mkNameEl=document.getElementById('mkName');
+const mkCtx=makerCv.getContext('2d');let mkCell=36;
+const TOOLS=[
+ {ch:'#',name:'Parede'},{ch:'.',name:'Apagar'},{ch:'P',name:'Herói'},
+ {ch:'H',name:'Pessoa'},{ch:'S',name:'Casa verde'},{ch:'*',name:'Estrela'},
+ {ch:'h',name:'Fogo ↔'},{ch:'v',name:'Fogo ↕'},{ch:'o',name:'Moeda'}
+];
+const UNIQUE='PHS*';
+const SPEEDS=[{name:'Devagar',ms:520},{name:'Normal',ms:420},{name:'Rápido',ms:320}];
+const THEME_NAMES=['Noite','Vulcão','Gelo'];
+const SAMPLE=["#########","#S.....H#","#.......#","#.##.##.#","#...h...#","#.......#","#.##.##.#","#...*...#","#.......#","#P..o..o#","#########"];
+const BLANK=Array.from({length:ROWS},(_,y)=>Array.from({length:COLS},(_,x)=>(x===0||y===0||x===COLS-1||y===ROWS-1)?'#':'.').join(''));
+const FASES_KEY='missao-resgate-fases';
+let FASES=[];
+try{const r=JSON.parse(localStorage.getItem(FASES_KEY)||'[]');if(Array.isArray(r))FASES=r.filter(f=>f&&Array.isArray(f.map)&&f.map.length===ROWS);}catch(e){}
+function saveFases(){try{localStorage.setItem(FASES_KEY,JSON.stringify(FASES));}catch(e){}}
+const MK={map:SAMPLE.map(r=>[...r]),tool:'#',theme:0,speed:1,editId:null,camp:0};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function withCell(c2,size,fn){const oc=cell,ox=ctx;cell=size;ctx=c2;try{fn()}finally{cell=oc;ctx=ox;}}
+function tileFloor(x,y,TH){ctx.fillStyle=(x+y)%2?TH.f1:TH.f2;ctx.fillRect(x*cell,y*cell,cell,cell);}
+function tileWall(x,y,TH){
+  const c=cell;ctx.fillStyle=TH.edge;ctx.fillRect(x*c,y*c,c,c);
+  ctx.fillStyle=TH.wall;rr(x*c+1.5,y*c+1.5,c-3,c-5,c*.16);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.12)';rr(x*c+c*.18,y*c+c*.14,c*.64,c*.12,c*.06);ctx.fill();
+}
+function tileHouse(x,y){
+  const c=cell,sx=x*c,sy=y*c;
+  ctx.fillStyle='rgba(60,207,122,.3)';rr(sx+2,sy+2,c-4,c-4,c*.18);ctx.fill();
+  ctx.fillStyle='#3ccf7a';
+  ctx.beginPath();ctx.moveTo(sx+c*.16,sy+c*.48);ctx.lineTo(sx+c*.5,sy+c*.16);ctx.lineTo(sx+c*.84,sy+c*.48);ctx.closePath();ctx.fill();
+  rr(sx+c*.24,sy+c*.46,c*.52,c*.38,c*.05);ctx.fill();
+  ctx.fillStyle='#1b2547';rr(sx+c*.42,sy+c*.6,c*.16,c*.24,c*.04);ctx.fill();
+}
+function tileCoin(x,y){
+  const c=cell,ox=x*c+c/2,oy=y*c+c/2;
+  ctx.fillStyle='#e8a800';ctx.beginPath();ctx.arc(ox,oy,c*.22,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.arc(ox,oy,c*.15,0,Math.PI*2);ctx.fill();
+}
+function tileArrow(x,y,vert){
+  const c=cell,cx=x*c+c/2,cy=y*c+c/2,L=c*.3,h=c*.1;
+  ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(1.5,c*.06);ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();
+  if(vert){const ax=x*c+c*.12;ctx.moveTo(ax,cy-L);ctx.lineTo(ax,cy+L);ctx.moveTo(ax-h,cy-L+h);ctx.lineTo(ax,cy-L);ctx.lineTo(ax+h,cy-L+h);ctx.moveTo(ax-h,cy+L-h);ctx.lineTo(ax,cy+L);ctx.lineTo(ax+h,cy+L-h);}
+  else{const ay=y*c+c*.12;ctx.moveTo(cx-L,ay);ctx.lineTo(cx+L,ay);ctx.moveTo(cx-L+h,ay-h);ctx.lineTo(cx-L,ay);ctx.lineTo(cx-L+h,ay+h);ctx.moveTo(cx+L-h,ay-h);ctx.lineTo(cx+L,ay);ctx.lineTo(cx+L-h,ay+h);}
+  ctx.stroke();
+}
+function tileThing(ch,x,y,t){
+  const c=cell,cx=x*c+c/2,cy=y*c+c/2;
+  if(ch==='P')drawHeroAt(cx,cy,c*.74,1,t,{hat:SAVE.eq.hat,cape:SAVE.eq.cape});
+  else if(ch==='H')drawPerson(cx,cy+c*.08,c*.95,t,true);
+  else if(ch==='S')tileHouse(x,y);
+  else if(ch==='h'||ch==='v'){drawFire({x,y,rx:x,ry:y},t,1,null,true);tileArrow(x,y,ch==='v');}
+  else if(ch==='*'){drawStar(cx,cy,c*.36,c*.16,t*.002,'#fff3a0');drawStar(cx,cy,c*.2,c*.09,t*.002,'#ffd23f');}
+  else if(ch==='o')tileCoin(x,y);
+}
+function drawMaker(t){
+  const TH=THEMES[MK.theme]||THEMES[0];
+  withCell(mkCtx,mkCell,()=>{
+    for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){if(MK.map[y][x]==='#')tileWall(x,y,TH);else tileFloor(x,y,TH);}
+    for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){const ch=MK.map[y][x];if(ch!=='#'&&ch!=='.')tileThing(ch,x,y,t);}
+  });
+}
+function mkResize(){
+  const w=makerCv.clientWidth||300,dpr=Math.min(window.devicePixelRatio||1,3);
+  mkCell=w/COLS;makerCv.style.height=(mkCell*ROWS)+'px';
+  makerCv.width=Math.round(w*dpr);makerCv.height=Math.round(mkCell*ROWS*dpr);
+  mkCtx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',()=>{if(!makerEl.hidden)mkResize();});
+function mkMsg(text,kind=''){mkMsgEl.textContent=text;mkMsgEl.className='mk-msg'+(kind?' '+kind:'');}
+
+/* desenhar no tabuleiro do editor */
+let mkDown=false,mkLast=-1;
+function mkPaint(e,first){
+  const r=makerCv.getBoundingClientRect();
+  const x=Math.floor((e.clientX-r.left)/r.width*COLS),y=Math.floor((e.clientY-r.top)/r.height*ROWS);
+  const k=y*COLS+x;if(k===mkLast)return;mkLast=k;
+  if(x<1||y<1||x>COLS-2||y>ROWS-2){if(first)mkMsg('A borda de fora é sempre parede.');return;}
+  const tool=MK.tool,uniq=UNIQUE.includes(tool);
+  if(!first&&uniq)return;
+  if(MK.map[y][x]===tool)return;
+  if(uniq)for(const row of MK.map)for(let i=0;i<row.length;i++)if(row[i]===tool)row[i]='.';
+  MK.map[y][x]=tool;sfx.step();
+}
+makerCv.addEventListener('pointerdown',e=>{e.preventDefault();unlockAudio();mkDown=true;mkLast=-1;try{makerCv.setPointerCapture(e.pointerId)}catch(_){}mkPaint(e,true);});
+makerCv.addEventListener('pointermove',e=>{if(mkDown)mkPaint(e,false);});
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>makerCv.addEventListener(ev,()=>{mkDown=false;}));
+
+function mkCheck(){
+  const m=MK.map;let P=null,H=null,S=null;
+  m.forEach((r,y)=>r.forEach((c,x)=>{if(c==='P')P={x,y};if(c==='H')H={x,y};if(c==='S')S={x,y};}));
+  if(!P)return 'Falta o herói! Escolha "Herói" e toque no tabuleiro.';
+  if(!H)return 'Falta a pessoa pra salvar! Escolha "Pessoa".';
+  if(!S)return 'Falta a casa verde! Escolha "Casa verde".';
+  const reach=(a,b)=>{
+    const seen=new Set([a.y*COLS+a.x]),q=[a];
+    while(q.length){const p=q.shift();if(p.x===b.x&&p.y===b.y)return true;
+      for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=p.x+dx,ny=p.y+dy,k=ny*COLS+nx;
+        if(m[ny][nx]==='#'||seen.has(k))continue;seen.add(k);q.push({x:nx,y:ny});}}
+    return false;
+  };
+  if(!reach(P,H))return 'O herói não consegue chegar até a pessoa. Abra um caminho!';
+  if(!reach(H,S))return 'A pessoa não consegue chegar até a casa verde. Abra um caminho!';
+  return null;
+}
+function mkName(){return mkNameEl.value.trim()||'Minha fase';}
+function mkLevel(){return {name:mkName(),theme:MK.theme,speed:SPEEDS[MK.speed].ms,map:MK.map.map(r=>r.join(''))};}
+function toLevel(f){return {name:f.name,theme:f.theme,speed:(SPEEDS[f.speed]||SPEEDS[1]).ms,map:f.map.slice()};}
+function playCustom(L){
+  if(!G.custom)MK.camp=G.i;
+  makerEl.hidden=true;if(TUT.on)endTut();
+  ov.hidden=true;ovAction=null;loadLevel(-1,L);
+}
+function mkSave(){
+  const err=mkCheck();if(err){mkMsg(err,'bad');return;}
+  const rec={id:MK.editId||Date.now().toString(36),name:mkNameEl.value.trim()||`Minha fase ${FASES.length+1}`,theme:MK.theme,speed:MK.speed,map:MK.map.map(r=>r.join(''))};
+  const i=FASES.findIndex(f=>f.id===rec.id);
+  if(i>=0)FASES[i]=rec;else FASES.unshift(rec);
+  MK.editId=rec.id;mkNameEl.value=rec.name;
+  saveFases();renderList();sfx.buy();
+  mkMsg(`Fase "${rec.name}" salva! Ela está em Minhas fases.`,'good');
+}
+function drawMini(cvs,f){
+  const c2=cvs.getContext('2d'),TH=THEMES[f.theme]||THEMES[0],c=10;
+  const COL={P:'#ffd23f',H:'#ff7eb6',S:'#3ccf7a',h:'#ff5a36',v:'#ff5a36','*':'#fff3a0',o:'#e8a800'};
+  f.map.forEach((r,y)=>[...r].forEach((ch,x)=>{
+    c2.fillStyle=ch==='#'?TH.wall:((x+y)%2?TH.f1:TH.f2);c2.fillRect(x*c,y*c,c,c);
+    if(COL[ch]){c2.fillStyle=COL[ch];c2.fillRect(x*c+2,y*c+2,c-4,c-4);}
+  }));
+}
+function buildSeg(id,names,set){
+  const el=document.getElementById(id);el.innerHTML='';
+  names.forEach((n,k)=>{const b=document.createElement('button');b.type='button';b.textContent=n;
+    b.addEventListener('click',()=>{set(k);renderSegs();});el.appendChild(b);});
+}
+function renderSegs(){
+  [['mkTheme',MK.theme],['mkSpeed',MK.speed]].forEach(([id,v])=>document.getElementById(id).querySelectorAll('button').forEach((b,k)=>{b.classList.toggle('on',k===v);b.setAttribute('aria-pressed',k===v);}));
+}
+function renderTools(){toolGrid.querySelectorAll('.tool').forEach(b=>{const on=b.dataset.ch===MK.tool;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});}
+function renderList(){
+  mkList.innerHTML='';
+  if(!FASES.length){const p=document.createElement('p');p.className='mk-empty';p.textContent='Você ainda não salvou nenhuma fase. Faça uma e toque em Salvar.';mkList.appendChild(p);return;}
+  for(const f of FASES){
+    const row=document.createElement('div');row.className='mk-row'+(f.id===MK.editId?' cur':'');
+    const cvs=document.createElement('canvas');cvs.width=90;cvs.height=110;drawMini(cvs,f);
+    const info=document.createElement('div');info.className='info';
+    info.innerHTML=`<span class="nm">${esc(f.name)}</span><span class="sub">${THEME_NAMES[f.theme]||''} · ${(SPEEDS[f.speed]||SPEEDS[1]).name}</span>`;
+    const btns=document.createElement('div');btns.className='btns';
+    const play=document.createElement('button');play.type='button';play.className='mini play';play.textContent='Jogar';
+    play.addEventListener('click',()=>playCustom(toLevel(f)));
+    const ed=document.createElement('button');ed.type='button';ed.className='mini';ed.textContent='Editar';
+    ed.addEventListener('click',()=>{
+      MK.map=f.map.map(r=>[...r]);MK.theme=f.theme;MK.speed=f.speed;MK.editId=f.id;mkNameEl.value=f.name;
+      renderSegs();renderList();mkMsg(`Editando "${f.name}". Toque em Salvar quando terminar.`);
+      document.getElementById('makerCard').scrollTop=0;
+    });
+    const del=document.createElement('button');del.type='button';del.className='mini del';del.textContent='Apagar';
+    del.addEventListener('click',()=>{
+      if(del.classList.contains('sure')){
+        FASES=FASES.filter(x=>x.id!==f.id);if(MK.editId===f.id)MK.editId=null;
+        saveFases();renderList();mkMsg(`Fase "${f.name}" apagada.`);
+      }else{
+        del.classList.add('sure');del.textContent='Certeza?';
+        setTimeout(()=>{if(del.isConnected){del.classList.remove('sure');del.textContent='Apagar';}},2500);
+      }
+    });
+    btns.append(play,ed,del);row.append(cvs,info,btns);mkList.appendChild(row);
+  }
+}
+function buildMaker(){
+  toolGrid.innerHTML='';
+  for(const tl of TOOLS){
+    const b=document.createElement('button');b.type='button';b.className='tool';b.dataset.ch=tl.ch;
+    const c=document.createElement('canvas');c.width=60;c.height=60;
+    const s=document.createElement('span');s.textContent=tl.name;
+    b.append(c,s);b.addEventListener('click',()=>{MK.tool=tl.ch;renderTools();});
+    toolGrid.appendChild(b);
+    withCell(c.getContext('2d'),60,()=>{
+      const TH=THEMES[0];
+      if(tl.ch==='#'){tileWall(0,0,TH);return;}
+      tileFloor(0,0,TH);
+      if(tl.ch==='.'){ctx.strokeStyle='#ff8a70';ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(19,19);ctx.lineTo(41,41);ctx.moveTo(41,19);ctx.lineTo(19,41);ctx.stroke();}
+      else tileThing(tl.ch,0,0,0);
+    });
+  }
+  buildSeg('mkTheme',THEME_NAMES,v=>{MK.theme=v;});
+  buildSeg('mkSpeed',SPEEDS.map(s=>s.name),v=>{MK.speed=v;});
+  renderSegs();renderTools();renderList();
+}
+function openMaker(){
+  unlockAudio();
+  if(!adm.hidden||!shopEl.hidden)return;
+  if(TUT.on)endTut();
+  makerEl.hidden=false;
+  document.getElementById('mkBack').hidden=!G.custom;
+  mkResize();renderSegs();renderTools();renderList();
+  if(!mkMsgEl.textContent)mkMsg('Escolha uma ferramenta e toque nos quadradinhos.');
+  setTimeout(()=>{try{document.getElementById('makerClose').focus({preventScroll:true})}catch(e){}},30);
+}
+function closeMaker(){
+  makerEl.hidden=true;
+  if(G.custom&&G.state!=='play'){ov.hidden=true;ovAction=null;loadLevel(MK.camp);}
+}
+document.getElementById('makeBtn').addEventListener('click',openMaker);
+document.getElementById('makerClose').addEventListener('click',closeMaker);
+document.getElementById('mkTest').addEventListener('click',()=>{const err=mkCheck();if(err){mkMsg(err,'bad');return;}playCustom(mkLevel());});
+document.getElementById('mkSave').addEventListener('click',mkSave);
+document.getElementById('mkNew').addEventListener('click',()=>{
+  MK.map=SAMPLE.map(r=>[...r]);MK.editId=null;MK.theme=0;MK.speed=1;mkNameEl.value='';
+  renderSegs();renderList();mkMsg('Fase nova! Mude do seu jeito.','good');document.getElementById('makerCard').scrollTop=0;
+});
+const mkClearBtn=document.getElementById('mkClear');
+mkClearBtn.addEventListener('click',()=>{
+  if(mkClearBtn.classList.contains('sure')){
+    MK.map=BLANK.map(r=>[...r]);mkClearBtn.classList.remove('sure');mkClearBtn.textContent='Limpar';
+    mkMsg('Tudo limpo! Agora coloque o herói, a pessoa e a casa verde.');
+  }else{
+    mkClearBtn.classList.add('sure');mkClearBtn.textContent='Certeza?';
+    setTimeout(()=>{mkClearBtn.classList.remove('sure');mkClearBtn.textContent='Limpar';},2500);
+  }
+});
+document.getElementById('mkBack').addEventListener('click',()=>{makerEl.hidden=true;ov.hidden=true;ovAction=null;loadLevel(MK.camp);});
 
 /* ---------- painel de admin ---------- */
 const lvgrid=document.getElementById('lvgrid');
@@ -1091,7 +1412,7 @@ for(let w=0;w<LEVELS.length/PER_WORLD;w++){
   lvgrid.appendChild(row);
 }
 function openAdmin(){
-  if(!shopEl.hidden)return;
+  if(!shopEl.hidden||!makerEl.hidden)return;
   adm.hidden=false;
   lvgrid.querySelectorAll('button').forEach(b=>b.classList.toggle('cur',+b.dataset.i===G.i));
   setTimeout(()=>{try{document.getElementById('adminClose').focus()}catch(e){}},30);
@@ -1110,7 +1431,7 @@ document.getElementById('optCoins').addEventListener('click',()=>{addCoins(50);s
 
 /* ---------- início ---------- */
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
-resize();loadLevel(0);buildShop();coinHud();
+resize();loadLevel(0);buildShop();buildMaker();coinHud();
 ov.hidden=true;
 openTutorial();
 requestAnimationFrame(frame);
