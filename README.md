@@ -15,7 +15,6 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - O jogo lembra o mundo em que você parou
 - Modo de lado para tablet e celular
 - Tutorial no começo (botão **?** abre de novo)
-- Painel de admin (botão ⚙): pular de fase, vidas infinitas, fogo parado, estrela na hora e 50 moedas
 
 ## Como jogar
 

@@ -77,23 +77,15 @@ canvas{display:block;width:100%;touch-action:none}
 .ghost{margin-top:6px;font:800 1.1rem var(--display);background:transparent;color:var(--ink);border:2px solid var(--wall);border-radius:14px;padding:8px 18px;cursor:pointer}
 .skip{background:none;border:0;color:var(--muted);font:600 .95rem var(--display);text-decoration:underline;cursor:pointer;padding:4px}
 .ghost:focus-visible,.skip:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-.adm-btn{background:var(--night-2);color:var(--ink);border:0;border-radius:999px;width:36px;height:30px;font:700 1.05rem var(--display);cursor:pointer}
-.adm-btn:focus-visible,.admin button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-.admin{position:fixed;inset:0;z-index:20;background:rgba(10,14,32,.82);display:flex;align-items:center;justify-content:center;
+.icon-btn{background:var(--night-2);color:var(--ink);border:0;border-radius:999px;width:36px;height:30px;font:700 1.05rem var(--display);cursor:pointer}
+.icon-btn:focus-visible,.modal button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(10,14,32,.82);display:flex;align-items:center;justify-content:center;
   padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.admin-card{background:var(--night-2);border:3px solid var(--wall-edge);border-radius:18px;padding:16px 18px;width:100%;max-width:420px;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px}
-.admin-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.admin h3{margin:0;font-size:1.4rem;color:var(--hero)}
-.admin h4{margin:4px 0 0;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.modal-card{background:var(--night-2);border:3px solid var(--wall-edge);border-radius:18px;padding:16px 18px;width:100%;max-width:420px;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.modal h3{margin:0;font-size:1.4rem;color:var(--hero)}
+.modal h4{margin:4px 0 0;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .x{background:var(--night);color:var(--ink);border:0;border-radius:10px;width:36px;height:36px;font:700 1.1rem var(--display);cursor:pointer}
-#adminTools{display:flex;flex-direction:column;gap:10px}
-.lvrow{display:grid;grid-template-columns:70px repeat(5,minmax(0,1fr));gap:6px;align-items:center}
-.lvrow span{font-weight:700;color:var(--muted);font-size:.9rem}
-.lvrow button{height:40px;border:0;border-bottom:4px solid var(--wall-edge);border-radius:10px;background:var(--night);color:var(--ink);font:800 1.05rem var(--display);cursor:pointer}
-.lvrow button.cur{background:var(--hero);color:var(--night);border-bottom-color:#c99a12}
-.tog{display:flex;gap:10px;align-items:center;font-size:1.05rem;font-weight:600;cursor:pointer}
-.tog input{width:22px;height:22px;accent-color:var(--hero)}
-.sm{align-self:flex-start;font:800 1rem var(--display);background:#fff3a0;color:var(--night);border:0;border-bottom:4px solid #c99a12;border-radius:12px;padding:8px 16px;cursor:pointer}
 .stats{flex-wrap:wrap;justify-content:flex-end}
 .coinchip{display:inline-flex;align-items:center;gap:6px;border:0;color:var(--ink);font:700 .95rem var(--display);cursor:pointer}
 .coinchip:focus-visible,.item:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
@@ -127,7 +119,7 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .make-btn:active{transform:translateY(2px);border-bottom-width:1px}
 @media (max-width:370px){.make-btn span{display:none}.make-btn{padding:0 9px}}
 .make-btn:focus-visible,.tool:focus-visible,.seg button:focus-visible,.mini:focus-visible,.mk-field input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-.admin-card.maker-card{max-width:780px}
+.modal-card.maker-card{max-width:780px}
 .maker-body{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 @media (min-width:660px){.maker-body{grid-template-columns:auto minmax(0,1fr);align-items:start}}
 .maker-board{width:100%;max-width:min(340px,max(210px,calc((100vh - 140px) * 9 / 11)));justify-self:center;border:3px solid var(--wall-edge);border-radius:14px;overflow:hidden;background:var(--night)}
@@ -173,7 +165,7 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .mus-btn .mute{display:none}
 .mus-btn.off{color:var(--muted)}
 .mus-btn.off .mute{display:inline}
-.adm-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.icon-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .fade{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;
   padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px));
   background-color:#070a18;background-image:radial-gradient(circle at 50% 46%,var(--glow,#26335f66) 0,transparent 60%);
@@ -211,9 +203,8 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
     <h1>Missão <span>Resgate</span></h1>
     <div class="tools">
       <button class="make-btn" id="makeBtn" type="button" aria-label="Criar fase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.2-5L15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L8 19.8z" fill="currentColor"/><path d="M13.8 6.4l3.8 3.8" stroke="#ffd23f" stroke-width="1.8"/></svg><span>Criar fase</span></button>
-      <button class="adm-btn mus-btn" id="musBtn" type="button" aria-label="Desligar a música" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.8" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff8a70" stroke-width="2.6" stroke-linecap="round"/></svg></button>
-      <button class="adm-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
-      <button class="adm-btn" id="adminBtn" type="button" aria-label="Painel de admin">⚙</button>
+      <button class="icon-btn mus-btn" id="musBtn" type="button" aria-label="Desligar a música" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.8" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff8a70" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+      <button class="icon-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
     </div>
     <div class="stats">
       <span class="chip" id="lvl">Fase 1/5</span>
@@ -243,28 +234,10 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
   <p class="hint">Também dá pra jogar deslizando o dedo no tabuleiro ou com as setas do teclado. · <span id="verTxt"></span></p>
 </div>
 
-<div class="admin" id="admin" hidden>
-  <div class="admin-card" role="dialog" aria-labelledby="admTitle">
-    <div class="admin-head">
-      <h3 id="admTitle">Painel de Admin</h3>
-      <button class="x" id="adminClose" type="button" aria-label="Fechar">✕</button>
-    </div>
-    <div id="adminTools">
-      <h4>Pular para a fase</h4>
-      <div id="lvgrid" style="display:flex;flex-direction:column;gap:6px"></div>
-      <h4>Truques</h4>
-      <label class="tog"><input type="checkbox" id="optLives"> Vidas infinitas</label>
-      <label class="tog"><input type="checkbox" id="optFreeze"> Fogo parado</label>
-      <button class="sm" id="optStar" type="button">★ Ganhar estrela agora</button>
-      <button class="sm" id="optCoins" type="button">Ganhar 50 moedas</button>
-      <button class="sm" id="optUni" type="button">Chamar unicórnio</button>
-    </div>
-  </div>
-</div>
 
-<div class="admin" id="shop" hidden>
-  <div class="admin-card" role="dialog" aria-labelledby="shopTitle">
-    <div class="admin-head">
+<div class="modal" id="shop" hidden>
+  <div class="modal-card" role="dialog" aria-labelledby="shopTitle">
+    <div class="modal-head">
       <h3 id="shopTitle">Loja do Herói</h3>
       <button class="x" id="shopClose" type="button" aria-label="Fechar">✕</button>
     </div>
@@ -279,9 +252,9 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
   </div>
 </div>
 
-<div class="admin" id="maker" hidden>
-  <div class="admin-card maker-card" id="makerCard" role="dialog" aria-labelledby="makerTitle">
-    <div class="admin-head">
+<div class="modal" id="maker" hidden>
+  <div class="modal-card maker-card" id="makerCard" role="dialog" aria-labelledby="makerTitle">
+    <div class="modal-head">
       <h3 id="makerTitle">Criar fase</h3>
       <button class="x" id="makerClose" type="button" aria-label="Fechar">✕</button>
     </div>
@@ -520,8 +493,7 @@ const BOSS_PAL=[
  {f1:'#8de6ff',f2:'#d4f6ff',body:'#3fb4dc',eye:'#0b2a3a'}
 ];
 const POWER_MS=4000;
-const ADM={inf:false,freeze:false};
-const adm=document.getElementById('admin'),shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker');
+const shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker');
 const COLS=9,ROWS=11;
 const cv=document.getElementById('game');
 let ctx=cv.getContext('2d');
@@ -786,11 +758,6 @@ function drawGlitter(g){
   ctx.beginPath();ctx.moveTo(px,py-r);ctx.lineTo(px+r*.45,py);ctx.lineTo(px,py+r);ctx.lineTo(px-r*.45,py);ctx.closePath();ctx.fill();
   ctx.globalAlpha=1;
 }
-function spawnUnicorn(){
-  const p=G.p;
-  const ok=G.spots.filter(s=>Math.abs(s.x-p.x)+Math.abs(s.y-p.y)>=2&&!G.unis.some(u=>u.x===s.x&&u.y===s.y)&&!(G.item&&G.item.x===s.x&&G.item.y===s.y));
-  if(ok.length)G.unis.push(ok[Math.floor(Math.random()*ok.length)]);
-}
 
 /* ---------- tamanho ---------- */
 function resize(){
@@ -847,8 +814,7 @@ function bossFits(x,y){return !enemyBlocked(x,y)&&!enemyBlocked(x+1,y)&&!enemyBl
 function hud(){
   document.getElementById('lvl').textContent=G.custom?`✏ ${G.custom.name}`:`Mundo ${Math.floor(G.i/PER_WORLD)+1} · Fase ${G.i%PER_WORLD+1}/${PER_WORLD}`;
   let h='';
-  if(ADM.inf)h='<span>♥</span> ∞';
-  else for(let k=0;k<3;k++)h+=`<span class="${k<G.lives?'':'gone'}">♥</span>`;
+  for(let k=0;k<3;k++)h+=`<span class="${k<G.lives?'':'gone'}">♥</span>`;
   document.getElementById('hearts').innerHTML=h;
   const g=document.getElementById('goal');
   if(G.power>0)g.innerHTML=bossAlive()?'Você está <b class="y">invencível</b>! Encoste no <b>chefão</b>!':'Você está <b class="y">invencível</b>! Pegue os foguinhos!';
@@ -879,7 +845,6 @@ function move(d){
   if(G.state==='play'&&G.carry&&nx===G.safe.x&&ny===G.safe.y)win();
 }
 function stepEnemies(){
-  if(ADM.freeze)return;
   const p=G.p,dirs=[[0,0],[1,0],[-1,0],[0,1],[0,-1]];
   for(const e of G.enemies){
     if(G.power>0){
@@ -905,7 +870,7 @@ function stepEnemies(){
   }
 }
 function stepBoss(){
-  const b=G.boss;if(!bossAlive()||ADM.freeze||b.stun>0)return;
+  const b=G.boss;if(!bossAlive()||b.stun>0)return;
   const p=G.p,flee=G.power>0;
   let best=null,bd=flee?-1:1e9;
   for(const[dx,dy]of[[0,0],[1,0],[-1,0],[0,1],[0,-1]]){
@@ -953,7 +918,7 @@ function bossHit(){
   hud();
 }
 function hit(){
-  if(!ADM.inf)G.lives--;G.shake=320;G.carry=false;
+  G.lives--;G.shake=320;G.carry=false;
   const p=G.p;p.x=p.rx=G.start.x;p.y=p.ry=G.start.y;G.inv=1500;
   if(G.lives<=0){
     G.state='lost';sfx.lose();hud();
@@ -990,8 +955,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=15;
-const NEWS=['Unicórnios! Encoste neles pra ganhar 5 moedas e ver um pum de purpurina arco-íris.','O jogo lembra o mundo em que você parou.','Unicórnio também no Criar fase e no painel de admin.'];
+const VERSION=16;
+const NEWS=['O painel de admin saiu do jogo.','Unicórnios com pum de purpurina arco-íris!','O jogo lembra o mundo em que você parou.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1008,7 +973,6 @@ const ICON={
  maker:`<svg viewBox="0 0 64 64"><rect x="3" y="4" width="44" height="54" rx="6" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="8" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="32" y="9" width="10" height="10" rx="2" fill="#3ccf7a"/><rect x="8" y="21" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="33" width="10" height="10" rx="2" fill="#ff5a36"/><rect x="8" y="45" width="10" height="10" rx="2" fill="#ffd23f"/><path d="M34 60 L36 49 L54 31 L61 38 L43 56Z" fill="#ffd23f"/><path d="M34 60 L36 49 L43 56Z" fill="#f2c09a"/><path d="M51 34 L58 41" stroke="#1b2547" stroke-width="2"/></svg>`,
  music:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#7a4cff" opacity=".3"/><path d="M24 46V16l24-5v30" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linejoin="round"/><circle cx="18" cy="46" r="7" fill="#ffd23f"/><circle cx="42" cy="41" r="7" fill="#ffd23f"/><path d="M24 24l24-5" stroke="#ffd23f" stroke-width="5"/></svg>`,
  unicorn:`<svg viewBox="0 0 64 64"><g fill="#ff9be8"><circle cx="4" cy="50" r="1.8"/><circle cx="9" cy="56" r="1.4"/><circle cx="3" cy="59" r="1.2"/></g><ellipse cx="9" cy="33" rx="5.5" ry="3" fill="#ffb238"/><ellipse cx="7.5" cy="37.5" rx="5.5" ry="3" fill="#ffe14d"/><ellipse cx="6.5" cy="42" rx="5.5" ry="3" fill="#4aa3ff"/><g fill="#fff"><rect x="15" y="43" width="5" height="14" rx="2"/><rect x="22" y="43" width="5" height="14" rx="2"/><rect x="32" y="43" width="5" height="14" rx="2"/><rect x="39" y="43" width="5" height="14" rx="2"/></g><g fill="#fff" stroke="#d9c8ff" stroke-width="1.5"><rect x="12" y="29" width="34" height="17" rx="8.5"/><rect x="36" y="15" width="11" height="20" rx="4"/><rect x="37" y="11" width="20" height="12" rx="6"/></g><path d="M44.5 11.5 L50 10.5 L53 -1Z" fill="#ffd23f"/><circle cx="36.5" cy="12.5" r="3.4" fill="#ff5a5a"/><circle cx="36" cy="17.5" r="3.4" fill="#ffb238"/><circle cx="35.5" cy="22.5" r="3.4" fill="#ffe14d"/><circle cx="35" cy="27.5" r="3.4" fill="#3ccf7a"/><circle cx="51" cy="16" r="1.9" fill="#1b2547"/><circle cx="54" cy="19.5" r="1.7" fill="#ff7eb6" opacity=".8"/></svg>`,
- gear:`<span class="tut-big">⚙</span>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
 const TUTORIAL=[
@@ -1027,7 +991,6 @@ const TUTORIAL=[
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
  {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão com a notinha musical, lá em cima, liga e desliga a música.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
- {icon:'gear',title:'Painel de admin',text:'O botão ⚙ abre o painel de admin. Lá dá pra pular pra qualquer fase e usar truques: vidas infinitas, fogo parado, estrela na hora e 50 moedas.'},
  {icon:'news',title:`Novidades da versão ${VERSION}`,text:`<ul>${NEWS.map(n=>`<li>${n}</li>`).join('')}</ul>`}
 ];
 const ovBack=document.getElementById('ovBack'),ovSkip=document.getElementById('ovSkip');
@@ -1056,7 +1019,7 @@ function endTut(){
 }
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
-document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(adm.hidden&&shopEl.hidden&&makerEl.hidden)openTutorial();});
+document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden)openTutorial();});
 document.getElementById('verTxt').textContent=`Versão ${VERSION}`;
 
 /* ---------- desenho ---------- */
@@ -1307,7 +1270,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&!TRANS.on&&ov.hidden&&adm.hidden&&shopEl.hidden&&makerEl.hidden){
+  if(G.state==='play'&&!TRANS.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -1362,7 +1325,6 @@ function frame(ts){
 const KEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right',W:'up',S:'down',A:'left',D:'right'};
 document.addEventListener('keydown',e=>{
   if(TRANS.on){if(TRANS.stage===1&&(e.key==='Enter'||e.key===' '))endTransition();e.preventDefault();return;}
-  if(!adm.hidden){if(e.key==='Escape')closeAdmin();return;}
   if(!makerEl.hidden){if(e.key==='Escape')closeMaker();return;}
   if(!shopEl.hidden){if(e.key==='Escape')closeShop();return;}
   unlockAudio();
@@ -1453,7 +1415,7 @@ function shopClick(it){
 }
 function openShop(){
   unlockAudio();
-  if(TUT.on||!adm.hidden||!makerEl.hidden)return;
+  if(TUT.on||!makerEl.hidden)return;
   shopEl.hidden=false;shopMsg.textContent='Toque num item pra comprar ou usar.';renderShop();
   setTimeout(()=>{try{document.getElementById('shopClose').focus()}catch(e){}},30);
 }
@@ -1655,7 +1617,7 @@ function buildMaker(){
 }
 function openMaker(){
   unlockAudio();
-  if(!adm.hidden||!shopEl.hidden)return;
+  if(!shopEl.hidden)return;
   if(TUT.on){TUT.first=false;endTut();}
   makerEl.hidden=false;
   document.getElementById('mkBack').hidden=!G.custom;
@@ -1688,37 +1650,6 @@ mkClearBtn.addEventListener('click',()=>{
 });
 document.getElementById('mkBack').addEventListener('click',()=>{makerEl.hidden=true;ov.hidden=true;ovAction=null;startLevel(MK.camp);});
 
-/* ---------- painel de admin ---------- */
-const lvgrid=document.getElementById('lvgrid');
-for(let w=0;w<LEVELS.length/PER_WORLD;w++){
-  const row=document.createElement('div');row.className='lvrow';
-  row.innerHTML=`<span>Mundo ${w+1}</span>`;
-  for(let f=0;f<PER_WORLD;f++){
-    const b=document.createElement('button');b.type='button';b.textContent=f===PER_WORLD-1?'★':f+1;
-    b.dataset.i=w*PER_WORLD+f;b.title=LEVEL_NAMES[w*PER_WORLD+f];b.setAttribute('aria-label',`Mundo ${w+1}, ${f===PER_WORLD-1?'chefão':'fase '+(f+1)}: ${LEVEL_NAMES[w*PER_WORLD+f]}`);
-    b.addEventListener('click',()=>{closeAdmin();ov.hidden=true;ovAction=null;startLevel(+b.dataset.i);});
-    row.appendChild(b);
-  }
-  lvgrid.appendChild(row);
-}
-function openAdmin(){
-  if(!shopEl.hidden||!makerEl.hidden)return;
-  adm.hidden=false;
-  lvgrid.querySelectorAll('button').forEach(b=>b.classList.toggle('cur',+b.dataset.i===G.i));
-  setTimeout(()=>{try{document.getElementById('adminClose').focus()}catch(e){}},30);
-}
-function closeAdmin(){adm.hidden=true;}
-document.getElementById('adminBtn').addEventListener('click',openAdmin);
-document.getElementById('adminClose').addEventListener('click',closeAdmin);
-adm.addEventListener('click',e=>{if(e.target===adm)closeAdmin();});
-document.getElementById('optLives').addEventListener('change',e=>{ADM.inf=e.target.checked;if(!ADM.inf)G.lives=Math.max(G.lives,1);hud();});
-document.getElementById('optFreeze').addEventListener('change',e=>{ADM.freeze=e.target.checked;});
-document.getElementById('optStar').addEventListener('click',()=>{
-  closeAdmin();
-  if(G.state==='play'&&ov.hidden){G.power=POWER_MS;G.item=null;G.starWait=0;sfx.star();hud();}
-});
-document.getElementById('optCoins').addEventListener('click',()=>{addCoins(50);sfx.coin();});
-document.getElementById('optUni').addEventListener('click',()=>{closeAdmin();if(G.state==='play')spawnUnicorn();});
 
 /* ---------- início ---------- */
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
