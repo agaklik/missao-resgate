@@ -21,4 +21,8 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 
 Abra o `index.html` no navegador ou jogue em https://agaklik.github.io/missao-resgate/ (se o GitHub Pages estiver ligado). Controles: setinhas na tela, deslizar o dedo no tabuleiro ou setas do teclado.
 
-Criado pelo Rafa com a ajuda do Claude.
+## Criador
+
+Criado por **Rafael Gaklik**.
+
+© 2026 Rafael Gaklik. Todos os direitos reservados. Veja o arquivo [COPYRIGHT](COPYRIGHT).

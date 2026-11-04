@@ -6,6 +6,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
 <title>Missão Resgate</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="author" content="Rafael Gaklik">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
@@ -189,6 +190,10 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .cut canvas{display:block}
 .cut-skip{position:absolute;right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));bottom:calc(env(safe-area-inset-bottom,0px) + 18px);font:800 1rem var(--display);color:var(--ink);background:rgba(17,23,48,.7);border:2px solid rgba(255,255,255,.3);border-radius:999px;padding:8px 18px;cursor:pointer}
 .cut-skip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.credit{margin:2px 0 0;text-align:center;color:var(--muted);font-size:.85rem;text-wrap:balance}
+.credit b{color:var(--hero)}
+.by{margin:0;color:var(--muted);font-size:.95rem}
+.by b{color:var(--hero)}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -196,6 +201,7 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
   header,.goal,.board{grid-column:1}
   .goal{font-size:.92rem}
   .hint{display:none}
+  .credit{grid-column:1;text-align:left}
   .pad{grid-column:2;grid-row:1 / span 3;align-self:center;margin:0;grid-template-columns:repeat(3,88px);grid-template-rows:repeat(2,78px);gap:10px}
 }
 @media (prefers-reduced-motion:reduce){.big:active,.pad button:active{transform:none}}
@@ -236,6 +242,7 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
     <button class="right" data-d="right" aria-label="Direita" type="button">▶</button>
   </div>
   <p class="hint">Também dá pra jogar deslizando o dedo no tabuleiro ou com as setas do teclado. · <span id="verTxt"></span></p>
+  <p class="credit">Criado por <b>Rafael Gaklik</b><br>© 2026 Rafael Gaklik. Todos os direitos reservados.</p>
 </div>
 
 
@@ -1080,7 +1087,7 @@ function win(){
   if(G.custom){show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker());return;}
   const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,bossName=G.boss?G.boss.name:'chefão';
   if(G.i===LEVELS.length-1){
-    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}`,'Jogar de novo',()=>{saveWorld(0);startLevel(0);});
+    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}<p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{saveWorld(0);startLevel(0);});
   }else if(f===PER_WORLD){
     saveWorld(w);
     show(`Mundo ${w} completo!`,`<p>Você venceu o ${bossName} e salvou todo mundo do Mundo ${w}. Agora vem o Mundo ${w+1}!</p>${line}`,`Ir pro Mundo ${w+1}`,()=>playCutscene(w-1,w,G.i+1));
@@ -1100,8 +1107,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=17;
-const NEWS=['Cena de viagem entre os mundos: o quadradinho anda e o chão muda de cor!','Do Mundo 1 pro 2, as pedras azuis viram vermelhas. Do 2 pro 3, viram pedras de gelo.'];
+const VERSION=18;
+const NEWS=['Agora o jogo mostra o nome do criador: Rafael Gaklik!','Cena de viagem entre os mundos.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1121,7 +1128,7 @@ const ICON={
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
 const TUTORIAL=[
- {icon:'hero',title:'Oi, herói!',text:'Você é o quadradinho amarelo. Sua missão é salvar pessoas em perigo.'},
+ {icon:'hero',title:'Oi, herói!',text:'<p>Você é o quadradinho amarelo. Sua missão é salvar pessoas em perigo.</p><p class="by">Um jogo de <b>Rafael Gaklik</b></p>'},
  {icon:'pad',title:'Como andar',text:'Use as setinhas embaixo do jogo, deslize o dedo no tabuleiro ou use as setas do teclado. Segure a setinha pra andar sem parar.'},
  {icon:'person',title:'Ache a pessoa',text:'Ela fica gritando SOCORRO! Encoste nela pra pegar ela no colo.'},
  {icon:'house',title:'Leve pra casa verde',text:'Com a pessoa no colo, vá até a casa verde. Ela fica salva e você passa de fase!'},
