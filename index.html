@@ -194,6 +194,44 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .credit b{color:var(--hero)}
 .by{margin:0;color:var(--muted);font-size:.95rem}
 .by b{color:var(--hero)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.schip{display:inline-flex;align-items:center;gap:5px;color:#8de6ff}
+.schip .sic{color:#8de6ff}
+.pchip{display:inline-flex;align-items:center;gap:6px;border:0;color:var(--ink);font:700 .95rem var(--display);cursor:pointer;max-width:9.5em}
+.pchip span{overflow:hidden;text-overflow:ellipsis}
+.pchip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media (max-width:430px){.make-btn span{display:none}.make-btn{padding:0 9px}}
+.pl-hint{margin:0;color:var(--muted)}
+.pl-list{display:flex;flex-direction:column;gap:8px}
+.pl-row-item{display:flex;gap:8px;align-items:center}
+.pl-pick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:var(--night);color:var(--ink);border:2px solid var(--wall-edge);border-radius:12px;padding:8px 12px;cursor:pointer;font:inherit}
+.pl-pick .nm{font-weight:800;font-size:1.1rem;overflow-wrap:anywhere}
+.pl-pick .sub{color:var(--muted);font-size:.88rem}
+.pl-row-item.cur .pl-pick{border-color:var(--hero);background:#2f3a6b}
+.pl-pick:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.pl-form{display:flex;flex-direction:column;gap:6px;font-weight:700}
+.pl-new{display:flex;gap:8px}
+.pl-new input{flex:1;min-width:0;font:600 1.05rem var(--display);padding:8px 12px;border-radius:10px;border:2px solid var(--wall-edge);background:var(--night);color:var(--ink)}
+.pl-new input::placeholder{color:var(--muted)}
+.pl-new input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.rank-src{margin:0;color:var(--muted);font-size:.95rem}
+.rank-me{display:flex;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;background:var(--night);border-radius:12px;padding:10px 12px;font-size:.98rem}
+.rank-me:empty{display:none}
+.rank-me .y{color:var(--hero)}
+.rank-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.rank-row{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto auto;gap:8px;align-items:center;background:var(--night);border:2px solid transparent;border-radius:12px;padding:7px 10px}
+.rank-row.mine{border-color:var(--hero);background:#2f3a6b}
+.rank-row .pos{font-weight:800;font-size:1.05rem;text-align:center}
+.rank-row .nm{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-row .wd{color:var(--muted);font-size:.82rem;white-space:nowrap}
+.rank-row .pt{font-weight:800;color:#8de6ff;font-variant-numeric:tabular-nums;text-align:right;min-width:4.5em}
+.rank-empty{color:var(--muted);padding:6px 2px}
+.rank-how{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+.rank-how ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:2px}
+.rank-how b{color:var(--ink)}
+.rank-how p{margin:2px 0 0}
+.ptsline{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:1rem!important;color:var(--ink)!important}
+.ptsline b{color:#8de6ff}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -213,13 +251,16 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
     <h1>Missão <span>Resgate</span></h1>
     <div class="tools">
       <button class="make-btn" id="makeBtn" type="button" aria-label="Criar fase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.2-5L15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L8 19.8z" fill="currentColor"/><path d="M13.8 6.4l3.8 3.8" stroke="#ffd23f" stroke-width="1.8"/></svg><span>Criar fase</span></button>
+      <button class="icon-btn" id="rankBtn" type="button" aria-label="Ver o ranking" title="Ranking"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M7 3h10v4a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 12h3v4h-3z" fill="currentColor"/><rect x="7.5" y="16" width="9" height="3.5" rx="1" fill="currentColor"/></svg></button>
       <button class="icon-btn mus-btn" id="musBtn" type="button" aria-label="Desligar a música" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.8" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff8a70" stroke-width="2.6" stroke-linecap="round"/></svg></button>
       <button class="icon-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
     </div>
     <div class="stats">
       <span class="chip" id="lvl">Fase 1/5</span>
+      <span class="chip schip" title="Pontos"><span class="sic" aria-hidden="true">★</span><span id="scoreTxt">0</span><span class="sr">pontos</span></span>
       <button class="chip coinchip" id="shopBtn" type="button" aria-label="Abrir a loja"><span class="coin"></span><span id="coinTxt">0</span></button>
       <span class="hearts" id="hearts" aria-label="vidas"></span>
+      <button class="chip pchip" id="playerBtn" type="button" aria-label="Trocar de jogador"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0z" fill="currentColor"/></svg><span id="playerTxt">Jogador</span></button>
     </div>
   </header>
   <p class="goal" id="goal"></p>
@@ -297,6 +338,42 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
   </div>
 </div>
 
+<div class="modal" id="players" hidden>
+  <div class="modal-card" role="dialog" aria-labelledby="plTitle">
+    <div class="modal-head">
+      <h3 id="plTitle">Quem está jogando?</h3>
+      <button class="x" id="plClose" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <p class="pl-hint">Escolha seu nome ou crie um novo. Cada jogador tem seus próprios pontos, moedas, roupinhas e mundo.</p>
+    <div class="pl-list" id="plList"></div>
+    <form class="pl-form" id="plForm" autocomplete="off">
+      <label for="plName">Novo jogador</label>
+      <div class="pl-new"><input id="plName" type="text" maxlength="14" placeholder="Seu nome" autocomplete="off"><button class="mini save" type="submit">Criar</button></div>
+      <p class="mk-msg" id="plMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+<div class="modal" id="rank" hidden>
+  <div class="modal-card" role="dialog" aria-labelledby="rankTitle">
+    <div class="modal-head">
+      <h3 id="rankTitle">Ranking 🏆</h3>
+      <button class="x" id="rankClose" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <p class="rank-src" id="rankSrc"></p>
+    <div class="rank-me" id="rankMe"></div>
+    <ol class="rank-list" id="rankList"></ol>
+    <div class="rank-how">
+      <h4>Como ganhar pontos</h4>
+      <ul>
+        <li>Moeda: <b>10</b> · Estrela: <b>20</b> · PUF num foguinho: <b>25</b></li>
+        <li>Unicórnio: <b>50</b> · Golpe no chefão: <b>100</b> · Chefão vencido: <b>+300</b></li>
+        <li>Salvar a pessoa: <b>100</b> + bônus de rapidez + <b>30</b> por coração</li>
+        <li>Zerar o jogo: <b>+1.000</b></li>
+      </ul>
+      <p>No GAME OVER seus pontos vão pro ranking e começam do zero. Fases do Criar fase não valem pontos.</p>
+    </div>
+  </div>
+</div>
 <div class="cut" id="cut" hidden>
   <canvas id="cutCv" aria-label="Cena: o herói viajando para o próximo mundo"></canvas>
   <button class="cut-skip" id="cutSkip" type="button">Pular ▸</button>
@@ -610,7 +687,7 @@ function musKick(t){
 function musWanted(){
   if(!G||TRANS.on)return G?null:'calm';
   if(CUT.on)return ['noite','vulcao','gelo'][CUT.t<CUT.t0?CUT.from:CUT.to];
-  if(TUT.on||!makerEl.hidden||!shopEl.hidden)return 'calm';
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden)return 'calm';
   if(G.state==='lost')return null;
   if(G.power>0)return 'star';
   if(bossAlive())return 'boss';
@@ -660,7 +737,7 @@ const SHOP=[
  {id:'trail-arco',slot:'trail',name:'Rastro arco-íris',price:20}
 ];
 const SLOTS=[{id:'hat',name:'Chapéus'},{id:'cape',name:'Capas'},{id:'trail',name:'Rastros mágicos'}];
-const SAVE_KEY='missao-resgate-loja';
+let SAVE_KEY='missao-resgate-loja';
 let SAVE={coins:0,owned:[],eq:{hat:null,cape:null,trail:null}};
 try{
   const r=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
@@ -681,7 +758,7 @@ const LEVEL_NAMES=[
  'Pedras Quentes','Rio de Lava','Túnel de Fogo','Cratera Vermelha','Covil do Fogão de Lava',
  'Chão Escorregadio','Cristais Azuis','Pilares Congelados','Vento Gelado','Trono do Fogão de Gelo'
 ];
-const PROG_KEY='missao-resgate-mundo';
+let PROG_KEY='missao-resgate-mundo';
 let SAVED_WORLD=0;
 try{const v=parseInt(localStorage.getItem(PROG_KEY)||'0',10);if(v>=0&&v<LEVELS.length/PER_WORLD)SAVED_WORLD=v;}catch(e){}
 function saveWorld(w){SAVED_WORLD=w;try{localStorage.setItem(PROG_KEY,String(w));}catch(e){}}
@@ -763,7 +840,7 @@ function addGlitter(x,y,n,dir,spread){
 }
 function catchUnicorn(x,y){
   const dir=x<COLS/2?1:-1;
-  addCoins(5);G.got+=5;sfx.fart();
+  addCoins(5);G.got+=5;addPoints(50);sfx.fart();
   addGlitter(x+.5-dir*.35,y+.6,36,dir,1);
   G.flyers.push({x0:x+.5,y0:y+.5,cx:x+.5,cy:y+.5,t:0,acc:0,dir});
   G.floats.push({x:x+.5,y:y+.15,text:'PUM! +5',t:1300,life:1300,rainbow:true});
@@ -951,7 +1028,7 @@ function loadLevel(i,custom){
   const item=fixedStar||pool.pop()||null;
   const coins=fixedCoins.length?fixedCoins:pool.splice(0,5);
   const unis=fixedUnis.length?fixedUnis:pool.splice(0,1);
-  G={i,custom:custom||null,walls,enemies,boss,start,hpos,safe,item,coins,unis,spots,flyers:[],glitter:[],power:0,puffs:[],floats:[],trail:[],trailAcc:0,banner:null,
+  G={i,custom:custom||null,walls,enemies,boss,start,hpos,safe,item,coins,unis,spots,pts:0,flyers:[],glitter:[],power:0,puffs:[],floats:[],trail:[],trailAcc:0,banner:null,
      p:{x:start.x,y:start.y,rx:start.x,ry:start.y,face:1},
      carry:false,lives:3,inv:0,acc:0,speed:L.speed,state:'play',shake:0,elapsed:0,got:0,starWait:0,t:G?G.t:0};
   if(boss)G.banner={text:L.boss.name,sub:'Pegue a estrela e encoste nele!',t:2600};
@@ -985,10 +1062,10 @@ function move(d){
   if(isWall(nx,ny))return;
   p.x=nx;p.y=ny;sfx.step();
   const ci=G.coins.findIndex(o=>o.x===nx&&o.y===ny);
-  if(ci>=0){G.coins.splice(ci,1);G.got++;addCoins(1);sfx.coin();G.floats.push({x:nx+.5,y:ny+.3,text:'+1',t:700});}
+  if(ci>=0){G.coins.splice(ci,1);G.got++;addCoins(1);addPoints(10);sfx.coin();G.floats.push({x:nx+.5,y:ny+.3,text:'+1',t:700});}
   const ui=G.unis.findIndex(o=>o.x===nx&&o.y===ny);
   if(ui>=0){G.unis.splice(ui,1);catchUnicorn(nx,ny);}
-  if(G.item&&nx===G.item.x&&ny===G.item.y){G.item=null;G.power=POWER_MS;G.starWait=0;sfx.star();hud();}
+  if(G.item&&nx===G.item.x&&ny===G.item.y){G.item=null;G.power=POWER_MS;G.starWait=0;sfx.star();addPoints(20);hud();}
   if(!G.carry&&nx===G.hpos.x&&ny===G.hpos.y){
     if(bossAlive())G.banner={text:'Jaula fechada!',sub:'Vença o chefão pra abrir.',t:1500};
     else{G.carry=true;sfx.pick();hud();}
@@ -1044,7 +1121,7 @@ function checkHit(){
   const p=G.p;
   if(G.power>0){
     for(const e of G.enemies)if(e.x===p.x&&e.y===p.y){
-      G.puffs.push({x:e.x+.5,y:e.y+.5,t:500,s:1});
+      G.puffs.push({x:e.x+.5,y:e.y+.5,t:500,s:1});addPoints(25,e.x+.5,e.y+.1);
       e.x=e.rx=e.sx;e.y=e.ry=e.sy;sfx.eat();
     }
     if(isBossAt(p.x,p.y))bossHit();
@@ -1056,9 +1133,9 @@ function checkHit(){
 function bossHit(){
   const b=G.boss,p=G.p;
   b.hp--;G.power=0;G.shake=420;G.inv=900;G.starWait=0;
-  G.puffs.push({x:b.x+1,y:b.y+1,t:700,s:2});
+  G.puffs.push({x:b.x+1,y:b.y+1,t:700,s:2});addPoints(100,b.x+1,b.y+.3);
   if(b.hp<=0){
-    b.dead=true;sfx.win();
+    b.dead=true;sfx.win();addPoints(300,b.x+1,b.y-.2);
     G.banner={text:`${b.name} derrotado!`,sub:'A jaula abriu! Salve a pessoa.',t:2600};
   }else{
     sfx.boss();
@@ -1076,20 +1153,29 @@ function hit(){
     G.state='lost';sfx.lose();hud();
     if(G.custom){const cu=G.custom;show('GAME OVER','<p>O fogo te pegou! Tente sua fase de novo.</p>','Tentar de novo',()=>startLevel(-1,cu));return;}
     const wi=Math.floor(G.i/PER_WORLD),first=wi*PER_WORLD;
-    show('GAME OVER',`<p>O fogo te pegou! Agora você volta pra Fase 1 do Mundo ${wi+1}.</p><p class="coinline">Suas moedas continuam guardadas.</p>`,`Voltar pro Mundo ${wi+1}`,()=>startLevel(first));
+    const final=SCORE.run,rec=PLAYER&&final>0&&final>=SCORE.best;submitBest();
+    SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();
+    show('GAME OVER',`<p>O fogo te pegou! Agora você volta pra Fase 1 do Mundo ${wi+1}.</p><p class="ptsline">Seus pontos: <b>${fmt(final)}</b>${rec?' · Novo recorde! 🎉':''}</p><p class="coinline">Os pontos foram pro ranking e começam do zero. Suas moedas continuam guardadas.</p>`,`Voltar pro Mundo ${wi+1}`,()=>startLevel(first));
   }else{sfx.hit();hud();}
 }
 function win(){
   G.state='won';sfx.win();
   const sec=G.elapsed/1000,bonus=Math.max(1,10-Math.floor(sec/6));
   addCoins(bonus);
-  const line=`<p class="coinline"><span class="coin"></span>Moedas pegas: <b>${G.got}</b> · Bônus de rapidez: <b>+${bonus}</b></p>`;
+  let ptsLine='';
+  if(!G.custom&&PLAYER){
+    addPoints(100+Math.max(0,60-Math.floor(sec))*3+G.lives*30);
+    if(G.i===LEVELS.length-1)addPoints(1000);
+    ptsLine=`<p class="ptsline">Pontos nesta fase: <b>+${fmt(G.pts)}</b> · Total: <b>${fmt(SCORE.run)}</b></p>`;
+    submitBest();
+  }
+  const line=`<p class="coinline"><span class="coin"></span>Moedas pegas: <b>${G.got}</b> · Bônus de rapidez: <b>+${bonus}</b></p>${ptsLine}`;
   if(G.custom){show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker());return;}
   const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,bossName=G.boss?G.boss.name:'chefão';
   if(G.i===LEVELS.length-1){
-    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}<p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{saveWorld(0);startLevel(0);});
+    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}<p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{saveWorld(0);SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();startLevel(0);});
   }else if(f===PER_WORLD){
-    saveWorld(w);
+    saveWorld(w);SCORE.checkpoint=SCORE.run;persistScore();
     show(`Mundo ${w} completo!`,`<p>Você venceu o ${bossName} e salvou todo mundo do Mundo ${w}. Agora vem o Mundo ${w+1}!</p>${line}`,`Ir pro Mundo ${w+1}`,()=>playCutscene(w-1,w,G.i+1));
   }else{
     show('Pessoa salva!',`<p>Fase ${f} completa. A próxima é mais difícil!</p>${line}`,'Próxima fase',()=>startLevel(G.i+1));
@@ -1107,8 +1193,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=18;
-const NEWS=['Agora o jogo mostra o nome do criador: Rafael Gaklik!','Cena de viagem entre os mundos.'];
+const VERSION=19;
+const NEWS=['Pontos! Tudo que você faz no jogo vale pontos.','Quem está jogando? Cada jogador tem seu nome, pontos, moedas e mundo.','Ranking com os recordes dos jogadores. Toque no troféu!'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1125,6 +1211,7 @@ const ICON={
  maker:`<svg viewBox="0 0 64 64"><rect x="3" y="4" width="44" height="54" rx="6" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="8" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="32" y="9" width="10" height="10" rx="2" fill="#3ccf7a"/><rect x="8" y="21" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="33" width="10" height="10" rx="2" fill="#ff5a36"/><rect x="8" y="45" width="10" height="10" rx="2" fill="#ffd23f"/><path d="M34 60 L36 49 L54 31 L61 38 L43 56Z" fill="#ffd23f"/><path d="M34 60 L36 49 L43 56Z" fill="#f2c09a"/><path d="M51 34 L58 41" stroke="#1b2547" stroke-width="2"/></svg>`,
  music:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#7a4cff" opacity=".3"/><path d="M24 46V16l24-5v30" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linejoin="round"/><circle cx="18" cy="46" r="7" fill="#ffd23f"/><circle cx="42" cy="41" r="7" fill="#ffd23f"/><path d="M24 24l24-5" stroke="#ffd23f" stroke-width="5"/></svg>`,
  unicorn:`<svg viewBox="0 0 64 64"><g fill="#ff9be8"><circle cx="4" cy="50" r="1.8"/><circle cx="9" cy="56" r="1.4"/><circle cx="3" cy="59" r="1.2"/></g><ellipse cx="9" cy="33" rx="5.5" ry="3" fill="#ffb238"/><ellipse cx="7.5" cy="37.5" rx="5.5" ry="3" fill="#ffe14d"/><ellipse cx="6.5" cy="42" rx="5.5" ry="3" fill="#4aa3ff"/><g fill="#fff"><rect x="15" y="43" width="5" height="14" rx="2"/><rect x="22" y="43" width="5" height="14" rx="2"/><rect x="32" y="43" width="5" height="14" rx="2"/><rect x="39" y="43" width="5" height="14" rx="2"/></g><g fill="#fff" stroke="#d9c8ff" stroke-width="1.5"><rect x="12" y="29" width="34" height="17" rx="8.5"/><rect x="36" y="15" width="11" height="20" rx="4"/><rect x="37" y="11" width="20" height="12" rx="6"/></g><path d="M44.5 11.5 L50 10.5 L53 -1Z" fill="#ffd23f"/><circle cx="36.5" cy="12.5" r="3.4" fill="#ff5a5a"/><circle cx="36" cy="17.5" r="3.4" fill="#ffb238"/><circle cx="35.5" cy="22.5" r="3.4" fill="#ffe14d"/><circle cx="35" cy="27.5" r="3.4" fill="#3ccf7a"/><circle cx="51" cy="16" r="1.9" fill="#1b2547"/><circle cx="54" cy="19.5" r="1.7" fill="#ff7eb6" opacity=".8"/></svg>`,
+ trophy:`<svg viewBox="0 0 64 64"><path d="M18 6h28v14a14 14 0 0 1-28 0z" fill="#ffd23f"/><path d="M18 11H8v4a10 10 0 0 0 11 10M46 11h10v4a10 10 0 0 1-11 10" fill="none" stroke="#ffd23f" stroke-width="4"/><rect x="28" y="33" width="8" height="12" fill="#e8a800"/><rect x="18" y="45" width="28" height="10" rx="3" fill="#e8a800"/><path d="M32 12l2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#fff6c2"/></svg>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
 const TUTORIAL=[
@@ -1137,6 +1224,7 @@ const TUTORIAL=[
  {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles pra fazer PUF!'},
  {icon:'coin',title:'Moedas',text:'Cada fase tem 5 moedinhas espalhadas. E quanto mais rápido você salvar a pessoa, maior o bônus de rapidez!'},
  {icon:'unicorn',title:'Unicórnios',text:'Toda fase tem um unicórnio escondido. Encoste nele: ele solta um pum de purpurina arco-íris, sai voando e te dá 5 moedas!'},
+ {icon:'trophy',title:'Pontos e ranking',text:'Tudo vale pontos: moedas, estrela, unicórnios, PUF nos foguinhos, chefões e salvar a pessoa rapidinho. No GAME OVER seus pontos vão pro ranking. Toque no troféu lá em cima pra ver quem está ganhando, e no seu nome pra trocar de jogador!'},
  {icon:'shop',title:'Loja do Herói',text:'Toque no botão de moedas lá em cima pra abrir a loja. Compre chapéus, capas e rastros mágicos pro seu quadradinho.'},
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
  {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Os chefões são o Rei Fogão, o Fogão de Lava e o Fogão de Gelo. Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
@@ -1167,11 +1255,11 @@ function renderTut(){
 function endTut(){
   TUT.on=false;ovBack.hidden=true;ovSkip.hidden=true;ovBody.removeAttribute('style');
   if(TUT.prev){const p=TUT.prev;TUT.prev=null;show(p.t,p.b,p.btn,p.a);}
-  else{ov.hidden=true;ovAction=null;if(TUT.first){TUT.first=false;transition(null,G.i,G.custom,!G.custom&&SAVED_WORLD>0&&G.i===SAVED_WORLD*PER_WORLD?'Continuando de onde você parou!':'');}}
+  else{ov.hidden=true;ovAction=null;TUT.done=true;if(TUT.first){TUT.first=false;const nm=PLAYER?PLAYER.name:'';transition(null,G.i,G.custom,!G.custom&&SAVED_WORLD>0&&G.i===SAVED_WORLD*PER_WORLD?`Continuando de onde você parou${nm?', '+nm:''}!`:(nm?`Boa sorte, ${nm}!`:''));}}
 }
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
-document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden)openTutorial();});
+document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden)openTutorial();});
 document.getElementById('verTxt').textContent=`Versão ${VERSION}`;
 
 /* ---------- desenho ---------- */
@@ -1391,7 +1479,7 @@ function draw(){
   for(const f of G.floats){
     const a=Math.min(1,Math.max(0,f.t/(f.life||700)));
     ctx.font=`800 ${Math.max(10,c*.34)}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillStyle=f.rainbow?`hsla(${(t*.5)%360},100%,70%,${a})`:`rgba(255,210,63,${a})`;ctx.fillText(f.text,f.x*c,f.y*c-(1-a)*c*.5);
+    ctx.globalAlpha=a;ctx.fillStyle=f.rainbow?`hsl(${(t*.5)%360},100%,70%)`:(f.color||'#ffd23f');ctx.fillText(f.text,f.x*c,f.y*c-(1-a)*c*.5);ctx.globalAlpha=1;
   }
   drawHero(t);
   // unicórnios voando e purpurina
@@ -1422,7 +1510,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden){
+  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -1479,6 +1567,8 @@ document.addEventListener('keydown',e=>{
   if(TRANS.on){if(TRANS.stage===1&&(e.key==='Enter'||e.key===' '))endTransition();e.preventDefault();return;}
   if(CUT.on){if(e.key==='Enter'||e.key===' '||e.key==='Escape'){e.preventDefault();finishCutscene();}return;}
   if(!makerEl.hidden){if(e.key==='Escape')closeMaker();return;}
+  if(!plEl.hidden){if(e.key==='Escape')closePlayers();return;}
+  if(!rankEl.hidden){if(e.key==='Escape')closeRanking();return;}
   if(!shopEl.hidden){if(e.key==='Escape')closeShop();return;}
   unlockAudio();
   if(!ov.hidden){
@@ -1568,7 +1658,7 @@ function shopClick(it){
 }
 function openShop(){
   unlockAudio();
-  if(TUT.on||!makerEl.hidden)return;
+  if(TUT.on||!makerEl.hidden||!plEl.hidden||!rankEl.hidden)return;
   shopEl.hidden=false;shopMsg.textContent='Toque num item pra comprar ou usar.';renderShop();
   setTimeout(()=>{try{document.getElementById('shopClose').focus()}catch(e){}},30);
 }
@@ -1770,7 +1860,7 @@ function buildMaker(){
 }
 function openMaker(){
   unlockAudio();
-  if(!shopEl.hidden)return;
+  if(!shopEl.hidden||!plEl.hidden||!rankEl.hidden)return;
   if(TUT.on){TUT.first=false;endTut();}
   makerEl.hidden=false;
   document.getElementById('mkBack').hidden=!G.custom;
@@ -1804,11 +1894,212 @@ mkClearBtn.addEventListener('click',()=>{
 document.getElementById('mkBack').addEventListener('click',()=>{makerEl.hidden=true;ov.hidden=true;ovAction=null;startLevel(MK.camp);});
 
 
+/* ---------- jogadores, pontos e ranking ---------- */
+const PLAYERS_KEY='missao-resgate-jogadores';
+const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+let PLAYERS={current:null,list:[]};
+{const r=lsGet(PLAYERS_KEY,null);if(r&&Array.isArray(r.list))PLAYERS={current:r.current||null,list:r.list.filter(p=>p&&p.id&&p.name)};}
+function savePlayers(){lsSet(PLAYERS_KEY,PLAYERS);}
+let PLAYER=PLAYERS.list.find(p=>p.id===PLAYERS.current)||null;
+let SCORE={run:0,best:0,bestWorld:1,checkpoint:0,sent:0};
+const plEl=document.getElementById('players'),rankEl=document.getElementById('rank');
+const fmt=n=>Math.round(n).toLocaleString('pt-BR');
+function scoreOf(pid){const s=lsGet('missao-resgate-pontos:'+pid,null);return s||{best:0,bestWorld:1};}
+function persistScore(){if(PLAYER)lsSet('missao-resgate-pontos:'+PLAYER.id,SCORE);}
+function loadPlayerData(){
+  const pid=PLAYER.id;
+  SAVE_KEY='missao-resgate-loja:'+pid;PROG_KEY='missao-resgate-mundo:'+pid;
+  const r=lsGet(SAVE_KEY,null);
+  SAVE=(r&&typeof r.coins==='number')?{coins:r.coins,owned:Array.isArray(r.owned)?r.owned:[],eq:Object.assign({hat:null,cape:null,trail:null},r.eq||{})}:{coins:0,owned:[],eq:{hat:null,cape:null,trail:null}};
+  const v=parseInt(lsGet(PROG_KEY,0),10);SAVED_WORLD=(v>=0&&v<LEVELS.length/PER_WORLD)?v:0;
+  SCORE=Object.assign({run:0,best:0,bestWorld:1,checkpoint:0,sent:0},lsGet('missao-resgate-pontos:'+pid,null)||{});
+  SCORE.run=SCORE.checkpoint;
+  persistScore();coinHud();scoreHud();
+}
+function scoreHud(){
+  document.getElementById('scoreTxt').textContent=fmt(SCORE.run);
+  document.getElementById('playerTxt').textContent=PLAYER?PLAYER.name:'Jogador';
+}
+function addPoints(n,x,y){
+  if(!G||G.custom||!PLAYER||n<=0)return;
+  SCORE.run+=n;G.pts+=n;noteWorld();
+  if(SCORE.run>SCORE.best)SCORE.best=SCORE.run;
+  persistScore();scoreHud();
+  if(x!=null)G.floats.push({x,y,text:`+${n}`,t:900,life:900,color:'#8de6ff'});
+}
+function noteWorld(){if(G&&!G.custom){const w=Math.floor(G.i/PER_WORLD)+1;if(w>SCORE.bestWorld)SCORE.bestWorld=w;}}
+
+/* ranking compartilhado (quando o jogo está aberto no Claude) ou deste aparelho */
+const RANK={mode:'local',db:null,uid:null,docs:[],loaded:false,failed:false,readOnly:false,timer:null};
+let rankChain=Promise.resolve();
+async function rankInit(){
+  try{
+    if(!window.claude||typeof window.claude.use!=='function')return;
+    const [db,user]=await Promise.all([window.claude.use('db'),window.claude.use('user')]);
+    if(!db||!user)return;
+    const uid=await user.id();if(!uid)return;
+    RANK.db=db;RANK.uid=uid;RANK.mode='shared';
+    RANK.timer=setTimeout(()=>{if(!RANK.loaded){RANK.failed=true;renderRanking();}},10000);
+    db.collection('ranking').onSnapshot(snap=>{
+      RANK.docs=snap.docs.map(d=>({id:d.id,data:d.data()||{}}));
+      if(!snap.metadata.fromCache){RANK.loaded=true;RANK.failed=false;clearTimeout(RANK.timer);}
+      renderRanking();
+    },()=>{RANK.failed=true;clearTimeout(RANK.timer);renderRanking();});
+    submitBest(true);
+  }catch(e){}
+}
+function writeMine(mutate){
+  if(RANK.mode!=='shared'||RANK.readOnly)return rankChain;
+  rankChain=rankChain.then(async()=>{
+    const ref=RANK.db.doc('ranking/'+RANK.uid);
+    try{
+      const snap=await ref.get();
+      const cur=Object.assign({},snap.exists?(snap.data().players||{}):{});
+      if(!mutate(cur))return;
+      await ref.set({players:cur});
+    }catch(e){if(e&&e.code==='invalid_argument'){RANK.readOnly=true;renderRanking();}}
+  });
+  return rankChain;
+}
+function submitBest(force){
+  if(!PLAYER)return;
+  persistScore();
+  if(RANK.mode!=='shared'||SCORE.best<=0)return;
+  if(!force&&SCORE.best<=SCORE.sent)return;
+  const pid=PLAYER.id,entry={name:PLAYER.name,best:SCORE.best,world:SCORE.bestWorld,at:Date.now()};
+  writeMine(cur=>{const old=cur[pid];if(old&&old.best>=entry.best&&old.name===entry.name&&old.world>=entry.world)return false;cur[pid]=entry;return true;})
+    .then(()=>{if(!RANK.readOnly){SCORE.sent=Math.max(SCORE.sent,entry.best);persistScore();}});
+}
+function rankRows(){
+  const rows=[],mine={};
+  if(RANK.mode==='shared'){
+    for(const d of RANK.docs){
+      const ps=d.data.players||{};
+      for(const pid in ps){
+        const e=ps[pid];if(!e||typeof e.best!=='number'||e.best<=0)continue;
+        const row={name:String(e.name||'Jogador').slice(0,16),best:e.best,world:e.world||1,mine:d.id===RANK.uid&&PLAYER&&pid===PLAYER.id};
+        rows.push(row);if(d.id===RANK.uid)mine[pid]=row;
+      }
+    }
+  }
+  for(const p of PLAYERS.list){
+    const s=p.id===(PLAYER&&PLAYER.id)?SCORE:scoreOf(p.id);
+    if(!s.best)continue;
+    if(mine[p.id]){if(s.best>mine[p.id].best){mine[p.id].best=s.best;mine[p.id].world=Math.max(mine[p.id].world,s.bestWorld||1);}continue;}
+    rows.push({name:p.name,best:s.best,world:s.bestWorld||1,mine:PLAYER&&p.id===PLAYER.id});
+  }
+  return rows.sort((a,b)=>b.best-a.best||b.world-a.world).slice(0,50);
+}
+function renderRanking(){
+  if(rankEl.hidden)return;
+  const src=document.getElementById('rankSrc'),list=document.getElementById('rankList'),me=document.getElementById('rankMe');
+  src.textContent=RANK.mode==='shared'
+    ?(RANK.readOnly?'Ranking geral. Seus recordes ficam só neste aparelho.':RANK.failed&&!RANK.loaded?'Não deu pra carregar o ranking geral agora. Mostrando os jogadores deste aparelho.':'Ranking geral: todos os jogadores')
+    :'Ranking dos jogadores deste aparelho';
+  me.innerHTML=PLAYER?`<span>Recorde de <b>${esc(PLAYER.name)}</b>: <b class="y">${fmt(SCORE.best)} pts</b></span><span>Agora: <b>${fmt(SCORE.run)} pts</b></span>`:'';
+  const rows=rankRows();list.innerHTML='';
+  if(RANK.mode==='shared'&&!RANK.loaded&&!RANK.failed&&!rows.length){list.innerHTML='<li class="rank-empty">Carregando o ranking...</li>';return;}
+  if(!rows.length){list.innerHTML='<li class="rank-empty">Ninguém no ranking ainda. Jogue, salve pessoas e faça pontos pra aparecer aqui!</li>';return;}
+  const medal=['🥇','🥈','🥉'];
+  rows.forEach((r,k)=>{
+    const li=document.createElement('li');li.className='rank-row'+(r.mine?' mine':'');
+    li.innerHTML=`<span class="pos">${medal[k]||(k+1)+'º'}</span><span class="nm"></span><span class="wd">Mundo ${r.world}</span><span class="pt">${fmt(r.best)}</span>`;
+    li.querySelector('.nm').textContent=r.name;list.appendChild(li);
+  });
+}
+function openRanking(){
+  unlockAudio();
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden)return;
+  rankEl.hidden=false;renderRanking();
+  setTimeout(()=>{try{document.getElementById('rankClose').focus({preventScroll:true})}catch(e){}},30);
+}
+function closeRanking(){rankEl.hidden=true;}
+document.getElementById('rankBtn').addEventListener('click',openRanking);
+document.getElementById('rankClose').addEventListener('click',closeRanking);
+rankEl.addEventListener('click',e=>{if(e.target===rankEl)closeRanking();});
+
+/* quem está jogando */
+const PL={first:false};
+function cleanName(s){return String(s||'').replace(/\s+/g,' ').trim();}
+function plMsg(t,k=''){const m=document.getElementById('plMsg');m.textContent=t;m.className='mk-msg'+(k?' '+k:'');}
+function renderPlayers(){
+  const box=document.getElementById('plList');box.innerHTML='';
+  if(!PLAYERS.list.length){box.innerHTML='<p class="mk-empty">Ainda não tem nenhum jogador. Escreva seu nome embaixo e toque em Criar.</p>';return;}
+  for(const p of PLAYERS.list){
+    const s=PLAYER&&p.id===PLAYER.id?SCORE:scoreOf(p.id),w=(lsGet('missao-resgate-mundo:'+p.id,0)|0)+1;
+    const row=document.createElement('div');row.className='pl-row-item'+(PLAYER&&p.id===PLAYER.id?' cur':'');
+    const pick=document.createElement('button');pick.type='button';pick.className='pl-pick';
+    pick.innerHTML=`<span class="nm"></span><span class="sub">Recorde: ${fmt(s.best||0)} pts · Mundo ${w}</span>`;
+    pick.querySelector('.nm').textContent=p.name+(PLAYER&&p.id===PLAYER.id?' (jogando)':'');
+    pick.addEventListener('click',()=>choosePlayer(p.id));
+    const del=document.createElement('button');del.type='button';del.className='mini del';del.textContent='Apagar';
+    del.setAttribute('aria-label','Apagar '+p.name);
+    del.addEventListener('click',()=>{
+      if(!del.classList.contains('sure')){del.classList.add('sure');del.textContent='Certeza?';setTimeout(()=>{if(del.isConnected){del.classList.remove('sure');del.textContent='Apagar';}},2500);return;}
+      deletePlayer(p.id);
+    });
+    row.append(pick,del);box.appendChild(row);
+  }
+}
+function deletePlayer(id){
+  const p=PLAYERS.list.find(x=>x.id===id);if(!p)return;
+  PLAYERS.list=PLAYERS.list.filter(x=>x.id!==id);
+  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
+  writeMine(cur=>{if(!cur[id])return false;delete cur[id];return true;});
+  plMsg(`${p.name} foi apagado.`);
+  if(PLAYER&&PLAYER.id===id){
+    PLAYER=null;PLAYERS.current=null;savePlayers();
+    SCORE={run:0,best:0,bestWorld:1,checkpoint:0,sent:0};scoreHud();
+    PL.first=true;document.getElementById('plClose').hidden=true;
+  }else savePlayers();
+  renderPlayers();
+}
+function openPlayers(first){
+  unlockAudio();
+  if(!first&&(TUT.on||!makerEl.hidden||!shopEl.hidden||!rankEl.hidden))return;
+  PL.first=!!first;plEl.hidden=false;
+  document.getElementById('plClose').hidden=PL.first;
+  plMsg(PLAYERS.list.length?'Toque no seu nome pra jogar.':'');
+  renderPlayers();
+  setTimeout(()=>{try{(PLAYERS.list.length?document.querySelector('.pl-pick'):document.getElementById('plName')).focus({preventScroll:true})}catch(e){}},40);
+}
+function closePlayers(){if(PL.first&&!PLAYER)return;plEl.hidden=true;}
+function choosePlayer(id){
+  const p=PLAYERS.list.find(x=>x.id===id);if(!p)return;
+  const same=PLAYER&&PLAYER.id===id&&!PL.first;
+  PLAYER=p;PLAYERS.current=id;savePlayers();
+  plEl.hidden=true;
+  if(same)return;
+  loadPlayerData();
+  if(PL.first){PL.first=false;loadLevel(SAVED_WORLD*PER_WORLD);if(!TUT.done){openTutorial(true);}else transition(null,G.i,null,`Boa sorte, ${p.name}!`);}
+  else{const i=SAVED_WORLD*PER_WORLD;transition(()=>loadLevel(i),i,null,`Oi, ${p.name}!`);}
+  submitBest(true);
+}
+document.getElementById('playerBtn').addEventListener('click',()=>openPlayers(false));
+document.getElementById('plClose').addEventListener('click',closePlayers);
+document.getElementById('plForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const inp=document.getElementById('plName'),name=cleanName(inp.value);
+  if(name.length<2){plMsg('O nome precisa ter pelo menos 2 letras.','bad');return;}
+  if(!/^[\p{L}\p{N} ._-]+$/u.test(name)){plMsg('Use só letras, números e espaço no nome.','bad');return;}
+  if(PLAYERS.list.some(p=>p.name.toLowerCase()===name.toLowerCase())){plMsg(`Já existe um jogador chamado ${name}. Toque no nome dele lá em cima.`,'bad');return;}
+  const id='p'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
+  if(!PLAYERS.list.length){
+    // o primeiro jogador fica com as moedas, a loja e o mundo que já estavam salvos
+    try{const a=localStorage.getItem('missao-resgate-loja');if(a)localStorage.setItem('missao-resgate-loja:'+id,a);}catch(e2){}
+    try{const b=localStorage.getItem('missao-resgate-mundo');if(b)localStorage.setItem('missao-resgate-mundo:'+id,b);}catch(e2){}
+  }
+  PLAYERS.list.push({id,name,created:Date.now()});savePlayers();
+  inp.value='';sfx.buy();choosePlayer(id);
+});
+
 /* ---------- início ---------- */
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
-resize();loadLevel(SAVED_WORLD*PER_WORLD);buildShop();buildMaker();coinHud();musRender();
+resize();if(PLAYER)loadPlayerData();loadLevel(SAVED_WORLD*PER_WORLD);buildShop();buildMaker();coinHud();scoreHud();musRender();
 ov.hidden=true;
-openTutorial(true);
+if(PLAYER)openTutorial(true);else openPlayers(true);
+rankInit();
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(shopList.children.length)buildShop();});
 </script>
