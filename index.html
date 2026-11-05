@@ -297,6 +297,21 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
 .jk-st{color:var(--hero);font-weight:800;font-size:.85rem}
 .tog-row{display:flex;gap:10px;align-items:center;font-weight:700;cursor:pointer}
 .tog-row input{width:22px;height:22px;accent-color:var(--hero)}
+.ver{margin:0;text-align:center;color:var(--muted);font-size:.85rem;font-weight:700}
+.tchip{display:inline-flex;align-items:center;gap:5px;color:#ffe680;font-variant-numeric:tabular-nums}
+.speed{display:flex;flex-direction:column;gap:6px}
+.speed-who{margin:0;color:var(--muted);font-size:.9rem}
+.sp-w{background:var(--night);border-radius:12px;padding:6px 10px}
+.sp-w summary{cursor:pointer;font-weight:800;padding:4px 0}
+.sp-w summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:6px}
+.sp-scroll{overflow-x:auto}
+.sp{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+.sp th{text-align:left;color:var(--muted);font-weight:700;padding:4px 6px;font-size:.82rem;white-space:nowrap}
+.sp td{padding:5px 6px;border-top:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.sp td:first-child{white-space:normal}
+.sp td:not(:first-child),.sp th:not(:first-child){text-align:right}
+.sp-n{display:inline-block;min-width:1.4em;color:var(--hero);font-weight:800}
+.sp-tot td{font-weight:800;color:#8de6ff}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -304,11 +319,11 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
   header,.goal,.board{grid-column:1}
   .goal{font-size:.92rem}
   .hint{display:none}
-  .credit{grid-column:1;text-align:left}
+  .credit,.ver{grid-column:1;text-align:left}
   .pads{grid-column:2;grid-row:1 / span 3;align-self:center;margin:0}
   .pad{grid-template-columns:repeat(3,88px);grid-template-rows:repeat(2,78px);gap:10px}
   body.coop .app{grid-template-columns:auto var(--bw) auto}
-  body.coop header,body.coop .goal,body.coop .board,body.coop .credit{grid-column:2}
+  body.coop header,body.coop .goal,body.coop .board,body.coop .credit,body.coop .ver{grid-column:2}
   body.coop .pads{display:contents}
   body.coop .padbox{grid-row:1 / span 3;align-self:center}
   body.coop .padbox[data-pl="0"]{grid-column:1;grid-row:1 / span 3}
@@ -331,6 +346,7 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
     </div>
     <div class="stats">
       <span class="chip" id="lvl">Fase 1/5</span>
+      <span class="chip tchip" title="Tempo da fase (speedrun)"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="13.5" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 13.5V9M9.5 2.5h5M19 6l1.5-1.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span id="timeTxt">0:00.0</span><span class="sr">tempo da fase</span></span>
       <span class="chip schip" title="Pontos"><span class="sic" aria-hidden="true">★</span><span id="scoreTxt">0</span><span class="sr">pontos</span></span>
       <button class="chip coinchip" id="shopBtn" type="button" aria-label="Abrir a loja"><span class="coin"></span><span id="coinTxt">0</span></button>
       <span class="hearts" id="hearts" aria-label="vidas"></span>
@@ -372,6 +388,7 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
   </div>
   <p class="hint"><span id="hintTxt">Também dá pra jogar deslizando o dedo no tabuleiro ou com as setas do teclado.</span> · <span id="verTxt"></span></p>
   <p class="credit">Criado por <b>Rafael Gaklik</b><br>© 2026 Rafael Gaklik. Todos os direitos reservados.</p>
+  <p class="ver" id="verLine"></p>
 </div>
 
 
@@ -450,6 +467,11 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
     <p class="rank-src" id="rankSrc"></p>
     <div class="rank-me" id="rankMe"></div>
     <ol class="rank-list" id="rankList"></ol>
+    <div class="speed">
+      <h4>⏱ Speedrun: seus melhores tempos</h4>
+      <p class="speed-who" id="speedWho"></p>
+      <div id="speedList"></div>
+    </div>
     <div class="rank-how">
       <h4>Como ganhar pontos</h4>
       <ul>
@@ -1033,10 +1055,11 @@ const TRANS={on:false,stage:0,timer:null};
 function cardInfo(i,custom){
   if(custom)return {world:'Fase criada por você',num:'✏',name:custom.name,dots:null,glow:(THEMES[custom.theme]||THEMES[0]).wall};
   const w=Math.floor(i/PER_WORLD),f=i%PER_WORLD,boss=!!LEVELS[i].boss;
-  return {world:`Mundo ${w+1} · ${WORLD_NAMES[w]}`,num:boss?'Chefão!':`Fase ${f+1}`,name:LEVEL_NAMES[i],dots:f,boss,glow:THEMES[w].wall};
+  const bt=bestTime(i);
+  return {world:`Mundo ${w+1} · ${WORLD_NAMES[w]}`,num:boss?'Chefão!':`Fase ${f+1}`,name:LEVEL_NAMES[i],dots:f,boss,glow:THEMES[w].wall,rec:bt?`⏱ Seu recorde${COOP.on?' no co-op':''}: ${fmtTime(bt)}`:''};
 }
 function fillCard(c,note){
-  const nt=document.getElementById('fadeNote');nt.textContent=note||'';nt.hidden=!note;
+  const nt=document.getElementById('fadeNote');note=note||c.rec||'';nt.textContent=note;nt.hidden=!note;
   document.getElementById('fadeWorld').textContent=c.world;
   const num=document.getElementById('fadeNum');num.textContent=c.num;num.classList.toggle('boss',!!c.boss);
   document.getElementById('fadeName').textContent=c.name;
@@ -1478,6 +1501,12 @@ function win(){
   const line=`<p class="coinline"><span class="coin"></span>Moedas pegas: <b>${G.got}</b> · Bônus de rapidez: <b>+${bonus}</b></p>${ptsLine}`;
   const sub=(!G.custom&&PLAYER?`+${fmt(G.pts)} pontos · `:'')+`+${G.got+bonus} moedas`;
   const winner=G.ps.find(q=>q.id===G.carrier)||G.p;
+  G.tline=`⏱ ${fmtTime(G.elapsed)}`;G.trec=false;
+  if(!G.custom){
+    const r=recordTime(G.i,G.elapsed),md=COOP.on?' no co-op':'';G.trec=r.rec;
+    G.tline+=r.rec?(r.old?` · Recorde novo${md}! (era ${fmtTime(r.old)})`:` · Primeiro recorde${md}!`):` · Recorde${md}: ${fmtTime(r.old)}`;
+    if(r.rec)[1319,1568,2093].forEach((f,i)=>tone(f,.14,'triangle',.05,1.1+i*.09));
+  }
   if(G.custom){
     startVictory(winner,'Fase completa!',sub,()=>show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker()));
     return;
@@ -1497,7 +1526,7 @@ function win(){
 const VDUR=3000;
 function startVictory(p,text,sub,next){
   const c=cell;
-  G.victory={p,text,sub,next,t:0,done:false,popped:false,conf:[],x0:p.rx*c+c/2,y0:p.ry*c+c/2,look:p.look||(p.id===1?P2_LOOK:null)};
+  G.victory={p,text,sub,next,tline:G.tline||'',trec:!!G.trec,t:0,done:false,popped:false,conf:[],x0:p.rx*c+c/2,y0:p.ry*c+c/2,look:p.look||(p.id===1?P2_LOOK:null)};
   G.banner=null;G.power=0;
 }
 function finishVictory(){
@@ -1572,6 +1601,15 @@ function drawVictory(t){
     ctx.fillStyle='#8de6ff';ctx.fillText(V.sub,W/2,ty+s*.95);
     ctx.globalAlpha=1;
   }
+  if(T>1100&&V.tline){
+    ctx.globalAlpha=Math.min(1,(T-1100)/300);
+    let fs=c*.34;ctx.font=`800 ${fs}px ${FONT}`;
+    while(ctx.measureText(V.tline).width>W*.92&&fs>9){fs-=1;ctx.font=`800 ${fs}px ${FONT}`;}
+    ctx.textAlign='center';ctx.textBaseline='middle';const yy=Math.min(H-c*.8,ty+s*.95+c*.52);
+    ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillText(V.tline,W/2+1,yy+2);
+    ctx.fillStyle=V.trec?'#ffd23f':'#f4f1ff';ctx.fillText(V.tline,W/2,yy);
+    ctx.globalAlpha=1;
+  }
   // confete
   for(const q of V.conf){ctx.save();ctx.globalAlpha=Math.min(1,q.t/500);ctx.translate(q.x,q.y);ctx.rotate(q.r);ctx.fillStyle=q.col;ctx.fillRect(-q.w/2,-q.w*.3,q.w,q.w*.6);ctx.restore();}
   ctx.globalAlpha=1;
@@ -1590,8 +1628,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=26;
-const NEWS=['Estilo Pac-Man: com a estrela, os foguinhos que você pega somem do mapa!','Cada foguinho vale o dobro de pontos: 25, 50, 100, 200...','A cada 3 foguinhos, +1 segundo de estrela.'];
+const VERSION=27;
+const NEWS=['Speedrun! O relógio marca o tempo de cada fase e grava o seu recorde, sozinho e no co-op.','Veja todos os seus tempos no troféu, mundo por mundo.','A versão do jogo agora aparece embaixo do copyright.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1611,6 +1649,7 @@ const ICON={
  trophy:`<svg viewBox="0 0 64 64"><path d="M18 6h28v14a14 14 0 0 1-28 0z" fill="#ffd23f"/><path d="M18 11H8v4a10 10 0 0 0 11 10M46 11h10v4a10 10 0 0 1-11 10" fill="none" stroke="#ffd23f" stroke-width="4"/><rect x="28" y="33" width="8" height="12" fill="#e8a800"/><rect x="18" y="45" width="28" height="10" rx="3" fill="#e8a800"/><path d="M32 12l2.6 5.4 5.9.8-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="#fff6c2"/></svg>`,
  coop:`<svg viewBox="0 0 64 64"><rect x="4" y="22" width="26" height="26" rx="6" fill="#ffd23f"/><rect x="4" y="40" width="26" height="8" rx="4" fill="#f0b400"/><rect x="34" y="14" width="26" height="26" rx="6" fill="#5ad1ff"/><rect x="34" y="32" width="26" height="8" rx="4" fill="#2a9fd6"/><circle cx="12" cy="32" r="3" fill="#1b2547"/><circle cx="22" cy="32" r="3" fill="#1b2547"/><circle cx="42" cy="24" r="3" fill="#1b2547"/><circle cx="52" cy="24" r="3" fill="#1b2547"/></svg>`,
  waves:`<svg viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="18" y="26" width="10" height="10" rx="2.5" fill="#ffd23f"/><rect x="36" y="26" width="10" height="10" rx="2.5" fill="#ff8ccf"/><rect x="18" y="40" width="10" height="10" rx="2.5" fill="#5ad1ff"/><rect x="36" y="40" width="10" height="10" rx="2.5" fill="#5fe08a"/><path d="M10 14 Q14 6 18 14Z M16 14 Q20 6 24 14Z" fill="#ff7a2e"/><rect x="10" y="12" width="14" height="8" rx="3" fill="#ff5a36"/><path d="M27 16 L35 16 M31 12 L35 16 L31 20" stroke="#ffd23f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ clock:`<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="22" fill="#ffe680"/><circle cx="32" cy="36" r="17" fill="#1b2547"/><path d="M32 36V24M32 36l8 5" stroke="#ffe680" stroke-width="4" stroke-linecap="round"/><rect x="26" y="5" width="12" height="7" rx="2" fill="#ffe680"/><path d="M50 14l4-4" stroke="#ffe680" stroke-width="5" stroke-linecap="round"/></svg>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
 const TUTORIAL=[
@@ -1624,6 +1663,7 @@ const TUTORIAL=[
  {icon:'coin',title:'Moedas',text:'Cada fase tem 5 moedinhas espalhadas. E quanto mais rápido você salvar a pessoa, maior o bônus de rapidez!'},
  {icon:'unicorn',title:'Unicórnios',text:'Toda fase tem um unicórnio escondido. Encoste nele: ele solta um pum de purpurina arco-íris, sai voando e te dá 5 moedas!'},
  {icon:'trophy',title:'Pontos e ranking',text:'Tudo vale pontos: moedas, estrela, unicórnios, PUF nos foguinhos, chefões e salvar a pessoa rapidinho. No GAME OVER seus pontos vão pro ranking. Toque no troféu lá em cima pra ver quem está ganhando, e no seu nome pra trocar de jogador!'},
+ {icon:'clock',title:'Speedrun',text:'O relógio lá em cima marca o tempo da fase. Quando você salva a pessoa, o tempo fica gravado, com um recorde jogando sozinho e outro no co-op. Seja cada vez mais rápido! Veja todos os seus tempos tocando no troféu.'},
  {icon:'coop',title:'Jogar com um amigo',text:'Toque no botão dos quatro quadradinhos lá em cima e escolha Co-op! O amigo fica com o quadradinho azul e com as setinhas da direita. O time tem 5 corações.'},
  {icon:'waves',title:'Modo Ondas',text:'No mesmo botão tem o Modo Ondas: você e 3 bots (Rosa, Azul e Verde) fogem dos foguinhos que correm pros lados ou pra cima. A setinha amarela avisa de onde eles vão sair. Quantas ondas você aguenta?'},
  {icon:'shop',title:'Loja do Herói',text:'Toque no botão de moedas lá em cima pra abrir a loja. Compre chapéus, capas e rastros mágicos pro seu quadradinho.'},
@@ -1662,6 +1702,7 @@ ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}})
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
 document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden)openTutorial();});
 document.getElementById('verTxt').textContent=`Versão ${VERSION}`;
+setTimeout(()=>{document.getElementById('verLine').textContent=document.getElementById('verTxt').textContent;},0);
 
 /* ---------- desenho ---------- */
 function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
@@ -1965,6 +2006,7 @@ function frame(ts){
   }
   if(G.victory)victoryTick(dt);
   if(CUT.on)drawCutscene(dt);else draw();
+  timeHud();
   if(!makerEl.hidden)drawMaker(G.t);
   if(!jukeEl.hidden)drawJuke(dt);
   if(!shopEl.hidden)drawHeroPreview(document.getElementById('shopPrev'),SAVE.eq,G.t);
@@ -2412,6 +2454,7 @@ function renderRanking(){
   src.textContent=RANK.mode==='shared'
     ?(RANK.readOnly?'Ranking geral. Seus recordes ficam só neste aparelho.':RANK.failed&&!RANK.loaded?'Não deu pra carregar o ranking geral agora. Mostrando os jogadores deste aparelho.':'Ranking geral: todos os jogadores')
     :'Ranking dos jogadores deste aparelho';
+  renderSpeed();
   me.innerHTML=PLAYER?`<span>Recorde de <b>${esc(PLAYER.name)}</b>: <b class="y">${fmt(SCORE.best)} pts</b></span><span>Agora: <b>${fmt(SCORE.run)} pts</b></span>`:'';
   const rows=rankRows();list.innerHTML='';
   if(RANK.mode==='shared'&&!RANK.loaded&&!RANK.failed&&!rows.length){list.innerHTML='<li class="rank-empty">Carregando o ranking...</li>';return;}
@@ -2841,6 +2884,45 @@ function drawJuke(dt){
     ctx.fillStyle='#ff5a36';rr(-s*.66,-s*.22,s*.18,s*.3,s*.06);ctx.fill();rr(s*.48,-s*.22,s*.18,s*.3,s*.06);ctx.fill();
     ctx.restore();
   });
+}
+
+/* ---------- speedrun: tempo de cada fase, sozinho e em co-op ---------- */
+function timeKey(){return 'missao-resgate-tempos:'+(PLAYER?PLAYER.id:'anon');}
+function fmtTime(ms,dec=2){
+  ms=Math.max(0,ms||0);const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60,f=Math.floor(ms%1000/(dec===2?10:100));
+  return `${m}:${String(s).padStart(2,'0')}.${String(f).padStart(dec,'0')}`;
+}
+function curMode(){return COOP.on?'coop':'solo';}
+function timesGet(){const t=lsGet(timeKey(),null);return t&&typeof t==='object'?{solo:t.solo||{},coop:t.coop||{}}:{solo:{},coop:{}};}
+function bestTime(i,mode){return timesGet()[mode||curMode()][i]||0;}
+function recordTime(i,ms){
+  const t=timesGet(),m=curMode(),old=t[m][i]||0,rec=!old||ms<old;
+  if(rec){t[m][i]=Math.round(ms);lsSet(timeKey(),t);}
+  return {rec,old};
+}
+let lastTimeTxt='';
+function timeHud(){
+  if(!G)return;
+  const v=fmtTime(G.elapsed,1);
+  if(v!==lastTimeTxt){document.getElementById('timeTxt').textContent=v;lastTimeTxt=v;}
+}
+function renderSpeed(){
+  const box=document.getElementById('speedList'),who=document.getElementById('speedWho');
+  const t=timesGet();
+  who.textContent=PLAYER?`Tempos de ${PLAYER.name}. O relógio só conta enquanto você está jogando.`:'Crie um jogador pra gravar seus tempos.';
+  const curW=G&&!G.custom&&!G.waves?Math.floor(G.i/PER_WORLD):0;
+  let html='';
+  for(let w=0;w<LEVELS.length/PER_WORLD;w++){
+    let rows='',ts=0,tc=0,ns=0,nc=0;
+    for(let f=0;f<PER_WORLD;f++){
+      const i=w*PER_WORLD+f,a=t.solo[i],b=t.coop[i];
+      if(a){ts+=a;ns++;}if(b){tc+=b;nc++;}
+      rows+=`<tr><td><span class="sp-n">${f===PER_WORLD-1?'👑':f+1}</span> ${esc(LEVEL_NAMES[i])}</td><td>${a?fmtTime(a):'—'}</td><td>${b?fmtTime(b):'—'}</td></tr>`;
+    }
+    rows+=`<tr class="sp-tot"><td>Mundo inteiro</td><td>${ns===PER_WORLD?fmtTime(ts):'—'}</td><td>${nc===PER_WORLD?fmtTime(tc):'—'}</td></tr>`;
+    html+=`<details class="sp-w"${w===curW?' open':''}><summary>Mundo ${w+1} · ${WORLD_NAMES[w]}</summary><div class="sp-scroll"><table class="sp"><thead><tr><th>Fase</th><th>Sozinho</th><th>Co-op</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
+  }
+  box.innerHTML=html;
 }
 
 /* ---------- início ---------- */

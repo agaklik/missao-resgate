@@ -9,6 +9,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Quem está jogando? Cada jogador tem seu nome, pontos, moedas e mundo
 - Modo co-op: jogue com um amigo no mesmo aparelho (quadradinho azul; teclado: W A S D e setas)
 - Modo Ondas 🌊: você + 3 bots (Rosa, Azul e Verde) contra ondas de foguinhos que não acabam nunca
+- Speedrun ⏱: relógio em cada fase e recorde de tempo gravado, sozinho e no co-op
 - Ranking 🏆 com os recordes dos jogadores deste aparelho
 - Moedas nas fases e bônus de rapidez
 - Unicórnios: encoste neles pra ganhar 5 moedas e ver um pum de purpurina arco-íris
