@@ -444,7 +444,7 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
       <button class="x" id="coopClose" type="button" aria-label="Fechar">✕</button>
     </div>
     <section class="mode">
-      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="sq y"></span></span><div><h4>Aventura</h4><p>Os 3 mundos, sozinho, com <b class="y" id="coopP1">Jogador 1</b>.</p></div></div>
+      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="sq y"></span></span><div><h4>Aventura</h4><p>Os 5 mundos, sozinho, com <b class="y" id="coopP1">Jogador 1</b>.</p></div></div>
       <button class="mini" id="modeAdv" type="button">Jogar a Aventura</button>
     </section>
     <section class="mode">
@@ -656,19 +656,145 @@ const LEVELS=[
   "#...#...#",
   "#......v#",
   "#P.....S#",
+  "#########"]},
+ /* ---- Mundo 4 ---- */
+ {speed:290,map:[
+  "#########",
+  "#H..h..S#",
+  "#.##.##.#",
+  "#.......#",
+  "#v.#.#.v#",
+  "#.......#",
+  "#.##.##.#",
+  "#...h...#",
+  "#.#...#.#",
+  "#P..h...#",
+  "#########"]},
+ {speed:278,map:[
+  "#########",
+  "#S#....H#",
+  "#.#.##.##",
+  "#.#v...v#",
+  "#.#.##..#",
+  "#...#h..#",
+  "###.#.###",
+  "#h......#",
+  "#.#####.#",
+  "#P..h...#",
+  "#########"]},
+ {speed:265,map:[
+  "#########",
+  "#P.h....#",
+  "####.##.#",
+  "#v.....v#",
+  "#.##.##.#",
+  "#..#H#..#",
+  "#..#.#..#",
+  "#h.....h#",
+  "#.##.##.#",
+  "#S..h...#",
+  "#########"]},
+ {speed:252,map:[
+  "#########",
+  "#H..#..v#",
+  "#.#.#.#.#",
+  "#h......#",
+  "###.#.###",
+  "#v..#..v#",
+  "#.#####.#",
+  "#...h...#",
+  "#.#.#.#.#",
+  "#P.h#..S#",
+  "#########"]},
+ {speed:245,boss:{speed:470,name:'Fogão de Ouro',pal:3},map:[
+  "#########",
+  "#H..h...#",
+  "#.......#",
+  "#.#...#.#",
+  "#.......#",
+  "#...B...#",
+  "#.......#",
+  "#.#...#.#",
+  "#..v...v#",
+  "#P.....S#",
+  "#########"]},
+ /* ---- Mundo 5 ---- */
+ {speed:250,map:[
+  "#########",
+  "#S..v..H#",
+  "#.#.#.#.#",
+  "#.h.....#",
+  "#.#.#.#.#",
+  "#.....h.#",
+  "#.#.#.#.#",
+  "#.h.....#",
+  "#.#.#.#.#",
+  "#P..v...#",
+  "#########"]},
+ {speed:240,map:[
+  "#########",
+  "#P......#",
+  "#.#####.#",
+  "#.h...h.#",
+  "#####.###",
+  "#H..#...#",
+  "#.#.#v#.#",
+  "#.#...#.#",
+  "#.#h#.#.#",
+  "#...#..S#",
+  "#########"]},
+ {speed:230,map:[
+  "#########",
+  "#H#.h.#S#",
+  "#.#.#.#.#",
+  "#.v.#.v.#",
+  "#.#.#.#.#",
+  "#...h...#",
+  "#.#.#.#.#",
+  "#.v.#.v.#",
+  "#.#.#.#.#",
+  "#...P...#",
+  "#########"]},
+ {speed:220,map:[
+  "#########",
+  "#P.#h..H#",
+  "#..#.##.#",
+  "#v...#..#",
+  "##.#.#.v#",
+  "#..#...##",
+  "#.###.#.#",
+  "#h....#.#",
+  "#.##v.#.#",
+  "#S..h...#",
+  "#########"]},
+ {speed:215,boss:{speed:440,name:'Fogão Rosa',pal:4},map:[
+  "#########",
+  "#S..h..H#",
+  "#.......#",
+  "#.#.#.#.#",
+  "#.......#",
+  "#..B....#",
+  "#.......#",
+  "#.#.#.#.#",
+  "#...h..v#",
+  "#P......#",
   "#########"]}
 ];
 const PER_WORLD=5;
 const THEMES=[
  {edge:'#2f3d75',wall:'#4a5ea6',f1:'#1f2a52',f2:'#232f5c'},
  {edge:'#5c2a2a',wall:'#9a4a3a',f1:'#2b1f3f',f2:'#302446'},
- {edge:'#235465',wall:'#4aa3b8',f1:'#16314a',f2:'#1a3752'}
+ {edge:'#235465',wall:'#4aa3b8',f1:'#16314a',f2:'#1a3752'},
+ {edge:'#8a6512',wall:'#e3b437',f1:'#33270f',f2:'#3b2d13'},
+ {edge:'#9a3d70',wall:'#ff8ccf',f1:'#371c33',f2:'#40213b'}
 ];
 /* cores do fogo: 0 = foguinho normal / Rei Fogão, 1 = lava, 2 = gelo */
 const BOSS_PAL=[
  {f1:'#ff7a2e',f2:'#ffb238',body:'#ff5a36',eye:'#2a0c06'},
  {f1:'#ff3d00',f2:'#ffcc00',body:'#b8281a',eye:'#1a0503'},
- {f1:'#8de6ff',f2:'#d4f6ff',body:'#3fb4dc',eye:'#0b2a3a'}
+ {f1:'#8de6ff',f2:'#d4f6ff',body:'#3fb4dc',eye:'#0b2a3a'},
+ {f1:'#ffcc33',f2:'#fff3a0',body:'#e8a800',eye:'#3a2600'},
+ {f1:'#ff8ccf',f2:'#ffd1ec',body:'#e0569f',eye:'#3a0a24'}
 ];
 const POWER_MS=4000;
 const shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker');
@@ -726,10 +852,17 @@ const TRACKS={
  boss:{bpm:156,lead:'sawtooth',lv:.035,drum:'k h s h k h s s',
   mel:'D5 D5 . D5 F5 . E5 D5 | D5 D5 . D5 F5 . G5 F5 | E5 E5 . E5 G5 . F5 E5 | C#5 . E5 . A5 . G5 E5 | A5 . G5 F5 E5 D5 E5 F5 | F5 . E5 D5 C5 Bb4 C5 D5 | D5 . C5 Bb4 A4 G4 A4 Bb4 | A4 . C#5 . E5 . A5 .',
   bass:'D2 D3 D2 D3 D2 D3 D2 D3 | Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 | C2 C3 C2 C3 C2 C3 C2 C3 | A1 A2 A1 A2 A1 A2 A1 A2 | D2 D3 D2 D3 D2 D3 D2 D3 | Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 Bb1 Bb2 | G1 G2 G1 G2 G1 G2 G1 G2 | A1 A2 A1 A2 A1 A2 A1 A2'},
+ ouro:{bpm:136,lead:'square',lv:.045,drum:'k . h . s . h h',
+  mel:'D5 . F#5 . A5 . D6 . | C#6 . A5 . E5 . A5 . | B5 . G5 . D5 . G5 B5 | A5 . F#5 . D5 . . . | G5 . B5 . D6 . B5 G5 | F#5 . A5 . D6 . A5 F#5 | E5 . G5 . B5 . A5 G5 | F#5 . E5 . D5 . . .',
+  bass:'D2 . D3 . D2 . D3 . | A1 . A2 . A1 . A2 . | G1 . G2 . G1 . G2 . | D2 . D3 . D2 . D3 . | G1 . G2 . G1 . G2 . | D2 . D3 . D2 . D3 . | A1 . A2 . A1 . A2 . | D2 . A1 . D2 . . .'},
+ rosa:{bpm:144,lead:'square',lv:.04,drum:'k h s h k h s h',
+  mel:'C5 F5 A5 F5 C6 . A5 . | Bb4 D5 F5 D5 Bb5 . G5 . | C5 E5 G5 E5 C6 . Bb5 . | A5 . G5 . F5 . . . | F5 . A5 . G5 . E5 . | D5 . F5 . E5 . C5 . | Bb4 . D5 . C5 . E5 . | F5 . . . F4 . . .',
+  bass:'F2 . F3 . F2 . F3 . | Bb1 . Bb2 . Bb1 . Bb2 . | C2 . C3 . C2 . C3 . | F2 . F3 . F2 . F3 . | D2 . D3 . D2 . D3 . | Bb1 . Bb2 . Bb1 . Bb2 . | C2 . C3 . C2 . C3 . | F2 . C2 . F2 . . .'},
  star:{bpm:176,lead:'square',lv:.04,drum:'k h s h k h s h',
   mel:'C5 E5 G5 C6 G5 E5 C5 E5 | D5 F5 A5 D6 A5 F5 D5 F5',
   bass:'C3 . C3 . C3 . C3 . | D3 . D3 . D3 . D3 .'}
 };
+const WORLD_MUSIC=['noite','vulcao','gelo','ouro','rosa'];
 const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 function noteFreq(t){const m=/^([A-G])(#|b)?(\d)$/.exec(t);if(!m)return 440;const n=12*(+m[3]+1)+SEMI[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0);return 440*Math.pow(2,(n-69)/12);}
 function compileLine(str){
@@ -772,14 +905,14 @@ function musKick(t){
 }
 function musWanted(){
   if(!G||TRANS.on)return G?null:'calm';
-  if(CUT.on)return ['noite','vulcao','gelo'][CUT.t<CUT.t0?CUT.from:CUT.to];
+  if(CUT.on)return WORLD_MUSIC[CUT.t<CUT.t0?CUT.from:CUT.to];
   if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden)return 'calm';
   if(G.state==='lost')return null;
   if(G.waves)return 'boss';
   if(G.power>0)return 'star';
   if(bossAlive())return 'boss';
   const th=G.custom?G.custom.theme:Math.floor(G.i/PER_WORLD);
-  return ['noite','vulcao','gelo'][th]||'noite';
+  return WORLD_MUSIC[th]||'noite';
 }
 function musTick(){
   if(!ac||ac.state!=='running'||!MUS.on)return;
@@ -839,11 +972,13 @@ function addCoins(n){SAVE.coins+=n;persist();coinHud();}
 
 
 /* ---------- transição de fase ---------- */
-const WORLD_NAMES=['A Noite','O Vulcão','A Caverna de Gelo'];
+const WORLD_NAMES=['A Noite','O Vulcão','A Caverna de Gelo','O Reino de Ouro','O Mundo Rosa'];
 const LEVEL_NAMES=[
  'Primeiro Resgate','Corredor Escuro','Labirinto da Lua','Ponte das Estrelas','Castelo do Rei Fogão',
  'Pedras Quentes','Rio de Lava','Túnel de Fogo','Cratera Vermelha','Covil do Fogão de Lava',
- 'Chão Escorregadio','Cristais Azuis','Pilares Congelados','Vento Gelado','Trono do Fogão de Gelo'
+ 'Chão Escorregadio','Cristais Azuis','Pilares Congelados','Vento Gelado','Trono do Fogão de Gelo',
+ 'Moedas Brilhantes','Corredor Dourado','Tesouro Escondido','Ponte de Ouro','Tesouraria do Fogão de Ouro',
+ 'Nuvem de Algodão','Rio de Chiclete','Torre de Doces','Labirinto de Pirulito','Castelo do Fogão Rosa'
 ];
 let PROG_KEY='missao-resgate-mundo';
 let SAVED_WORLD=0;
@@ -942,9 +1077,9 @@ function drawGlitter(g){
 /* ---------- cena de viagem entre os mundos ---------- */
 const cutEl=document.getElementById('cut'),cutCv=document.getElementById('cutCv'),cutCtx=cutCv.getContext('2d');
 const CUT={on:false,done:false,t:0,D:7.6,t0:3.3,from:0,to:1,next:0,W:0,H:0,dpr:1,deco:null,spark:[],chimed:false,lastStep:0};
-const SKY=[{top:'#0b1130',bot:'#2a3768'},{top:'#22091a',bot:'#7a2a1e'},{top:'#081d30',bot:'#2f7590'}];
-const LEAVE=['Saindo da Noite...','Saindo do Vulcão...','Saindo da Caverna de Gelo...'];
-const ARRIVE=['Chegando na Noite!','Chegando no Vulcão!','Chegando na Caverna de Gelo!'];
+const SKY=[{top:'#0b1130',bot:'#2a3768'},{top:'#22091a',bot:'#7a2a1e'},{top:'#081d30',bot:'#2f7590'},{top:'#221704',bot:'#7a5a12'},{top:'#2a0b26',bot:'#a3407e'}];
+const LEAVE=['Saindo da Noite...','Saindo do Vulcão...','Saindo da Caverna de Gelo...','Saindo do Reino de Ouro...','Saindo do Mundo Rosa...'];
+const ARRIVE=['Chegando na Noite!','Chegando no Vulcão!','Chegando na Caverna de Gelo!','Chegando no Reino de Ouro!','Chegando no Mundo Rosa!'];
 const modp=(a,m)=>((a%m)+m)%m;
 function hexMix(a,b,k){
   const pa=parseInt(a.slice(1),16),pb=parseInt(b.slice(1),16);
@@ -995,6 +1130,33 @@ function cutDeco(w,alpha,cam,W,H,gy,t,T){
       ctx.fillStyle='rgba(255,90,54,.16)';ctx.beginPath();ctx.ellipse(cx,top,W*.07,H*.05,0,0,Math.PI*2);ctx.fill();
     }
     for(const e of d.embers){const y=gy-modp(e.y+t*e.s*2.2,1)*gy;ctx.fillStyle=`hsl(${15+e.h},100%,60%)`;ctx.beginPath();ctx.arc(modp(e.x*W-cam*.35+Math.sin(t*2+e.x*9)*8,W),y,e.r,0,Math.PI*2);ctx.fill();}
+  }else if(w===3){
+    // castelos de ouro, moedas subindo e brilhos
+    const gap=W*.42,off=modp(cam*.25,gap);
+    for(let x=-gap-off;x<W+gap;x+=gap){
+      const bx=x+gap*.2,bw=gap*.6,bh=H*.2,top=gy-bh;
+      ctx.fillStyle='#a07a1c';ctx.fillRect(bx,top,bw,bh);
+      for(let k=0;k<5;k++)if(k%2===0)ctx.fillRect(bx+k*bw/5,top-bh*.12,bw/5,bh*.12);
+      ctx.fillRect(bx+bw*.38,top-bh*.55,bw*.24,bh*.55);
+      ctx.fillStyle='#ffd23f';ctx.beginPath();ctx.moveTo(bx+bw*.5,top-bh*.55);ctx.lineTo(bx+bw*.5,top-bh*.85);ctx.lineTo(bx+bw*.68,top-bh*.75);ctx.lineTo(bx+bw*.5,top-bh*.65);ctx.closePath();ctx.fill();
+      ctx.fillStyle='rgba(255,210,63,.55)';ctx.fillRect(bx+bw*.45,top+bh*.35,bw*.1,bh*.25);
+    }
+    for(const e of d.embers){const y=gy-modp(e.y+t*e.s*1.4,1)*gy,x=modp(e.x*W-cam*.3,W),r=e.r*1.6;
+      ctx.fillStyle='#e8a800';ctx.beginPath();ctx.ellipse(x,y,r*Math.abs(Math.cos(t*3+e.h)),r,0,0,Math.PI*2);ctx.fill();}
+    for(const s of d.stars){ctx.fillStyle=`rgba(255,243,160,${.4+.5*Math.sin(t*3+s.p)})`;ctx.beginPath();ctx.arc(modp(s.x*W-cam*.05,W),s.y*gy,s.r,0,Math.PI*2);ctx.fill();}
+  }else if(w===4){
+    // nuvens de algodão-doce, pirulitos e coraçõezinhos
+    const cg=W*.5,co=modp(cam*.12,cg);
+    for(let x=-cg-co;x<W+cg;x+=cg){const cy=H*.2+Math.sin(x*.01)*H*.04;
+      ctx.fillStyle='rgba(255,209,236,.55)';for(const[dx,dy,r]of[[0,0,.09],[.08,-.03,.07],[-.08,.01,.07],[.15,.02,.05]]){ctx.beginPath();ctx.arc(x+cg*.3+dx*W,cy+dy*H,r*W*.6,0,Math.PI*2);ctx.fill();}}
+    const gap=W*.3,off=modp(cam*.3,gap);
+    for(let x=-gap-off;x<W+gap;x+=gap){const lx=x+gap*.5,r=Math.max(10,H*.05);
+      ctx.fillStyle='#fff';ctx.fillRect(lx-2,gy-H*.16,4,H*.16);
+      ctx.fillStyle='#ff8ccf';ctx.beginPath();ctx.arc(lx,gy-H*.16,r,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(lx,gy-H*.16,r*.55,0,Math.PI*1.5);ctx.stroke();}
+    ctx.font=`${Math.max(12,T*.35)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    for(const e of d.embers){ctx.fillStyle=`hsl(${320+e.h},90%,72%)`;ctx.fillText('♥',modp(e.x*W-cam*.35+Math.sin(t*2+e.x*9)*10,W),gy-modp(e.y+t*e.s*1.6,1)*gy);}
+    for(const s of d.snow){ctx.fillStyle=['#ffe14d','#5ad1ff','#5fe08a','#fff'][Math.floor(s.p)%4];ctx.fillRect(modp(s.x*W-cam*.1,W),modp(s.y+t*s.s*1.4,1)*gy,s.r*2.2,s.r*.9);}
   }else{
     ctx.fillStyle='rgba(191,239,255,.35)';const sg=Math.max(40,W*.06),so=modp(cam*.15,sg);
     for(let x=-so;x<W+sg;x+=sg){const h=H*(.06+.05*Math.abs(Math.sin(x*.37+Math.floor((x+so+cam*.15)/sg))));ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+sg*.5,0);ctx.lineTo(x+sg*.25,h);ctx.closePath();ctx.fill();}
@@ -1287,8 +1449,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=21;
-const NEWS=['Modo Ondas: você + 3 bots (Rosa, Azul e Verde) contra ondas de foguinhos!','Cada onda tem mais foguinhos, mais rápidos. A cada 3 ondas, +1 coração.','Botão novo de Modos de jogo lá em cima: Aventura, Co-op e Ondas.'];
+const VERSION=22;
+const NEWS=['Mundo 4: o Reino de Ouro, com blocos dourados e o Fogão de Ouro!','Mundo 5: o Mundo Rosa, com blocos rosa e o Fogão Rosa!','Cenas de viagem novas: o gelo vira ouro, e o ouro vira rosa.','Músicas novas pros dois mundos.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1300,7 +1462,7 @@ const ICON={
  coin:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#e8a800"/><circle cx="32" cy="32" r="18" fill="#ffd23f"/><rect x="28" y="21" width="8" height="22" rx="3" fill="#e8a800"/><circle cx="24" cy="24" r="4" fill="#fff6c2"/></svg>`,
  shop:`<svg viewBox="0 0 64 64"><path d="M22 26 V18 A10 10 0 0 1 42 18 V26" fill="none" stroke="#ffd23f" stroke-width="4" stroke-linecap="round"/><rect x="10" y="22" width="44" height="36" rx="8" fill="#7a4cff"/><path d="M32 29 L35.5 37 L44 37.5 L37.5 43 L39.5 51 L32 46.5 L24.5 51 L26.5 43 L20 37.5 L28.5 37Z" fill="#ffe14d"/></svg>`,
  boss:`<svg viewBox="0 0 64 64"><path d="M6 40 Q12 18 20 40Z M22 40 Q32 14 42 40Z M44 40 Q52 18 58 40Z" fill="#ff7a2e"/><rect x="6" y="30" width="52" height="30" rx="10" fill="#ff5a36"/><path d="M20 31 L20 16 L26 22 L32 10 L38 22 L44 16 L44 31Z" fill="#ffcc33"/><circle cx="32" cy="24" r="2.5" fill="#e0322b"/><circle cx="22" cy="46" r="4" fill="#2a0c06"/><circle cx="42" cy="46" r="4" fill="#2a0c06"/><path d="M14 38 L26 42 M50 38 L38 42" stroke="#2a0c06" stroke-width="3.5" stroke-linecap="round"/></svg>`,
- worlds:`<svg viewBox="0 0 64 64"><rect x="2" y="20" width="18" height="24" rx="4" fill="#4a5ea6"/><rect x="23" y="20" width="18" height="24" rx="4" fill="#9a4a3a"/><rect x="44" y="20" width="18" height="24" rx="4" fill="#4aa3b8"/><g fill="#f4f1ff" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="15" text-anchor="middle"><text x="11" y="37">1</text><text x="32" y="37">2</text><text x="53" y="37">3</text></g></svg>`,
+ worlds:`<svg viewBox="0 0 64 64"><g font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="11" text-anchor="middle" fill="#f4f1ff"><rect x="4" y="8" width="16" height="20" rx="4" fill="#4a5ea6"/><text x="12" y="22">1</text><rect x="24" y="8" width="16" height="20" rx="4" fill="#9a4a3a"/><text x="32" y="22">2</text><rect x="44" y="8" width="16" height="20" rx="4" fill="#4aa3b8"/><text x="52" y="22">3</text><rect x="14" y="34" width="16" height="20" rx="4" fill="#e3b437"/><text x="22" y="48" fill="#3a2600">4</text><rect x="34" y="34" width="16" height="20" rx="4" fill="#ff8ccf"/><text x="42" y="48" fill="#3a0a24">5</text></g></svg>`,
  tablet:`<svg viewBox="0 0 64 64"><rect x="3" y="14" width="58" height="38" rx="6" fill="#26335f" stroke="#aab4de" stroke-width="2.5"/><rect x="9" y="19" width="22" height="28" rx="3" fill="#4a5ea6"/><rect x="16" y="30" width="7" height="7" rx="2" fill="#ffd23f"/><g fill="#ffd23f"><path d="M46 21 L50 27 H42Z"/><path d="M37 36 L43 32 V40Z"/><path d="M46 45 L50 39 H42Z"/><path d="M55 36 L49 32 V40Z"/></g></svg>`,
  maker:`<svg viewBox="0 0 64 64"><rect x="3" y="4" width="44" height="54" rx="6" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="8" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="32" y="9" width="10" height="10" rx="2" fill="#3ccf7a"/><rect x="8" y="21" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="33" width="10" height="10" rx="2" fill="#ff5a36"/><rect x="8" y="45" width="10" height="10" rx="2" fill="#ffd23f"/><path d="M34 60 L36 49 L54 31 L61 38 L43 56Z" fill="#ffd23f"/><path d="M34 60 L36 49 L43 56Z" fill="#f2c09a"/><path d="M51 34 L58 41" stroke="#1b2547" stroke-width="2"/></svg>`,
  music:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#7a4cff" opacity=".3"/><path d="M24 46V16l24-5v30" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linejoin="round"/><circle cx="18" cy="46" r="7" fill="#ffd23f"/><circle cx="42" cy="41" r="7" fill="#ffd23f"/><path d="M24 24l24-5" stroke="#ffd23f" stroke-width="5"/></svg>`,
@@ -1325,7 +1487,7 @@ const TUTORIAL=[
  {icon:'waves',title:'Modo Ondas',text:'No mesmo botão tem o Modo Ondas: você e 3 bots (Rosa, Azul e Verde) fogem dos foguinhos que correm pros lados ou pra cima. A setinha amarela avisa de onde eles vão sair. Quantas ondas você aguenta?'},
  {icon:'shop',title:'Loja do Herói',text:'Toque no botão de moedas lá em cima pra abrir a loja. Compre chapéus, capas e rastros mágicos pro seu quadradinho.'},
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
- {icon:'worlds',title:'3 mundos',text:'São 3 mundos com 5 fases cada: a Noite, o Vulcão e a Caverna de Gelo. Os chefões são o Rei Fogão, o Fogão de Lava e o Fogão de Gelo. Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
+ {icon:'worlds',title:'5 mundos',text:'São 5 mundos com 5 fases cada: a Noite, o Vulcão, a Caverna de Gelo, o Reino de Ouro (blocos dourados) e o Mundo Rosa (blocos rosa). Os chefões são o Rei Fogão, o Fogão de Lava, o Fogão de Gelo, o Fogão de Ouro e o Fogão Rosa. Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
  {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão com a notinha musical, lá em cima, liga e desliga a música.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
@@ -1513,7 +1675,7 @@ function drawOneHero(p,t){
   }
 }
 function draw(){
-  const c=cell,t=G.t,TH=THEMES[G.waves?(G.waves.n-1)%3:G.custom?G.custom.theme:Math.floor(G.i/PER_WORLD)]||THEMES[0];
+  const c=cell,t=G.t,TH=THEMES[G.waves?(G.waves.n-1)%THEMES.length:G.custom?G.custom.theme:Math.floor(G.i/PER_WORLD)]||THEMES[0];
   ctx.save();
   if(G.shake>0){ctx.translate((Math.random()-.5)*c*.18,(Math.random()-.5)*c*.18);}
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
@@ -1783,7 +1945,7 @@ const TOOLS=[
 ];
 const UNIQUE='PHS*';
 const SPEEDS=[{name:'Devagar',ms:520},{name:'Normal',ms:420},{name:'Rápido',ms:320}];
-const THEME_NAMES=['Noite','Vulcão','Gelo'];
+const THEME_NAMES=['Noite','Vulcão','Gelo','Ouro','Rosa'];
 const SAMPLE=["#########","#S.....H#","#.......#","#.##.##.#","#...h...#","#.......#","#.##.##.#","#...*...#","#.......#","#P..o..o#","#########"];
 const BLANK=Array.from({length:ROWS},(_,y)=>Array.from({length:COLS},(_,x)=>(x===0||y===0||x===COLS-1||y===ROWS-1)?'#':'.').join(''));
 const FASES_KEY='missao-resgate-fases';

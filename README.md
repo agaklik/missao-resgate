@@ -2,8 +2,8 @@
 
 Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que pede socorro, levando ela até a casa verde, sem encostar no fogo.
 
-- 3 mundos com 5 fases cada (Noite, Vulcão e Caverna de Gelo)
-- Chefões no fim de cada mundo: Rei Fogão, Fogão de Lava e Fogão de Gelo
+- 5 mundos com 5 fases cada (Noite, Vulcão, Caverna de Gelo, Reino de Ouro e Mundo Rosa)
+- Chefões no fim de cada mundo: Rei Fogão, Fogão de Lava, Fogão de Gelo, Fogão de Ouro e Fogão Rosa
 - Estrela mágica: 4 segundos invencível e os foguinhos fogem
 - Pontos: moedas, estrela, unicórnios, PUF nos foguinhos, chefões e salvar a pessoa rápido
 - Quem está jogando? Cada jogador tem seu nome, pontos, moedas e mundo
@@ -15,7 +15,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Loja do Herói: chapéus, capas e rastros mágicos (fica salvo no aparelho)
 - Criar fase (botão no canto de cima, à direita): desenhe, teste e salve suas próprias fases
 - Trilha sonora: música de cada mundo, batalha nos chefões e música da estrela (botão ♪ liga e desliga)
-- Cena de viagem entre os mundos: o herói anda e o chão muda de pedras azuis pra vermelhas (Mundo 1 → 2) e de vermelhas pra gelo (Mundo 2 → 3)
+- Cena de viagem entre os mundos: o herói anda e o chão muda de pedras azuis pra vermelhas (Mundo 1 → 2), de vermelhas pra gelo (Mundo 2 → 3), de gelo pra ouro (Mundo 3 → 4) e de ouro pra rosa (Mundo 4 → 5)
 - Transição entre as fases: a tela escurece e mostra o mundo e o nome da fase
 - 3 corações; GAME OVER volta pra Fase 1 do mundo em que você está
 - O jogo lembra o mundo em que você parou
