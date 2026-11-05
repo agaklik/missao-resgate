@@ -1470,16 +1470,107 @@ function win(){
     submitBest();
   }
   const line=`<p class="coinline"><span class="coin"></span>Moedas pegas: <b>${G.got}</b> · Bônus de rapidez: <b>+${bonus}</b></p>${ptsLine}`;
-  if(G.custom){show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker());return;}
-  const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,bossName=G.boss?G.boss.name:'chefão';
+  const sub=(!G.custom&&PLAYER?`+${fmt(G.pts)} pontos · `:'')+`+${G.got+bonus} moedas`;
+  const winner=G.ps.find(q=>q.id===G.carrier)||G.p;
+  if(G.custom){
+    startVictory(winner,'Fase completa!',sub,()=>show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker()));
+    return;
+  }
+  const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,next=G.i+1;
   if(G.i===LEVELS.length-1){
-    show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}<p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{saveWorld(0);SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();startLevel(0);});
+    startVictory(winner,'Chefão completo!',sub,()=>show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}<p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{saveWorld(0);SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();startLevel(0);}));
   }else if(f===PER_WORLD){
     saveWorld(w);SCORE.checkpoint=SCORE.run;persistScore();
-    show(`Mundo ${w} completo!`,`<p>Você venceu o ${bossName} e salvou todo mundo do Mundo ${w}. Agora vem o Mundo ${w+1}!</p>${line}`,`Ir pro Mundo ${w+1}`,()=>playCutscene(w-1,w,G.i+1));
+    startVictory(winner,'Chefão completo!',`Mundo ${w} completo! `+sub,()=>playCutscene(w-1,w,next));
   }else{
-    show('Pessoa salva!',`<p>Fase ${f} completa. A próxima é mais difícil!</p>${line}`,'Próxima fase',()=>startLevel(G.i+1));
+    startVictory(winner,`Fase ${f} completa!`,sub,()=>startLevel(next));
   }
+}
+
+/* ---------- animação de vitória: o herói sobe, comemora e fala ---------- */
+const VDUR=3000;
+function startVictory(p,text,sub,next){
+  const c=cell;
+  G.victory={p,text,sub,next,t:0,done:false,popped:false,conf:[],x0:p.rx*c+c/2,y0:p.ry*c+c/2,look:p.look||(p.id===1?P2_LOOK:null)};
+  G.banner=null;G.power=0;
+}
+function finishVictory(){
+  const V=G.victory;if(!V||V.done)return;
+  V.done=true;V.next();
+}
+function victoryTick(dt){
+  const V=G.victory;if(!V)return;
+  V.t+=dt;
+  if(V.t>650&&!V.popped){
+    V.popped=true;
+    [784,988,1175,1568,1976,2349].forEach((f,i)=>tone(f,.13,'triangle',.05,i*.07));
+    const c=cell,cx=COLS*c/2,cy=ROWS*c*.5;
+    for(let k=0;k<90;k++){const a=Math.random()*Math.PI*2,sp=(.12+Math.random()*.38)*c/60;
+      V.conf.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-.12*c/60,r:Math.random()*6,vr:(Math.random()-.5)*.02,col:RAINBOW[k%6],w:c*(.08+Math.random()*.08),t:2200});}
+  }
+  const g=cell/60*.0011;
+  for(const q of V.conf){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=g*dt;q.vx*=.995;q.r+=q.vr*dt;q.t-=dt;}
+  V.conf=V.conf.filter(q=>q.t>0);
+  if(!V.done&&V.t>=VDUR)finishVictory();
+}
+function drawVictory(t){
+  const V=G.victory,c=cell,W=COLS*c,H=ROWS*c,T=V.t;
+  ctx.fillStyle=`rgba(10,14,32,${.6*Math.min(1,T/350)})`;ctx.fillRect(0,0,W,H);
+  const k=Math.min(1,T/700),e=1-Math.pow(1-k,3);
+  const tx=W/2,ty=H*.6;
+  const hop=T>700?Math.abs(Math.sin((T-700)/280*Math.PI))*c*.45:0;
+  const s=c*(.74+1.85*e),sx=V.x0+(tx-V.x0)*e,sy=V.y0+(ty-V.y0)*e-hop;
+  // raios de luz girando
+  if(T>300){
+    ctx.save();ctx.translate(tx,ty-c*.2);ctx.rotate(T*.0006);ctx.globalAlpha=Math.min(.22,(T-300)/1500);
+    ctx.fillStyle='#ffd23f';
+    for(let i=0;i<12;i++){ctx.rotate(Math.PI/6);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-c*.5,-W);ctx.lineTo(c*.5,-W);ctx.closePath();ctx.fill();}
+    ctx.restore();ctx.globalAlpha=1;
+  }
+  // sombra
+  ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(tx+(V.x0-tx)*(1-e),ty+s*.62,s*.45*(1-hop/(c*1.2)),s*.08,0,0,Math.PI*2);ctx.fill();
+  // bracinhos pra cima comemorando
+  const body=V.look?V.look.body:'#ffd23f',wave=Math.sin(T*.02)*.35;
+  if(T>600){
+    ctx.fillStyle=body;
+    for(const side of[-1,1]){
+      ctx.save();ctx.translate(sx+side*s*.46,sy-s*.12);ctx.rotate(side*(.6+wave*side*.5)-Math.PI*0*side);
+      rr(-s*.09,-s*.5,s*.18,s*.5,s*.09);ctx.fill();
+      ctx.beginPath();ctx.arc(0,-s*.5,s*.12,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+    }
+  }
+  drawHeroAt(sx,sy,s,1,t,V.look?V.look:{hat:SAVE.eq.hat,cape:SAVE.eq.cape});
+  // a pessoa salva comemora em cima do herói
+  drawPerson(sx,sy-s*.78,s*.5,t,true);
+  // balão de fala
+  if(T>520){
+    const pk=Math.min(1,(T-520)/220),pop=pk<1?.6+.55*Math.sin(pk*Math.PI*.5)*1.08:1;
+    let fs=c*.62;ctx.font=`800 ${fs}px ${FONT}`;
+    while(ctx.measureText(V.text).width>W*.78&&fs>10){fs-=1;ctx.font=`800 ${fs}px ${FONT}`;}
+    const bw=ctx.measureText(V.text).width+c*.8,bh=fs*1.5,bx=W/2,by=Math.max(bh/2+c*.25,sy-s*1.35);
+    ctx.save();ctx.translate(bx,by);ctx.scale(pop,pop);
+    ctx.fillStyle='rgba(0,0,0,.3)';rr(-bw/2+3,-bh/2+4,bw,bh,bh*.42);ctx.fill();
+    ctx.fillStyle='#ffffff';rr(-bw/2,-bh/2,bw,bh,bh*.42);ctx.fill();
+    ctx.beginPath();ctx.moveTo(-c*.22,bh/2-1);ctx.lineTo(0,bh/2+c*.3);ctx.lineTo(c*.22,bh/2-1);ctx.closePath();ctx.fill();
+    ctx.fillStyle=V.text.startsWith('Chefão')?'#e0322b':'#1b2547';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(V.text,0,fs*.06);
+    ctx.restore();
+  }
+  // pontos e moedas
+  if(T>900&&V.sub){
+    const a=Math.min(1,(T-900)/300);ctx.globalAlpha=a;
+    let fs=c*.36;ctx.font=`800 ${fs}px ${FONT}`;
+    while(ctx.measureText(V.sub).width>W*.9&&fs>9){fs-=1;ctx.font=`800 ${fs}px ${FONT}`;}
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillText(V.sub,W/2+1,ty+s*.95+2);
+    ctx.fillStyle='#8de6ff';ctx.fillText(V.sub,W/2,ty+s*.95);
+    ctx.globalAlpha=1;
+  }
+  // confete
+  for(const q of V.conf){ctx.save();ctx.globalAlpha=Math.min(1,q.t/500);ctx.translate(q.x,q.y);ctx.rotate(q.r);ctx.fillStyle=q.col;ctx.fillRect(-q.w/2,-q.w*.3,q.w,q.w*.6);ctx.restore();}
+  ctx.globalAlpha=1;
+  // barrinha de tempo
+  if(!V.done){const p=Math.min(1,T/VDUR);ctx.fillStyle='rgba(255,255,255,.18)';rr(W*.3,H-c*.42,W*.4,c*.1,c*.05);ctx.fill();ctx.fillStyle='#ffd23f';rr(W*.3,H-c*.42,W*.4*p,c*.1,c*.05);ctx.fill();}
 }
 function show(title,body,btn,fn){
   ovTitle.textContent=title;ovBody.innerHTML=body;ovBtn.textContent=btn;ovAction=fn;ov.hidden=false;
@@ -1493,8 +1584,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=23;
-const NEWS=['Botão quadrado da Trilha Sonora: ouça todas as músicas do jogo!','O quadradinho dança com fone de ouvido no ritmo da música.','Mundo 4 (Reino de Ouro) e Mundo 5 (Mundo Rosa).'];
+const VERSION=24;
+const NEWS=['Comemoração nova: o quadradinho sobe, levanta os bracinhos e fala "Fase 1 completa!", "Fase 2 completa!"... até "Chefão completo!"','Depois da comemoração vem direto a transição pra próxima fase. Toque na tela pra ir mais rápido.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1520,7 +1611,7 @@ const TUTORIAL=[
  {icon:'hero',title:'Oi, herói!',text:'<p>Você é o quadradinho amarelo. Sua missão é salvar pessoas em perigo.</p><p class="by">Um jogo de <b>Rafael Gaklik</b></p>'},
  {icon:'pad',title:'Como andar',text:'Use as setinhas embaixo do jogo, deslize o dedo no tabuleiro ou use as setas do teclado. Segure a setinha pra andar sem parar.'},
  {icon:'person',title:'Ache a pessoa',text:'Ela fica gritando SOCORRO! Encoste nela pra pegar ela no colo.'},
- {icon:'house',title:'Leve pra casa verde',text:'Com a pessoa no colo, vá até a casa verde. Ela fica salva e você passa de fase!'},
+ {icon:'house',title:'Leve pra casa verde',text:'Com a pessoa no colo, vá até a casa verde. O quadradinho comemora e fala "Fase 1 completa!", e depois vem a próxima fase. No chefão ele fala "Chefão completo!"'},
  {icon:'fire',title:'Cuidado com o fogo!',text:'Se um foguinho te pegar, você perde um coração e volta pro começo da fase. A pessoa volta pro lugar dela.'},
  {icon:'hearts',title:'GAME OVER',text:'Você tem 3 corações. Se perder os 3, aparece GAME OVER e você volta pra Fase 1 do mundo em que está. Assim você não perde o mundo que já alcançou! Suas moedas continuam guardadas. E se fechar o jogo, ele lembra o mundo em que você parou.'},
  {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles pra fazer PUF!'},
@@ -1703,6 +1794,7 @@ function drawHero(t){for(let k=G.ps.length-1;k>=0;k--)drawOneHero(G.ps[k],t);}
 function drawOneHero(p,t){
   const c=cell;
   if(p.out)return;
+  if(G.victory&&G.victory.p===p)return;
   if(G.power<=0&&p.inv>0&&Math.floor(p.inv/110)%2===0)return;
   const x=p.rx*c,y=p.ry*c,cx=x+c/2,cy=y+c/2,s=c*.74,hue=(t*.4)%360;
   if(G.power>0){
@@ -1797,6 +1889,7 @@ function draw(){
     drawUnicorn(0,0,c*.9,t,u.dir);ctx.restore();ctx.globalAlpha=1;
   }
   for(const g of G.glitter)drawGlitter(g);
+  if(G.victory){drawVictory(t);ctx.restore();return;}
   // faixa de aviso
   if(G.banner){
     const b=G.banner,a=Math.min(1,b.t/300),W=COLS*c,by=ROWS*c*.42;
@@ -1864,6 +1957,7 @@ function frame(ts){
       G.trail.push({x:G.p.rx+.5+(Math.random()-.5)*.3,y:G.p.ry+.6+(Math.random()-.5)*.3,t:700,hue:(G.t*.3)%360,rot:Math.random()*6,kind:SAVE.eq.trail});
     }
   }
+  if(G.victory)victoryTick(dt);
   if(CUT.on)drawCutscene(dt);else draw();
   if(!makerEl.hidden)drawMaker(G.t);
   if(!jukeEl.hidden)drawJuke(dt);
@@ -1891,6 +1985,7 @@ document.addEventListener('keydown',e=>{
     else if(e.key==='Enter'||e.key===' '){e.preventDefault();ovBtn.click();}
     return;
   }
+  if(G.victory&&!G.victory.done){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(G.victory.t>500)finishVictory();}return;}
   const d1=KEYS1[e.key],d2=KEYS2[e.key];
   if(d1){e.preventDefault();move(d1,0);}else if(d2){e.preventDefault();move(d2,COOP.on?1:0);}
 });
@@ -1905,7 +2000,7 @@ document.querySelectorAll('.pad button').forEach(b=>{
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
 });
 let sw=null;
-cv.addEventListener('pointerdown',e=>{unlockAudio();sw={x:e.clientX,y:e.clientY};});
+cv.addEventListener('pointerdown',e=>{unlockAudio();if(G.victory&&!G.victory.done&&G.victory.t>500&&ov.hidden){finishVictory();sw=null;return;}sw={x:e.clientX,y:e.clientY};});
 cv.addEventListener('pointerup',e=>{
   if(!sw||COOP.on){sw=null;return;}const dx=e.clientX-sw.x,dy=e.clientY-sw.y;sw=null;
   if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;
