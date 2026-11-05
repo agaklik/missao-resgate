@@ -272,6 +272,31 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
 .wv-list .sq{width:16px;height:16px;border-radius:4px;flex:none}
 .wv-list b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .wv-list li span:last-child{color:var(--muted);font-size:.88rem}
+.juke-btn{width:32px;height:32px;padding:0;border:0;border-radius:8px;background:var(--hero);color:var(--night);box-shadow:inset 0 -6px 0 #f0b400;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.juke-btn:active{transform:translateY(1px)}
+.juke-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.juke-btn .mute{display:none}
+.juke-btn.off{background:var(--night-2);color:var(--muted);box-shadow:inset 0 -6px 0 var(--wall-edge)}
+.juke-btn.off .mute{display:inline}
+.juke-cv{display:block;width:100%;height:130px;border-radius:14px}
+.juke-now{margin:0;text-align:center;font-weight:800;font-size:1.1rem}
+.juke-ctrl{display:flex;justify-content:center;gap:12px}
+.jk-sq{width:48px;height:48px;border:0;border-radius:12px;background:var(--night);color:var(--ink);border-bottom:4px solid var(--wall-edge);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.jk-sq svg{width:22px;height:22px}
+.jk-sq.main{width:60px;height:60px;background:var(--hero);color:var(--night);border-bottom-color:#c99a12}
+.jk-sq.main svg{width:28px;height:28px}
+.jk-sq:active{transform:translateY(2px);border-bottom-width:2px}
+.jk-sq:focus-visible,.jk-row button:focus-visible,.tog-row input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.juke-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.jk-row button{width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:var(--night);color:var(--ink);border:2px solid transparent;border-radius:12px;padding:6px 10px;cursor:pointer;font:inherit}
+.jk-row.cur button{border-color:var(--hero);background:#2f3a6b}
+.jk-num{width:30px;height:30px;border-radius:8px;flex:none;display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:#1b2547;box-shadow:inset 0 -5px 0 rgba(0,0,0,.18)}
+.jk-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.jk-txt b{font-weight:800}
+.jk-txt small{color:var(--muted);font-size:.85rem}
+.jk-st{color:var(--hero);font-weight:800;font-size:.85rem}
+.tog-row{display:flex;gap:10px;align-items:center;font-weight:700;cursor:pointer}
+.tog-row input{width:22px;height:22px;accent-color:var(--hero)}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -301,7 +326,7 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
       <button class="make-btn" id="makeBtn" type="button" aria-label="Criar fase"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.2-5L15.6 4.6a2 2 0 0 1 2.8 0l1 1a2 2 0 0 1 0 2.8L8 19.8z" fill="currentColor"/><path d="M13.8 6.4l3.8 3.8" stroke="#ffd23f" stroke-width="1.8"/></svg><span>Criar fase</span></button>
       <button class="icon-btn" id="rankBtn" type="button" aria-label="Ver o ranking" title="Ranking"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path d="M7 3h10v4a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 12h3v4h-3z" fill="currentColor"/><rect x="7.5" y="16" width="9" height="3.5" rx="1" fill="currentColor"/></svg></button>
       <button class="icon-btn" id="coopBtn" type="button" aria-label="Modos de jogo" aria-pressed="false" title="Modos de jogo"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="2.5" y="2.5" width="8.5" height="8.5" rx="2" fill="#ffd23f"/><rect x="13" y="2.5" width="8.5" height="8.5" rx="2" fill="#ff8ccf"/><rect x="2.5" y="13" width="8.5" height="8.5" rx="2" fill="#5ad1ff"/><rect x="13" y="13" width="8.5" height="8.5" rx="2" fill="#5fe08a"/></svg></button>
-      <button class="icon-btn mus-btn" id="musBtn" type="button" aria-label="Desligar a música" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.8" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff8a70" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+      <button class="juke-btn" id="musBtn" type="button" aria-label="Trilha sonora" title="Trilha sonora"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.9" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.9" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff5a36" stroke-width="2.8" stroke-linecap="round"/></svg></button>
       <button class="icon-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
     </div>
     <div class="stats">
@@ -458,6 +483,23 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
       <div class="mode-head"><span class="mode-ic four" aria-hidden="true"><span class="sq y"></span><span class="sq p"></span><span class="sq b"></span><span class="sq g"></span></span><div><h4>Ondas com bots 🌊</h4><p>Você contra os foguinhos, junto com 3 bots: Rosa, Azul e Verde. Os foguinhos correm pros lados ou pra cima e somem na parede. Aguente o máximo de ondas!</p><p class="mode-rec" id="wavesRec"></p></div></div>
       <button class="mini play" id="wavesStart" type="button">Começar as Ondas</button>
     </section>
+  </div>
+</div>
+<div class="modal" id="juke" hidden>
+  <div class="modal-card" role="dialog" aria-labelledby="jukeTitle">
+    <div class="modal-head">
+      <h3 id="jukeTitle">Trilha Sonora 🎵</h3>
+      <button class="x" id="jukeClose" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <canvas id="jukeCv" class="juke-cv" aria-hidden="true"></canvas>
+    <p class="juke-now" id="jukeNow" role="status">Escolha uma música</p>
+    <div class="juke-ctrl">
+      <button class="jk-sq" id="jkPrev" type="button" aria-label="Música anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="3" height="14" rx="1" fill="currentColor"/><path d="M19 5L9 12l10 7z" fill="currentColor"/></svg></button>
+      <button class="jk-sq main" id="jkPlay" type="button" aria-label="Tocar"></button>
+      <button class="jk-sq" id="jkNext" type="button" aria-label="Próxima música"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="16" y="5" width="3" height="14" rx="1" fill="currentColor"/><path d="M5 5l10 7-10 7z" fill="currentColor"/></svg></button>
+    </div>
+    <ol class="juke-list" id="jukeList"></ol>
+    <label class="tog-row" for="musOn"><input type="checkbox" id="musOn"> Música tocando durante o jogo</label>
   </div>
 </div>
 <div class="cut" id="cut" hidden>
@@ -904,6 +946,7 @@ function musKick(t){
   o.connect(g).connect(MUS.bus);o.start(t);o.stop(t+.18);
 }
 function musWanted(){
+  if(!jukeEl.hidden)return JUKE.playing?jukeTrack().id:null;
   if(!G||TRANS.on)return G?null:'calm';
   if(CUT.on)return WORLD_MUSIC[CUT.t<CUT.t0?CUT.from:CUT.to];
   if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden)return 'calm';
@@ -915,7 +958,8 @@ function musWanted(){
   return WORLD_MUSIC[th]||'noite';
 }
 function musTick(){
-  if(!ac||ac.state!=='running'||!MUS.on)return;
+  if(!ac||ac.state!=='running')return;
+  if(!MUS.on&&!(!jukeEl.hidden&&JUKE.playing))return;
   const want=musWanted();
   if(want!==MUS.track){MUS.track=want;MUS.step=0;MUS.next=Math.max(MUS.next,ac.currentTime+.06);}
   const T=TRACKS[MUS.track];if(!T)return;
@@ -932,14 +976,14 @@ function musTick(){
 }
 function musRender(){
   const b=document.getElementById('musBtn');
-  b.classList.toggle('off',!MUS.on);b.setAttribute('aria-pressed',MUS.on);
-  b.setAttribute('aria-label',MUS.on?'Desligar a música':'Ligar a música');b.title=MUS.on?'Música ligada':'Música desligada';
+  b.classList.toggle('off',!MUS.on);
+  b.title=MUS.on?'Trilha sonora':'Trilha sonora (música desligada)';
 }
 function musToggle(){
   MUS.on=!MUS.on;
   try{localStorage.setItem('missao-resgate-musica',MUS.on?'on':'off');}catch(e){}
   unlockAudio();
-  if(MUS.bus){const t=ac.currentTime;MUS.bus.gain.cancelScheduledValues(t);MUS.bus.gain.setTargetAtTime(MUS.on?.55:0,t,.05);}
+  musGain();
   if(MUS.on){MUS.track=null;}
   musRender();
 }
@@ -1449,8 +1493,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=22;
-const NEWS=['Mundo 4: o Reino de Ouro, com blocos dourados e o Fogão de Ouro!','Mundo 5: o Mundo Rosa, com blocos rosa e o Fogão Rosa!','Cenas de viagem novas: o gelo vira ouro, e o ouro vira rosa.','Músicas novas pros dois mundos.'];
+const VERSION=23;
+const NEWS=['Botão quadrado da Trilha Sonora: ouça todas as músicas do jogo!','O quadradinho dança com fone de ouvido no ritmo da música.','Mundo 4 (Reino de Ouro) e Mundo 5 (Mundo Rosa).'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1489,7 +1533,7 @@ const TUTORIAL=[
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
  {icon:'worlds',title:'5 mundos',text:'São 5 mundos com 5 fases cada: a Noite, o Vulcão, a Caverna de Gelo, o Reino de Ouro (blocos dourados) e o Mundo Rosa (blocos rosa). Os chefões são o Rei Fogão, o Fogão de Lava, o Fogão de Gelo, o Fogão de Ouro e o Fogão Rosa. Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
- {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão com a notinha musical, lá em cima, liga e desliga a música.'},
+ {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão quadrado amarelo com a notinha abre a Trilha Sonora: ouça todas as músicas do jogo e ligue ou desligue a música.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
  {icon:'news',title:`Novidades da versão ${VERSION}`,text:`<ul>${NEWS.map(n=>`<li>${n}</li>`).join('')}</ul>`}
 ];
@@ -1774,7 +1818,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&coopEl.hidden){
+  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&coopEl.hidden&&jukeEl.hidden){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -1822,6 +1866,7 @@ function frame(ts){
   }
   if(CUT.on)drawCutscene(dt);else draw();
   if(!makerEl.hidden)drawMaker(G.t);
+  if(!jukeEl.hidden)drawJuke(dt);
   if(!shopEl.hidden)drawHeroPreview(document.getElementById('shopPrev'),SAVE.eq,G.t);
   requestAnimationFrame(frame);
 }
@@ -1836,6 +1881,7 @@ document.addEventListener('keydown',e=>{
   if(!plEl.hidden){if(e.key==='Escape')closePlayers();return;}
   if(!rankEl.hidden){if(e.key==='Escape')closeRanking();return;}
   if(!coopEl.hidden){if(e.key==='Escape')closeCoop();return;}
+  if(!jukeEl.hidden){if(e.key==='Escape')closeJuke();return;}
   if(!shopEl.hidden){if(e.key==='Escape')closeShop();return;}
   unlockAudio();
   if(!ov.hidden){
@@ -2141,7 +2187,6 @@ function closeMaker(){
   if(G.custom&&G.state!=='play'){ov.hidden=true;ovAction=null;startLevel(MK.camp);}
 }
 document.getElementById('makeBtn').addEventListener('click',openMaker);
-document.getElementById('musBtn').addEventListener('click',musToggle);
 document.getElementById('makerClose').addEventListener('click',closeMaker);
 document.getElementById('mkTest').addEventListener('click',()=>{const err=mkCheck();if(err){mkMsg(err,'bad');return;}playCustom(mkLevel());});
 document.getElementById('mkSave').addEventListener('click',mkSave);
@@ -2602,12 +2647,107 @@ function exitWaves(){
   transition(()=>{loadLevel(i,pr.custom||undefined);scoreHud();coopApply();},i,pr.custom||null,'De volta pra Aventura!');
 }
 
+/* ---------- trilha sonora: o toca-músicas do jogo ---------- */
+const jukeEl=document.getElementById('juke'),jukeCv=document.getElementById('jukeCv'),jukeCtx=jukeCv.getContext('2d');
+const JUKE_LIST=[
+ {id:'noite',name:'A Noite',where:'Mundo 1',col:'#4a5ea6'},
+ {id:'vulcao',name:'O Vulcão',where:'Mundo 2',col:'#c0503a'},
+ {id:'gelo',name:'Caverna de Gelo',where:'Mundo 3',col:'#4aa3b8'},
+ {id:'ouro',name:'Reino de Ouro',where:'Mundo 4',col:'#e3b437'},
+ {id:'rosa',name:'Mundo Rosa',where:'Mundo 5',col:'#ff8ccf'},
+ {id:'boss',name:'Batalha',where:'Chefões e Modo Ondas',col:'#ff5a36'},
+ {id:'star',name:'Super-herói',where:'Estrela mágica',col:'#ffd23f'},
+ {id:'calm',name:'Calminha',where:'Tutorial, loja e Criar fase',col:'#9a6bff'}
+];
+const JUKE={k:0,playing:false,notes:[],W:0,H:0,dpr:1};
+function musGain(){
+  if(!MUS.bus)return;
+  const on=MUS.on||(!jukeEl.hidden&&JUKE.playing),t=ac.currentTime;
+  MUS.bus.gain.cancelScheduledValues(t);MUS.bus.gain.setTargetAtTime(on?.55:0,t,.05);
+}
+function jukeTrack(){return JUKE_LIST[JUKE.k];}
+function jukeResize(){
+  JUKE.dpr=Math.min(window.devicePixelRatio||1,2);JUKE.W=jukeCv.clientWidth||320;JUKE.H=jukeCv.clientHeight||130;
+  jukeCv.width=Math.round(JUKE.W*JUKE.dpr);jukeCv.height=Math.round(JUKE.H*JUKE.dpr);
+}
+window.addEventListener('resize',()=>{if(!jukeEl.hidden)jukeResize();});
+function renderJuke(){
+  const tr=jukeTrack();
+  document.getElementById('jukeNow').textContent=JUKE.playing?`Tocando: ${tr.name}`:`Pausado: ${tr.name}`;
+  const pb=document.getElementById('jkPlay');
+  pb.innerHTML=JUKE.playing?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>';
+  pb.setAttribute('aria-label',JUKE.playing?'Pausar':'Tocar');
+  document.querySelectorAll('#jukeList .jk-row').forEach((li,k)=>{
+    const on=k===JUKE.k;li.classList.toggle('cur',on);
+    li.querySelector('.jk-st').textContent=on?(JUKE.playing?'tocando':'pausado'):'';
+    li.querySelector('button').setAttribute('aria-pressed',on&&JUKE.playing);
+  });
+  document.getElementById('musOn').checked=MUS.on;
+}
+function buildJuke(){
+  const ol=document.getElementById('jukeList');ol.innerHTML='';
+  JUKE_LIST.forEach((tr,k)=>{
+    const li=document.createElement('li');li.className='jk-row';
+    const b=document.createElement('button');b.type='button';
+    b.innerHTML=`<span class="jk-num" style="background:${tr.col}">${k+1}</span><span class="jk-txt"><b></b><small></small></span><span class="jk-st"></span>`;
+    b.querySelector('b').textContent=tr.name;b.querySelector('small').textContent=tr.where;
+    b.addEventListener('click',()=>{if(JUKE.k===k)JUKE.playing=!JUKE.playing;else{JUKE.k=k;JUKE.playing=true;}musGain();renderJuke();});
+    li.appendChild(b);ol.appendChild(li);
+  });
+}
+function openJuke(){
+  unlockAudio();
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden)return;
+  const cur=G&&G.waves?'boss':G&&!G.custom?WORLD_MUSIC[Math.floor(G.i/PER_WORLD)]:G&&G.custom?WORLD_MUSIC[G.custom.theme]:'noite';
+  const k=JUKE_LIST.findIndex(t=>t.id===cur);JUKE.k=k<0?0:k;JUKE.playing=true;
+  jukeEl.hidden=false;jukeResize();musGain();renderJuke();
+  setTimeout(()=>{try{document.getElementById('jkPlay').focus({preventScroll:true})}catch(e){}},40);
+}
+function closeJuke(){jukeEl.hidden=true;JUKE.playing=false;MUS.track=null;musGain();}
+function jukeStep(d){JUKE.k=(JUKE.k+d+JUKE_LIST.length)%JUKE_LIST.length;JUKE.playing=true;musGain();renderJuke();}
+document.getElementById('musBtn').addEventListener('click',openJuke);
+document.getElementById('jukeClose').addEventListener('click',closeJuke);
+jukeEl.addEventListener('click',e=>{if(e.target===jukeEl)closeJuke();});
+document.getElementById('jkPlay').addEventListener('click',()=>{JUKE.playing=!JUKE.playing;musGain();renderJuke();});
+document.getElementById('jkPrev').addEventListener('click',()=>jukeStep(-1));
+document.getElementById('jkNext').addEventListener('click',()=>jukeStep(1));
+document.getElementById('musOn').addEventListener('change',e=>{if(e.target.checked!==MUS.on)musToggle();renderJuke();});
+function drawJuke(dt){
+  const tr=jukeTrack(),T=TRACKS[tr.id],W=JUKE.W,H=JUKE.H;
+  const beat=ac&&JUKE.playing?ac.currentTime*T.bpm/60:G.t/1000*.3;
+  const pulse=JUKE.playing?Math.pow(1-(beat%1),2):0;
+  withCell(jukeCtx,1,()=>{
+    ctx.setTransform(JUKE.dpr,0,0,JUKE.dpr,0,0);
+    const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#141b38');g.addColorStop(1,tr.col);
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    // equalizador
+    const n=16,bw=W/n;
+    for(let k=0;k<n;k++){
+      const h=JUKE.playing?(.18+.62*Math.abs(Math.sin(beat*Math.PI*.5+k*.9))*(.55+.45*Math.abs(Math.sin(k*1.7+beat*.7))))*H:H*.06;
+      ctx.fillStyle=`rgba(255,255,255,${.16+.1*(k%2)})`;rr(k*bw+bw*.18,H-h,bw*.64,h,Math.min(4,bw*.2));ctx.fill();
+    }
+    // notinhas voando
+    if(JUKE.playing&&Math.random()<dt/260)JUKE.notes.push({x:W*.5+(Math.random()-.5)*W*.3,y:H*.55,vx:(Math.random()-.5)*.03,t:1600,c:RAINBOW[Math.floor(Math.random()*6)]});
+    ctx.font=`${Math.max(14,H*.16)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    for(const nt of JUKE.notes){nt.t-=dt;nt.x+=nt.vx*dt;nt.y-=dt*.035;ctx.globalAlpha=Math.max(0,nt.t/1600);ctx.fillStyle=nt.c;ctx.fillText('♪',nt.x,nt.y);}
+    ctx.globalAlpha=1;JUKE.notes=JUKE.notes.filter(nt=>nt.t>0);
+    // o herói dançando com fone
+    const s=Math.min(H*.42,W*.2),hx=W/2+Math.sin(beat*Math.PI)*s*.12,hy=H*.6-pulse*s*.22;
+    ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(W/2,H*.6+s*.55,s*.45*(1-pulse*.25),s*.08,0,0,Math.PI*2);ctx.fill();
+    ctx.save();ctx.translate(hx,hy);ctx.rotate(Math.sin(beat*Math.PI)*.12);ctx.scale(1+pulse*.06,1-pulse*.06);
+    drawHeroAt(0,0,s,1,G.t,{hat:SAVE.eq.hat,cape:SAVE.eq.cape});
+    ctx.strokeStyle='#1b2547';ctx.lineWidth=s*.08;ctx.beginPath();ctx.arc(0,-s*.12,s*.56,Math.PI*1.12,Math.PI*1.88);ctx.stroke();
+    ctx.fillStyle='#ff5a36';rr(-s*.66,-s*.22,s*.18,s*.3,s*.06);ctx.fill();rr(s*.48,-s*.22,s*.18,s*.3,s*.06);ctx.fill();
+    ctx.restore();
+  });
+}
+
 /* ---------- início ---------- */
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
 resize();if(PLAYER)loadPlayerData();loadLevel(SAVED_WORLD*PER_WORLD);buildShop();buildMaker();coinHud();scoreHud();musRender();
 ov.hidden=true;
 if(PLAYER)openTutorial(true);else openPlayers(true);
-rankInit();coopApply();
+rankInit();coopApply();buildJuke();
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(shopList.children.length)buildShop();});
 </script>
