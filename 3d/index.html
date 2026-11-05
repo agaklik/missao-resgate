@@ -1374,7 +1374,7 @@ function move(d,pi=0){
   if(ci>=0){G.coins.splice(ci,1);G.got++;addCoins(1);addPoints(10);sfx.coin();G.floats.push({x:nx+.5,y:ny+.3,text:'+1',t:700});}
   const ui=G.unis.findIndex(o=>o.x===nx&&o.y===ny);
   if(ui>=0){G.unis.splice(ui,1);catchUnicorn(nx,ny);}
-  if(G.item&&nx===G.item.x&&ny===G.item.y){G.item=null;G.power=POWER_MS;G.starWait=0;sfx.star();addPoints(20);hud();}
+  if(G.item&&nx===G.item.x&&ny===G.item.y){G.item=null;G.power=POWER_MS;G.kills=0;G.starWait=0;sfx.star();addPoints(20);hud();}
   if(!G.carry&&nx===G.hpos.x&&ny===G.hpos.y){
     if(bossAlive())G.banner={text:'Jaula fechada!',sub:'Vença o chefão pra abrir.',t:1500};
     else{G.carry=true;G.carrier=p.id;sfx.pick();hud();}
@@ -1431,6 +1431,8 @@ function checkHit(){
     if(G.power>0){
       for(const e of G.enemies)if(e.x===p.x&&e.y===p.y){
         G.puffs.push({x:e.x+.5,y:e.y+.5,t:500,s:1});addPoints(25,e.x+.5,e.y+.1);
+        G.kills=(G.kills||0)+1;
+        if(G.kills%3===0){G.power+=1000;G.floats.push({x:e.x+.5,y:e.y-.35,text:'+1 segundo!',t:1300,life:1300,color:'#fff3a0'});[988,1319,1760].forEach((f,i)=>tone(f,.1,'square',.04,.12+i*.06));}
         e.x=e.rx=e.sx;e.y=e.ry=e.sy;sfx.eat();
       }
       if(isBossAt(p.x,p.y))bossHit(p);
@@ -1595,8 +1597,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=24;
-const NEWS=['Missão Resgate agora em 3D! Tudo em 3D: Aventura, Co-op e Modo Ondas.','Blocos de verdade, sombras, foguinhos com chamas e unicórnios em 3D.','Cenas de viagem em 3D: as pedras viram de cor uma por uma.'];
+const VERSION=25;
+const NEWS=['Bônus da estrela: a cada 3 foguinhos que você fizer PUF, ganha +1 segundo!','Missão Resgate agora em 3D! Tudo em 3D: Aventura, Co-op e Modo Ondas.','Blocos de verdade, sombras, foguinhos com chamas e unicórnios em 3D.','Cenas de viagem em 3D: as pedras viram de cor uma por uma.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1625,7 +1627,7 @@ const TUTORIAL=[
  {icon:'house',title:'Leve pra casa verde',text:'Com a pessoa no colo, vá até a casa verde. O quadradinho comemora e fala "Fase 1 completa!", e depois vem a próxima fase. No chefão ele fala "Chefão completo!"'},
  {icon:'fire',title:'Cuidado com o fogo!',text:'Se um foguinho te pegar, você perde um coração e volta pro começo da fase. A pessoa volta pro lugar dela.'},
  {icon:'hearts',title:'GAME OVER',text:'Você tem 3 corações. Se perder os 3, aparece GAME OVER e você volta pra Fase 1 do mundo em que está. Assim você não perde o mundo que já alcançou! Suas moedas continuam guardadas. E se fechar o jogo, ele lembra o mundo em que você parou.'},
- {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles pra fazer PUF!'},
+ {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles pra fazer PUF! A cada 3 foguinhos que você fizer PUF, ganha +1 segundo de estrela!'},
  {icon:'coin',title:'Moedas',text:'Cada fase tem 5 moedinhas espalhadas. E quanto mais rápido você salvar a pessoa, maior o bônus de rapidez!'},
  {icon:'unicorn',title:'Unicórnios',text:'Toda fase tem um unicórnio escondido. Encoste nele: ele solta um pum de purpurina arco-íris, sai voando e te dá 5 moedas!'},
  {icon:'trophy',title:'Pontos e ranking',text:'Tudo vale pontos: moedas, estrela, unicórnios, PUF nos foguinhos, chefões e salvar a pessoa rapidinho. No GAME OVER seus pontos vão pro ranking. Toque no troféu lá em cima pra ver quem está ganhando, e no seu nome pra trocar de jogador!'},
@@ -1818,7 +1820,7 @@ function drawOneHero(p,t){
   if(G.power>0){
     const bw=c*.8,bx=cx-bw/2,by=y+c*.97;
     ctx.fillStyle='rgba(0,0,0,.45)';rr(bx,by,bw,c*.09,c*.045);ctx.fill();
-    ctx.fillStyle='#fff3a0';rr(bx,by,bw*G.power/POWER_MS,c*.09,c*.045);ctx.fill();
+    ctx.fillStyle='#fff3a0';rr(bx,by,bw*Math.min(1,G.power/POWER_MS),c*.09,c*.045);ctx.fill();
   }
 }
 function draw(){
@@ -1937,7 +1939,7 @@ function frame(ts){
     }
     for(const q of G.ps)if(q.inv>0)q.inv-=dt;
     if(G.waves)wavesTick(dt);
-    if(G.power>0){G.power-=dt;if(G.power<=0){G.power=0;hud();}}
+    if(G.power>0){G.power-=dt;if(G.power<=0){G.power=0;G.kills=0;hud();}}
     if(G.banner){G.banner.t-=dt;if(G.banner.t<=0)G.banner=null;}
   }
   if(G.shake>0)G.shake-=dt;
@@ -3148,7 +3150,7 @@ function draw3D(dt){
     // corações dos bots
     for(const p2 of G.ps)if(p2.bot&&!p2.out){const p=proj(fX(p2.rx+.5),1.15,fZ(p2.ry+.5));ctx.font=`${Math.max(8,c*.22)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';let hs='';for(let k=0;k<3;k++)hs+=k<p2.lives?'♥':'♡';ctx.fillStyle='#ff5a36';ctx.fillText(hs,p.x,p.y);}
     // barrinha da estrela
-    if(G.power>0){const p=proj(fX(G.p.rx+.5),0,fZ(G.p.ry+.5)+.55),bw=c*.8;ctx.fillStyle='rgba(0,0,0,.5)';rr(p.x-bw/2,p.y,bw,c*.1,c*.05);ctx.fill();ctx.fillStyle='#fff3a0';rr(p.x-bw/2,p.y,bw*G.power/POWER_MS,c*.1,c*.05);ctx.fill();}
+    if(G.power>0){const p=proj(fX(G.p.rx+.5),0,fZ(G.p.ry+.5)+.55),bw=c*.8;ctx.fillStyle='rgba(0,0,0,.5)';rr(p.x-bw/2,p.y,bw,c*.1,c*.05);ctx.fill();ctx.fillStyle='#fff3a0';rr(p.x-bw/2,p.y,bw*Math.min(1,G.power/POWER_MS),c*.1,c*.05);ctx.fill();}
   }
   // PUF!
   for(const f of G.puffs){const a=Math.max(0,Math.min(1,f.t/500)),sz=f.s||1,p=proj(fX(f.x),.9*sz+(1-a)*.5,fZ(f.y));

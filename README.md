@@ -4,7 +4,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 
 - 5 mundos com 5 fases cada (Noite, Vulcão, Caverna de Gelo, Reino de Ouro e Mundo Rosa)
 - Chefões no fim de cada mundo: Rei Fogão, Fogão de Lava, Fogão de Gelo, Fogão de Ouro e Fogão Rosa
-- Estrela mágica: 4 segundos invencível e os foguinhos fogem
+- Estrela mágica: 4 segundos invencível e os foguinhos fogem; a cada 3 foguinhos com PUF, +1 segundo
 - Pontos: moedas, estrela, unicórnios, PUF nos foguinhos, chefões e salvar a pessoa rápido
 - Quem está jogando? Cada jogador tem seu nome, pontos, moedas e mundo
 - Modo co-op: jogue com um amigo no mesmo aparelho (quadradinho azul; teclado: W A S D e setas)
