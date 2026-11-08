@@ -12,9 +12,10 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Speedrun ⏱: relógio em cada fase e recorde de tempo gravado, sozinho e no co-op
 - Ranking 🏆 com os recordes dos jogadores deste aparelho
 - Moedas nas fases e bônus de rapidez
+- Portais 🌀: em todas as fases tem um portal azul e um laranja; entrou num, sai no outro. Os foguinhos também atravessam!
 - Unicórnios: encoste neles pra ganhar 5 moedas e ver um pum de purpurina arco-íris
 - Loja do Herói: chapéus, capas e rastros mágicos (fica salvo no aparelho)
-- Criar fase (botão no canto de cima, à direita): desenhe, teste e salve suas próprias fases
+- Criar fase (botão no canto de cima, à direita): desenhe (com portais também), teste e salve suas próprias fases
 - Trilha sonora: música de cada mundo, batalha nos chefões e música da estrela. O botão quadrado amarelo abre o toca-músicas pra ouvir todas e ligar ou desligar a música
 - Cena de viagem entre os mundos: o herói anda e o chão muda de pedras azuis pra vermelhas (Mundo 1 → 2), de vermelhas pra gelo (Mundo 2 → 3), de gelo pra ouro (Mundo 3 → 4) e de ouro pra rosa (Mundo 4 → 5)
 - Comemoração no fim de cada fase: o herói sobe e fala "Fase 1 completa!"... até "Chefão completo!"
