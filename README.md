@@ -26,7 +26,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 
 ## Versão 3D
 
-O jogo inteiro também existe em 3D: Aventura, co-op e Modo Ondas. Jogue em https://agaklik.github.io/missao-resgate/3d/ (arquivo `3d/index.html`).
+O jogo normal tem um botão **3D** no canto de cima, à direita: toque e o jogo vira 3D na hora (e o botão **2D** volta). O link https://agaklik.github.io/missao-resgate/3d/ já abre direto em 3D.
 
 ## Como jogar
 

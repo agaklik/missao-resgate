@@ -313,12 +313,18 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
 .sp-n{display:inline-block;min-width:1.4em;color:var(--hero);font-weight:800}
 .sp-tot td{font-weight:800;color:#8de6ff}
 #gl{display:block;width:100%}
-#game{position:absolute;left:0;top:0;width:100%;z-index:1;background:transparent}
+body.mode3d #game{position:absolute;left:0;top:0;width:100%;z-index:1;background:transparent}
 .board .overlay{z-index:3}
 .cut canvas{position:absolute;left:0;top:0}
 #cutCv{z-index:1}
 .cut-skip{z-index:2}
-.b3d{font-style:normal;display:inline-block;transform:rotate(-6deg) translateY(-2px);font-size:.62em;background:#ff5a36;color:#fff;border-radius:8px;padding:0 6px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);vertical-align:middle}
+.b3d{display:none;font-style:normal;transform:rotate(-6deg) translateY(-2px);font-size:.62em;background:#ff5a36;color:#fff;border-radius:8px;padding:0 6px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);vertical-align:middle}
+body.mode3d .b3d{display:inline-block}
+.v3d-btn{min-width:38px;height:32px;padding:0 7px;border:0;border-radius:8px;background:#ff5a36;color:#fff;font:800 .98rem var(--display);box-shadow:inset 0 -5px 0 #c23a1e;cursor:pointer;letter-spacing:.02em}
+.v3d-btn.on{background:var(--night-2);color:#ff8a70;box-shadow:inset 0 0 0 2px #ff5a36,inset 0 -5px 0 var(--wall-edge)}
+.v3d-btn:active{transform:translateY(1px)}
+.v3d-btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media (max-width:430px){.tools{gap:4px}.tools .icon-btn{width:32px}.juke-btn{width:30px;height:30px}}
 /* Modo de lado: tabuleiro à esquerda, setinhas à direita */
 @media (orientation:landscape) and (min-width:560px){
   .app{--bw:min(440px,calc((100vh - 110px) * 9 / 11));max-width:none;width:fit-content;display:grid;grid-template-columns:var(--bw) auto;column-gap:clamp(20px,5vw,64px);row-gap:8px;align-items:start}
@@ -350,6 +356,7 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
       <button class="icon-btn" id="coopBtn" type="button" aria-label="Modos de jogo" aria-pressed="false" title="Modos de jogo"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="2.5" y="2.5" width="8.5" height="8.5" rx="2" fill="#ffd23f"/><rect x="13" y="2.5" width="8.5" height="8.5" rx="2" fill="#ff8ccf"/><rect x="2.5" y="13" width="8.5" height="8.5" rx="2" fill="#5ad1ff"/><rect x="13" y="13" width="8.5" height="8.5" rx="2" fill="#5fe08a"/></svg></button>
       <button class="juke-btn" id="musBtn" type="button" aria-label="Trilha sonora" title="Trilha sonora"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 17.5V5.5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.9" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.9" fill="currentColor"/><path class="mute" d="M3 3l18 18" stroke="#ff5a36" stroke-width="2.8" stroke-linecap="round"/></svg></button>
       <button class="icon-btn" id="helpBtn" type="button" aria-label="Abrir tutorial">?</button>
+      <button class="v3d-btn" id="v3dBtn" type="button" aria-pressed="false" aria-label="Ver o jogo em 3D" title="Ver o jogo em 3D">3D</button>
     </div>
     <div class="stats">
       <span class="chip" id="lvl">Fase 1/5</span>
@@ -362,8 +369,8 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
   </header>
   <p class="goal" id="goal"></p>
   <div class="board">
-    <canvas id="gl" aria-hidden="true"></canvas>
-    <canvas id="game" aria-label="Tabuleiro do jogo em 3D"></canvas>
+    <canvas id="gl" aria-hidden="true" hidden></canvas>
+    <canvas id="game" aria-label="Tabuleiro do jogo"></canvas>
     <div class="overlay" id="ov">
       <h2 id="ovTitle">Missão Resgate</h2>
       <div id="ovBody"></div>
@@ -533,7 +540,7 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
   </div>
 </div>
 <div class="cut" id="cut" hidden>
-  <canvas id="cut3d" aria-hidden="true"></canvas>
+  <canvas id="cut3d" aria-hidden="true" hidden></canvas>
   <canvas id="cutCv" aria-label="Cena: o herói viajando para o próximo mundo"></canvas>
   <button class="cut-skip" id="cutSkip" type="button">Pular ▸</button>
 </div>
@@ -546,7 +553,6 @@ body.coop .padbox[data-pl="0"] .pad button{color:var(--hero)}
     <p class="fade-note" id="fadeNote" hidden></p>
   </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const LEVELS=[
  {speed:520,map:[
@@ -1321,7 +1327,7 @@ function resize(){
   cell=w/COLS;cv.style.height=(cell*ROWS)+'px';
   cv.width=Math.round(w*dpr);cv.height=Math.round(cell*ROWS*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  if(typeof r3Resize==='function'&&typeof r3!=='undefined')r3Resize();
+  if(typeof V3!=='undefined'&&V3.on&&V3.api)V3.api.r3Resize();
 }
 window.addEventListener('resize',resize);
 
@@ -1639,8 +1645,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=27;
-const NEWS=['Speedrun! O relógio marca o tempo de cada fase e grava o seu recorde, sozinho e no co-op.','Estilo Pac-Man: com a estrela, os foguinhos que você pega somem do mapa! Cada um vale o dobro de pontos.','Missão Resgate agora em 3D! Tudo em 3D: Aventura, Co-op e Modo Ondas.','Blocos de verdade, sombras, foguinhos com chamas e unicórnios em 3D.','Cenas de viagem em 3D: as pedras viram de cor uma por uma.'];
+const VERSION=28;
+const NEWS=['Botão 3D no canto de cima à direita: o jogo normal agora também é 3D!','Troque entre 2D e 3D quando quiser, no meio da fase, sem perder nada.','O jogo lembra se você prefere 2D ou 3D.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1661,10 +1667,11 @@ const ICON={
  coop:`<svg viewBox="0 0 64 64"><rect x="4" y="22" width="26" height="26" rx="6" fill="#ffd23f"/><rect x="4" y="40" width="26" height="8" rx="4" fill="#f0b400"/><rect x="34" y="14" width="26" height="26" rx="6" fill="#5ad1ff"/><rect x="34" y="32" width="26" height="8" rx="4" fill="#2a9fd6"/><circle cx="12" cy="32" r="3" fill="#1b2547"/><circle cx="22" cy="32" r="3" fill="#1b2547"/><circle cx="42" cy="24" r="3" fill="#1b2547"/><circle cx="52" cy="24" r="3" fill="#1b2547"/></svg>`,
  waves:`<svg viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="18" y="26" width="10" height="10" rx="2.5" fill="#ffd23f"/><rect x="36" y="26" width="10" height="10" rx="2.5" fill="#ff8ccf"/><rect x="18" y="40" width="10" height="10" rx="2.5" fill="#5ad1ff"/><rect x="36" y="40" width="10" height="10" rx="2.5" fill="#5fe08a"/><path d="M10 14 Q14 6 18 14Z M16 14 Q20 6 24 14Z" fill="#ff7a2e"/><rect x="10" y="12" width="14" height="8" rx="3" fill="#ff5a36"/><path d="M27 16 L35 16 M31 12 L35 16 L31 20" stroke="#ffd23f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
  clock:`<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="22" fill="#ffe680"/><circle cx="32" cy="36" r="17" fill="#1b2547"/><path d="M32 36V24M32 36l8 5" stroke="#ffe680" stroke-width="4" stroke-linecap="round"/><rect x="26" y="5" width="12" height="7" rx="2" fill="#ffe680"/><path d="M50 14l4-4" stroke="#ffe680" stroke-width="5" stroke-linecap="round"/></svg>`,
+ v3d:`<svg viewBox="0 0 64 64"><path d="M32 6 L56 18 L56 46 L32 58 L8 46 L8 18Z" fill="#ffd23f"/><path d="M32 6 L56 18 L32 30 L8 18Z" fill="#ffe680"/><path d="M32 30 L56 18 L56 46 L32 58Z" fill="#d9a400"/><rect x="18" y="34" width="28" height="16" rx="5" fill="#ff5a36" transform="rotate(-8 32 42)"/><text x="32" y="47" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="14" fill="#fff" transform="rotate(-8 32 42)">3D</text></svg>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
 const TUTORIAL=[
- {icon:'hero',title:'Oi, herói!',text:'<p><b>Missão Resgate 3D!</b> Você é o quadradinho amarelo. Sua missão é salvar pessoas em perigo.</p><p class="by">Um jogo de <b>Rafael Gaklik</b></p>'},
+ {icon:'hero',title:'Oi, herói!',text:'<p>Você é o quadradinho amarelo. Sua missão é salvar pessoas em perigo.</p><p class="by">Um jogo de <b>Rafael Gaklik</b></p>'},
  {icon:'pad',title:'Como andar',text:'Use as setinhas embaixo do jogo, deslize o dedo no tabuleiro ou use as setas do teclado. Segure a setinha pra andar sem parar.'},
  {icon:'person',title:'Ache a pessoa',text:'Ela fica gritando SOCORRO! Encoste nela pra pegar ela no colo.'},
  {icon:'house',title:'Leve pra casa verde',text:'Com a pessoa no colo, vá até a casa verde. O quadradinho comemora e fala "Fase 1 completa!", e depois vem a próxima fase. No chefão ele fala "Chefão completo!"'},
@@ -1682,6 +1689,7 @@ const TUTORIAL=[
  {icon:'worlds',title:'5 mundos',text:'São 5 mundos com 5 fases cada: a Noite, o Vulcão, a Caverna de Gelo, o Reino de Ouro (blocos dourados) e o Mundo Rosa (blocos rosa). Os chefões são o Rei Fogão, o Fogão de Lava, o Fogão de Gelo, o Fogão de Ouro e o Fogão Rosa. Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
  {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão quadrado amarelo com a notinha abre a Trilha Sonora: ouça todas as músicas do jogo e ligue ou desligue a música.'},
+ {icon:'v3d',title:'Jogo em 3D',text:'Toque no botão vermelho 3D, no canto de cima à direita, e o jogo vira 3D na hora, sem perder nada! Pra voltar, toque no botão 2D.'},
  {icon:'tablet',title:'Modo de lado',text:'Vire o tablet ou o celular de lado: o jogo fica na esquerda e as setinhas na direita.'},
  {icon:'news',title:`Novidades da versão ${VERSION}`,text:`<ul>${NEWS.map(n=>`<li>${n}</li>`).join('')}</ul>`}
 ];
@@ -1712,7 +1720,7 @@ function endTut(){
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
 document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden)openTutorial();});
-document.getElementById('verTxt').textContent=`Versão 3D · ${VERSION}`;
+document.getElementById('verTxt').textContent=`Versão ${VERSION}`;
 setTimeout(()=>{document.getElementById('verLine').textContent=document.getElementById('verTxt').textContent;},0);
 
 /* ---------- desenho ---------- */
@@ -2016,7 +2024,8 @@ function frame(ts){
     }
   }
   if(G.victory)victoryTick(dt);
-  if(CUT.on)drawCutscene3D(dt);else draw3D(dt);
+  if(CUT.on){if(V3.on)V3.api.drawCutscene3D(dt);else drawCutscene(dt);}
+  else if(V3.on)V3.api.draw3D(dt);else draw();
   timeHud();
   if(!makerEl.hidden)drawMaker(G.t);
   if(!jukeEl.hidden)drawJuke(dt);
@@ -2936,6 +2945,7 @@ function renderSpeed(){
   box.innerHTML=html;
 }
 
+function init3D(){
 /* =====================================================================
    MISSÃO RESGATE 3D — desenha o mesmo jogo num mundo 3D (three.js).
    As regras continuam as mesmas: este código só lê o estado G e mostra.
@@ -3384,12 +3394,53 @@ function drawCutscene3D(dt){
   });
 }
 
+return {draw3D,drawCutscene3D,r3Resize};
+}
+
+/* ---------- botão 3D: o mesmo jogo, visto em 3D ---------- */
+const FORCE3D=true;
+const V3={on:false,api:null,loading:false};
+function has3D(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')));}catch(e){return false;}}
+function load3D(){
+  return new Promise((res,rej)=>{
+    if(window.THREE)return res();
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.onload=()=>window.THREE?res():rej(new Error('three'));s.onerror=()=>rej(new Error('load'));
+    document.head.appendChild(s);
+  });
+}
+function v3Render(){
+  const b=document.getElementById('v3dBtn');
+  b.textContent=V3.loading?'···':V3.on?'2D':'3D';
+  b.classList.toggle('on',V3.on);b.setAttribute('aria-pressed',V3.on);
+  b.title=V3.on?'Voltar pro 2D':'Ver o jogo em 3D';b.setAttribute('aria-label',b.title);
+}
+function oops3D(msg){if(G)G.banner={text:'Ops!',sub:msg,t:2600};}
+async function set3D(on,quiet){
+  if(on&&!V3.api){
+    if(V3.loading)return;
+    if(!has3D()){if(!quiet)oops3D('Este aparelho não consegue mostrar 3D.');return;}
+    V3.loading=true;v3Render();
+    try{await load3D();V3.api=init3D();}
+    catch(e){V3.loading=false;v3Render();if(!quiet)oops3D('Não deu pra abrir o 3D agora. Veja se tem internet.');return;}
+    V3.loading=false;
+  }
+  V3.on=!!on;
+  document.body.classList.toggle('mode3d',V3.on);
+  document.getElementById('gl').hidden=!V3.on;document.getElementById('cut3d').hidden=!V3.on;
+  lsSet('missao-resgate-3d',V3.on?1:0);
+  resize();v3Render();
+}
+document.getElementById('v3dBtn').addEventListener('click',()=>{unlockAudio();set3D(!V3.on);});
+
 /* ---------- início ---------- */
 try{FONT=getComputedStyle(document.body).fontFamily||FONT;}catch(e){}
 resize();if(PLAYER)loadPlayerData();loadLevel(SAVED_WORLD*PER_WORLD);buildShop();buildMaker();coinHud();scoreHud();musRender();
 ov.hidden=true;
 if(PLAYER)openTutorial(true);else openPlayers(true);
-rankInit();coopApply();buildJuke();
+rankInit();coopApply();buildJuke();v3Render();
+if(FORCE3D||lsGet('missao-resgate-3d',0))set3D(true,true);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(shopList.children.length)buildShop();});
 </script>
