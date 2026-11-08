@@ -138,6 +138,7 @@ h1{font-size:clamp(1.3rem,5.6vw,1.65rem)}
 .mk-field input{font:600 1rem var(--display);padding:7px 10px;border-radius:10px;border:2px solid var(--wall-edge);background:var(--night);color:var(--ink);min-width:0}
 .mk-field input::placeholder{color:var(--muted)}
 .seg{display:flex;gap:6px}
+#mkTheme{display:grid;grid-template-columns:repeat(3,1fr)}
 .seg button{flex:1;min-width:0;background:var(--night);color:var(--ink);border:2px solid var(--wall-edge);border-radius:10px;padding:6px 4px;font:700 .92rem var(--display);cursor:pointer}
 .seg button.on{background:var(--hero);border-color:#c99a12;color:var(--night)}
 .mk-msg{margin:0;min-height:1.3em;font-weight:700;color:var(--muted)}
@@ -343,7 +344,46 @@ body.mode3d .b3d{display:inline-block}
   body.coop .padbox[data-pl="1"]{grid-column:3;grid-row:1 / span 3}
   body.coop .pad{grid-template-columns:repeat(3,70px);grid-template-rows:repeat(2,64px);gap:8px}
 }
-@media (prefers-reduced-motion:reduce){.big:active,.pad button:active{transform:none}}
+/* medalhas e troféus */
+.medchip{display:inline-flex;align-items:center;gap:6px;border:0;color:var(--ink);font:700 .95rem var(--display);cursor:pointer}
+.medchip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.shelf{display:flex;flex-direction:column;gap:14px;padding:10px 6px 4px;background:linear-gradient(#1f2a52,#1b2547);border-radius:14px}
+.shelf-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 4px;border-bottom:9px solid #8a5a32;box-shadow:0 5px 0 #5c3a1f;border-radius:0 0 4px 4px}
+.tro-slot{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;padding-bottom:4px}
+.tro-slot .tro{width:60px;height:62px;filter:drop-shadow(0 3px 0 rgba(0,0,0,.3))}
+.tro-slot span{font-size:.8rem;font-weight:700;line-height:1.1;color:var(--ink);min-height:2.2em;text-wrap:balance}
+.tro-slot.lock span{color:var(--muted);font-weight:500}
+.med-grid{display:flex;flex-direction:column;gap:8px}
+.med{display:flex;align-items:center;gap:12px;background:var(--night);border-radius:12px;padding:8px 10px}
+.med.got{box-shadow:inset 0 0 0 2px rgba(255,210,63,.35)}
+.med-t{min-width:0;flex:1}
+.med-n{margin:0;font-weight:800;font-size:1.02rem;line-height:1.15}
+.med-d{margin:2px 0 0;color:var(--muted);font-size:.9rem;line-height:1.25}
+.med.got .med-d{color:#9be8b6}
+.tier{display:inline-block;font-size:.72rem;font-weight:800;border-radius:999px;padding:0 7px;vertical-align:2px;color:#1b2547}
+.tier.t0{background:#e0a06a}.tier.t1{background:#d6deef}.tier.t2{background:#ffd23f}
+.med-bar{height:7px;border-radius:99px;background:#33406e;margin-top:6px;overflow:hidden}
+.med-bar i{display:block;height:100%;background:var(--safe);border-radius:99px}
+.med-p{margin:2px 0 0;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.mb{position:relative;flex:none;width:50px;height:58px;display:block}
+.mb-rib{position:absolute;left:13px;top:0;width:24px;height:20px;background:linear-gradient(90deg,#ff5a6e 50%,#5ad1ff 50%);clip-path:polygon(0 0,100% 0,80% 100%,20% 100%)}
+.mb-c{position:absolute;left:3px;bottom:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;border:4px solid}
+.mb.t0 .mb-c{background:radial-gradient(circle at 35% 30%,#f2b884,#a8612c);border-color:#d98b4a}
+.mb.t1 .mb-c{background:radial-gradient(circle at 35% 30%,#ffffff,#8f9abb);border-color:#cfd8ef}
+.mb.t2 .mb-c{background:radial-gradient(circle at 35% 30%,#fff3a0,#d69a00);border-color:#ffd23f}
+.mb.lock .mb-rib{background:#3a4677}
+.mb.lock .mb-c{background:#2a3460;border-color:#3a4677}
+.mb.lock .mb-c span{filter:grayscale(1);opacity:.35}
+.med-toast{position:fixed;left:50%;top:10px;z-index:60;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px);width:max-content;
+  background:var(--night-2);border:3px solid var(--hero);border-radius:16px;padding:8px 16px 8px 10px;box-shadow:0 10px 30px rgba(0,0,0,.45);
+  transform:translate(-50%,-150%);transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
+.med-toast.show{transform:translate(-50%,0)}
+.med-toast .tro{width:48px;height:50px;flex:none}
+.med-toast p{margin:0;line-height:1.15}
+.mt-k{font-size:.8rem;font-weight:800;color:var(--hero);text-transform:uppercase;letter-spacing:.05em}
+.mt-n{font-size:1.1rem;font-weight:800}
+.mt-c{font-size:.85rem;color:#9be8b6;font-weight:700}
+@media (prefers-reduced-motion:reduce){.big:active,.pad button:active{transform:none}.med-toast{transition:none}}
 </style>
 </head>
 <body>
@@ -365,6 +405,7 @@ body.mode3d .b3d{display:inline-block}
       <span class="chip schip" title="Pontos"><span class="sic" aria-hidden="true">★</span><span id="scoreTxt">0</span><span class="sr">pontos</span></span>
       <button class="chip coinchip" id="shopBtn" type="button" aria-label="Abrir a loja"><span class="coin"></span><span id="coinTxt">0</span></button>
       <span class="hearts" id="hearts" aria-label="vidas"></span>
+      <button class="chip medchip" id="medBtn" type="button" aria-label="Medalhas e troféus" title="Medalhas e troféus"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6.5 1.5h4.5l2.2 7H8.7z" fill="#ff5a6e"/><path d="M13 1.5h4.5l-2.2 7h-4.5z" fill="#5ad1ff"/><circle cx="12" cy="15.5" r="7" fill="#ffd23f"/><circle cx="12" cy="15.5" r="4.4" fill="#e8a800"/></svg><span id="medTxt">0/17</span></button>
       <button class="chip pchip" id="playerBtn" type="button" aria-label="Trocar de jogador"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0z" fill="currentColor"/></svg><span id="playerTxt">Jogador</span></button>
     </div>
   </header>
@@ -507,7 +548,7 @@ body.mode3d .b3d{display:inline-block}
       <button class="x" id="coopClose" type="button" aria-label="Fechar">✕</button>
     </div>
     <section class="mode">
-      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="sq y"></span></span><div><h4>Aventura</h4><p>Os 5 mundos, sozinho, com <b class="y" id="coopP1">Jogador 1</b>.</p></div></div>
+      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="sq y"></span></span><div><h4>Aventura</h4><p>Os 6 mundos, sozinho, com <b class="y" id="coopP1">Jogador 1</b>.</p></div></div>
       <button class="mini" id="modeAdv" type="button">Jogar a Aventura</button>
     </section>
     <section class="mode">
@@ -523,6 +564,20 @@ body.mode3d .b3d{display:inline-block}
     </section>
   </div>
 </div>
+<div class="modal" id="medals" hidden>
+  <div class="modal-card" role="dialog" aria-labelledby="medTitle">
+    <div class="modal-head">
+      <h3 id="medTitle">Medalhas e Troféus</h3>
+      <button class="x" id="medClose" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <p class="pl-hint" id="medWho"></p>
+    <h4 id="shelfHead">Estante de troféus</h4>
+    <div class="shelf" id="shelf"></div>
+    <h4 id="medHead">Medalhas</h4>
+    <div class="med-grid" id="medGrid"></div>
+  </div>
+</div>
+<div class="med-toast" id="medToast" hidden role="status" aria-live="polite"></div>
 <div class="modal" id="juke" hidden>
   <div class="modal-card" role="dialog" aria-labelledby="jukeTitle">
     <div class="modal-head">
@@ -859,6 +914,67 @@ const LEVELS=[
   "#.#.#.#.#",
   "#...h..v#",
   "#P......#",
+  "#########"]},
+ /* ---- Mundo 6 ---- */
+ {speed:210,map:[
+  "#########",
+  "#P..h...#",
+  "#.##.##.#",
+  "#v.....v#",
+  "#.#.#.#.#",
+  "#...H...#",
+  "#.#.#.#.#",
+  "#h......#",
+  "#.##.##.#",
+  "#S..v...#",
+  "#########"]},
+ {speed:205,map:[
+  "#########",
+  "#H.v.v.P#",
+  "#.#.#.#.#",
+  "#.......#",
+  "##.#.#.##",
+  "#..v.v..#",
+  "#.#.#.#.#",
+  "#.......#",
+  "#.#h#.#.#",
+  "#S.....v#",
+  "#########"]},
+ {speed:200,map:[
+  "#########",
+  "#P..h...#",
+  "#.#####.#",
+  "#v#...#v#",
+  "#.#.H.#.#",
+  "#.#...#.#",
+  "#.##.##.#",
+  "#...h...#",
+  "#.#####.#",
+  "#S.....v#",
+  "#########"]},
+ {speed:195,map:[
+  "#########",
+  "#S#..h#H#",
+  "#.#.#.#.#",
+  "#...#...#",
+  "#.###.#v#",
+  "#v..h...#",
+  "###.#.###",
+  "#...#..v#",
+  "#.#.#.#.#",
+  "#P..h...#",
+  "#########"]},
+ {speed:205,boss:{speed:420,name:'Fogão Cósmico',pal:5},map:[
+  "#########",
+  "#H.....S#",
+  "#.#...#.#",
+  "#.......#",
+  "#...B...#",
+  "#.......#",
+  "#.#...#.#",
+  "#.......#",
+  "#..h...v#",
+  "#P......#",
   "#########"]}
 ];
 const PER_WORLD=5;
@@ -867,7 +983,8 @@ const THEMES=[
  {edge:'#5c2a2a',wall:'#9a4a3a',f1:'#2b1f3f',f2:'#302446'},
  {edge:'#235465',wall:'#4aa3b8',f1:'#16314a',f2:'#1a3752'},
  {edge:'#8a6512',wall:'#e3b437',f1:'#33270f',f2:'#3b2d13'},
- {edge:'#9a3d70',wall:'#ff8ccf',f1:'#371c33',f2:'#40213b'}
+ {edge:'#9a3d70',wall:'#ff8ccf',f1:'#371c33',f2:'#40213b'},
+ {edge:'#3b2f7a',wall:'#8a7cff',f1:'#0f0c26',f2:'#15112f',stars:true}
 ];
 /* cores do fogo: 0 = foguinho normal / Rei Fogão, 1 = lava, 2 = gelo */
 const BOSS_PAL=[
@@ -875,10 +992,11 @@ const BOSS_PAL=[
  {f1:'#ff3d00',f2:'#ffcc00',body:'#b8281a',eye:'#1a0503'},
  {f1:'#8de6ff',f2:'#d4f6ff',body:'#3fb4dc',eye:'#0b2a3a'},
  {f1:'#ffcc33',f2:'#fff3a0',body:'#e8a800',eye:'#3a2600'},
- {f1:'#ff8ccf',f2:'#ffd1ec',body:'#e0569f',eye:'#3a0a24'}
+ {f1:'#ff8ccf',f2:'#ffd1ec',body:'#e0569f',eye:'#3a0a24'},
+ {f1:'#7dff7a',f2:'#e6ffd9',body:'#2fbf5a',eye:'#062a12'}
 ];
 const POWER_MS=4000;
-const shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker');
+const shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker'),medEl=document.getElementById('medals');
 const COLS=9,ROWS=11;
 const cv=document.getElementById('game');
 let ctx=cv.getContext('2d');
@@ -939,11 +1057,14 @@ const TRACKS={
  rosa:{bpm:144,lead:'square',lv:.04,drum:'k h s h k h s h',
   mel:'C5 F5 A5 F5 C6 . A5 . | Bb4 D5 F5 D5 Bb5 . G5 . | C5 E5 G5 E5 C6 . Bb5 . | A5 . G5 . F5 . . . | F5 . A5 . G5 . E5 . | D5 . F5 . E5 . C5 . | Bb4 . D5 . C5 . E5 . | F5 . . . F4 . . .',
   bass:'F2 . F3 . F2 . F3 . | Bb1 . Bb2 . Bb1 . Bb2 . | C2 . C3 . C2 . C3 . | F2 . F3 . F2 . F3 . | D2 . D3 . D2 . D3 . | Bb1 . Bb2 . Bb1 . Bb2 . | C2 . C3 . C2 . C3 . | F2 . C2 . F2 . . .'},
+ espaco:{bpm:120,lead:'triangle',lv:.09,echo:true,drum:'k . h . s . h h',
+  mel:'A4 C5 E5 A5 E5 C5 A4 . | F4 A4 C5 F5 C5 A4 F4 . | G4 B4 D5 G5 D5 B4 G4 . | E4 G#4 B4 E5 B4 G#4 E5 . | A5 . G5 . E5 . C5 . | F5 . E5 . C5 . A4 . | D5 . E5 . F5 . G5 . | E5 . . . E4 . . .',
+  bass:'A2 . . . A2 . E2 . | F2 . . . F2 . C3 . | G2 . . . G2 . D3 . | E2 . . . E2 . B2 . | A2 . . . A2 . E2 . | F2 . . . F2 . C3 . | D2 . . . D2 . A2 . | E2 . . . E2 . . .'},
  star:{bpm:176,lead:'square',lv:.04,drum:'k h s h k h s h',
   mel:'C5 E5 G5 C6 G5 E5 C5 E5 | D5 F5 A5 D6 A5 F5 D5 F5',
   bass:'C3 . C3 . C3 . C3 . | D3 . D3 . D3 . D3 .'}
 };
-const WORLD_MUSIC=['noite','vulcao','gelo','ouro','rosa'];
+const WORLD_MUSIC=['noite','vulcao','gelo','ouro','rosa','espaco'];
 const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 function noteFreq(t){const m=/^([A-G])(#|b)?(\d)$/.exec(t);if(!m)return 440;const n=12*(+m[3]+1)+SEMI[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0);return 440*Math.pow(2,(n-69)/12);}
 function compileLine(str){
@@ -988,7 +1109,7 @@ function musWanted(){
   if(!jukeEl.hidden)return JUKE.playing?jukeTrack().id:null;
   if(!G||TRANS.on)return G?null:'calm';
   if(CUT.on)return WORLD_MUSIC[CUT.t<CUT.t0?CUT.from:CUT.to];
-  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden)return 'calm';
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden||!medEl.hidden)return 'calm';
   if(G.state==='lost')return null;
   if(G.waves)return 'boss';
   if(G.power>0)return 'star';
@@ -1051,17 +1172,18 @@ function coinHud(){
   document.getElementById('coinTxt').textContent=SAVE.coins;
   document.getElementById('shopCoins').textContent=SAVE.coins;
 }
-function addCoins(n){SAVE.coins+=n;persist();coinHud();}
+function addCoins(n){SAVE.coins+=n;persist();coinHud();if(n>0&&typeof medBump==='function')medBump('moedas',n);}
 
 
 /* ---------- transição de fase ---------- */
-const WORLD_NAMES=['A Noite','O Vulcão','A Caverna de Gelo','O Reino de Ouro','O Mundo Rosa'];
+const WORLD_NAMES=['A Noite','O Vulcão','A Caverna de Gelo','O Reino de Ouro','O Mundo Rosa','O Espaço Sideral'];
 const LEVEL_NAMES=[
  'Primeiro Resgate','Corredor Escuro','Labirinto da Lua','Ponte das Estrelas','Castelo do Rei Fogão',
  'Pedras Quentes','Rio de Lava','Túnel de Fogo','Cratera Vermelha','Covil do Fogão de Lava',
  'Chão Escorregadio','Cristais Azuis','Pilares Congelados','Vento Gelado','Trono do Fogão de Gelo',
  'Moedas Brilhantes','Corredor Dourado','Tesouro Escondido','Ponte de Ouro','Tesouraria do Fogão de Ouro',
- 'Nuvem de Algodão','Rio de Chiclete','Torre de Doces','Labirinto de Pirulito','Castelo do Fogão Rosa'
+ 'Nuvem de Algodão','Rio de Chiclete','Torre de Doces','Labirinto de Pirulito','Castelo do Fogão Rosa',
+ 'Estação Espacial','Chuva de Meteoros','Anéis de Saturno','Buraco Negro','Nave do Fogão Cósmico'
 ];
 let PROG_KEY='missao-resgate-mundo';
 let SAVED_WORLD=0;
@@ -1146,7 +1268,7 @@ function addGlitter(x,y,n,dir,spread){
 }
 function catchUnicorn(x,y){
   const dir=x<COLS/2?1:-1;
-  addCoins(5);G.got+=5;addPoints(50);sfx.fart();
+  addCoins(5);G.got+=5;addPoints(50);sfx.fart();medBump('unis');
   addGlitter(x+.5-dir*.35,y+.6,36,dir,1);
   G.flyers.push({x0:x+.5,y0:y+.5,cx:x+.5,cy:y+.5,t:0,acc:0,dir});
   G.floats.push({x:x+.5,y:y+.15,text:'PUM! +5',t:1300,life:1300,rainbow:true});
@@ -1161,9 +1283,9 @@ function drawGlitter(g){
 /* ---------- cena de viagem entre os mundos ---------- */
 const cutEl=document.getElementById('cut'),cutCv=document.getElementById('cutCv'),cutCtx=cutCv.getContext('2d');
 const CUT={on:false,done:false,t:0,D:7.6,t0:3.3,from:0,to:1,next:0,W:0,H:0,dpr:1,deco:null,spark:[],chimed:false,lastStep:0};
-const SKY=[{top:'#0b1130',bot:'#2a3768'},{top:'#22091a',bot:'#7a2a1e'},{top:'#081d30',bot:'#2f7590'},{top:'#221704',bot:'#7a5a12'},{top:'#2a0b26',bot:'#a3407e'}];
-const LEAVE=['Saindo da Noite...','Saindo do Vulcão...','Saindo da Caverna de Gelo...','Saindo do Reino de Ouro...','Saindo do Mundo Rosa...'];
-const ARRIVE=['Chegando na Noite!','Chegando no Vulcão!','Chegando na Caverna de Gelo!','Chegando no Reino de Ouro!','Chegando no Mundo Rosa!'];
+const SKY=[{top:'#0b1130',bot:'#2a3768'},{top:'#22091a',bot:'#7a2a1e'},{top:'#081d30',bot:'#2f7590'},{top:'#221704',bot:'#7a5a12'},{top:'#2a0b26',bot:'#a3407e'},{top:'#03020c',bot:'#241a5c'}];
+const LEAVE=['Saindo da Noite...','Saindo do Vulcão...','Saindo da Caverna de Gelo...','Saindo do Reino de Ouro...','Saindo do Mundo Rosa...','Saindo do Espaço Sideral...'];
+const ARRIVE=['Chegando na Noite!','Chegando no Vulcão!','Chegando na Caverna de Gelo!','Chegando no Reino de Ouro!','Chegando no Mundo Rosa!','Chegando no Espaço Sideral!'];
 const modp=(a,m)=>((a%m)+m)%m;
 function hexMix(a,b,k){
   const pa=parseInt(a.slice(1),16),pb=parseInt(b.slice(1),16);
@@ -1241,6 +1363,26 @@ function cutDeco(w,alpha,cam,W,H,gy,t,T){
     ctx.font=`${Math.max(12,T*.35)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
     for(const e of d.embers){ctx.fillStyle=`hsl(${320+e.h},90%,72%)`;ctx.fillText('♥',modp(e.x*W-cam*.35+Math.sin(t*2+e.x*9)*10,W),gy-modp(e.y+t*e.s*1.6,1)*gy);}
     for(const s of d.snow){ctx.fillStyle=['#ffe14d','#5ad1ff','#5fe08a','#fff'][Math.floor(s.p)%4];ctx.fillRect(modp(s.x*W-cam*.1,W),modp(s.y+t*s.s*1.4,1)*gy,s.r*2.2,s.r*.9);}
+  }else if(w===5){
+    // espaço: estrelas piscando, planeta com anel, planetinhas, estrelas cadentes e pedras da lua
+    for(const s of d.stars){ctx.fillStyle=`rgba(255,255,255,${.5+.45*Math.sin(t*3+s.p)})`;ctx.beginPath();ctx.arc(modp(s.x*W-cam*.02,W),s.y*gy*1.4,s.r,0,Math.PI*2);ctx.fill();}
+    for(let k=0;k<4;k++){const e=d.embers[k],ph=modp(t*.45+e.x*3,1);if(ph>.35)continue;const q=ph/.35,sx=W*(1.05-q*1.3)+e.x*W*.3,sy=H*(.04+e.y*.25)+q*H*.18;
+      const lg=ctx.createLinearGradient(sx,sy,sx+T*1.6,sy-T*.25);lg.addColorStop(0,'rgba(255,255,255,.95)');lg.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.strokeStyle=lg;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+T*1.6,sy-T*.25);ctx.stroke();}
+    const px=W*.78,py=H*.2,pr=Math.max(22,T*.8);
+    ctx.strokeStyle='rgba(255,209,236,.75)';ctx.lineWidth=Math.max(3,pr*.12);
+    ctx.beginPath();ctx.ellipse(px,py,pr*1.75,pr*.42,-.25,Math.PI,Math.PI*2);ctx.stroke();
+    const pg=ctx.createRadialGradient(px-pr*.35,py-pr*.35,pr*.1,px,py,pr);pg.addColorStop(0,'#d7b8ff');pg.addColorStop(1,'#7a4cff');
+    ctx.fillStyle=pg;ctx.beginPath();ctx.arc(px,py,pr,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(px-pr*.9,py-pr*.2,pr*1.8,pr*.14);
+    ctx.beginPath();ctx.ellipse(px,py,pr*1.75,pr*.42,-.25,0,Math.PI);ctx.stroke();
+    const gap=W*.45,off=modp(cam*.12,gap),PC=['#5ad1ff','#ff8a5c','#5fe08a'];
+    for(let x=-gap-off,k=0;x<W+gap;x+=gap,k++){const r=Math.max(8,T*.28),cx=x+gap*.3,cy=H*(.32+.08*Math.sin(k*2.3+Math.floor((x+off+cam*.12)/gap)));
+      ctx.fillStyle=PC[modp(Math.floor((x+off+cam*.12)/gap),3)];ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.arc(cx+r*.3,cy+r*.2,r*.75,0,Math.PI*2);ctx.fill();}
+    const rg=W*.36,ro=modp(cam*.3,rg);
+    for(let x=-rg-ro;x<W+rg;x+=rg){ctx.fillStyle='#2b2550';ctx.beginPath();ctx.ellipse(x+rg*.5,gy,rg*.32,H*.07,0,Math.PI,0);ctx.fill();
+      ctx.fillStyle='#1d1940';ctx.beginPath();ctx.ellipse(x+rg*.42,gy-H*.03,rg*.05,H*.012,0,0,Math.PI*2);ctx.ellipse(x+rg*.6,gy-H*.045,rg*.035,H*.009,0,0,Math.PI*2);ctx.fill();}
   }else{
     ctx.fillStyle='rgba(191,239,255,.35)';const sg=Math.max(40,W*.06),so=modp(cam*.15,sg);
     for(let x=-so;x<W+sg;x+=sg){const h=H*(.06+.05*Math.abs(Math.sin(x*.37+Math.floor((x+so+cam*.15)/sg))));ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+sg*.5,0);ctx.lineTo(x+sg*.25,h);ctx.closePath();ctx.fill();}
@@ -1373,6 +1515,104 @@ function drawPortals(t){
   G.portals.forEach((p,k)=>drawPortal(p.x*c+c/2,p.y*c+c/2,c*.42,k,t));
 }
 
+/* ---------- medalhas e troféus (cada jogador tem os seus) ---------- */
+const MEDALS=[
+ {id:'primeiro',name:'Primeiro Resgate',desc:'Salve a primeira pessoa.',ic:'🙋',tier:0},
+ {id:'intocavel',name:'Intocável',desc:'Termine uma fase sem perder nenhum coração.',ic:'💖',tier:0},
+ {id:'cacador',name:'Caçador de Chefões',desc:'Vença o primeiro chefão.',ic:'👑',tier:0},
+ {id:'portais',name:'Viajante dos Portais',desc:'Atravesse 20 portais.',ic:'🌀',tier:0,goal:20,c:'portais'},
+ {id:'estiloso',name:'Estiloso',desc:'Compre alguma coisa na Loja do Herói.',ic:'🎩',tier:0},
+ {id:'arquiteto',name:'Arquiteto',desc:'Salve uma fase no Criar fase.',ic:'✏️',tier:0},
+ {id:'amigos',name:'Melhores Amigos',desc:'Termine uma fase no co-op.',ic:'🤝',tier:0},
+ {id:'visao3d',name:'Visão 3D',desc:'Termine uma fase no 3D.',ic:'🕶️',tier:0},
+ {id:'relampago',name:'Relâmpago',desc:'Termine uma fase em menos de 10 segundos.',ic:'⚡',tier:1},
+ {id:'comecome',name:'Come-come',desc:'Pegue 3 foguinhos com uma estrela só.',ic:'😋',tier:1},
+ {id:'unicornio',name:'Amigo dos Unicórnios',desc:'Pegue 10 unicórnios.',ic:'🦄',tier:1,goal:10,c:'unis'},
+ {id:'cofrinho',name:'Cofrinho Cheio',desc:'Ganhe 100 moedas.',ic:'🐷',tier:1,goal:100,c:'moedas'},
+ {id:'surfista',name:'Surfista',desc:'Chegue na onda 5 do Modo Ondas.',ic:'🌊',tier:1},
+ {id:'apagador',name:'Apagador de Fogo',desc:'Pegue 25 foguinhos com a estrela.',ic:'🧯',tier:2,goal:25,c:'fogos'},
+ {id:'mestre',name:'Mestre dos Pontos',desc:'Faça 5.000 pontos numa partida.',ic:'⭐',tier:2},
+ {id:'astronauta',name:'Astronauta',desc:'Chegue no Mundo 6.',ic:'🚀',tier:2},
+ {id:'heroi',name:'Herói de Todos os Mundos',desc:'Vença o Fogão Cósmico e zere o jogo.',ic:'🌟',tier:2}
+];
+const TIERS=[{name:'Bronze',coins:5},{name:'Prata',coins:10},{name:'Ouro',coins:20}];
+const TROPHY_COINS=15;
+let MED={got:{},c:{},tro:{}};
+function medKey(){return PLAYER?'missao-resgate-medalhas:'+PLAYER.id:null;}
+function medLoad(){
+  const k=medKey(),r=k?lsGet(k,null):null;
+  MED={got:(r&&r.got)||{},c:(r&&r.c)||{},tro:(r&&r.tro)||{}};
+  medHud();
+}
+function medSave(){const k=medKey();if(k)lsSet(k,MED);}
+function medCount(){return MEDALS.filter(m=>MED.got[m.id]).length;}
+function troCount(){let n=0;for(let w=0;w<LEVELS.length/PER_WORLD;w++)if(MED.tro[w])n++;return n;}
+function medHud(){const el=document.getElementById('medTxt');if(el)el.textContent=`${medCount()}/${MEDALS.length}`;}
+function medal(id){
+  if(!PLAYER||MED.got[id])return;
+  const m=MEDALS.find(x=>x.id===id);if(!m)return;
+  MED.got[id]=Date.now();
+  SAVE.coins+=TIERS[m.tier].coins;persist();coinHud();
+  medSave();medHud();toast({kind:'medal',m});
+}
+function medBump(c,n=1){
+  if(!PLAYER)return;
+  MED.c[c]=(MED.c[c]||0)+n;medSave();
+  for(const m of MEDALS)if(m.c===c&&MED.c[c]>=m.goal)medal(m.id);
+}
+function trophy(w){
+  if(!PLAYER||MED.tro[w])return;
+  MED.tro[w]=Date.now();
+  SAVE.coins+=TROPHY_COINS;persist();coinHud();
+  medSave();toast({kind:'trophy',w});
+}
+function medalBadge(m,got){return `<span class="mb t${m.tier}${got?'':' lock'}" aria-hidden="true"><span class="mb-rib"></span><span class="mb-c"><span>${m.ic}</span></span></span>`;}
+function trophySvg(w,got){
+  const c=got?THEMES[w].wall:'#34406e',d=got?THEMES[w].edge:'#2a3460',tx=got?'#ffffff':'#6a77aa';
+  return `<svg class="tro" viewBox="0 0 64 66" aria-hidden="true"><path d="M16 6h32v16a16 16 0 0 1-32 0z" fill="${c}"/><path d="M16 11H7v4a10 10 0 0 0 11 10M48 11h9v4a10 10 0 0 1-11 10" fill="none" stroke="${c}" stroke-width="4"/><rect x="28" y="37" width="8" height="12" fill="${d}"/><rect x="17" y="49" width="30" height="12" rx="3" fill="${d}"/><text x="32" y="28" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="${tx}">${got?w+1:'?'}</text>${got?'<path d="M21 10q-1 8 1 14" stroke="rgba(255,255,255,.5)" stroke-width="3" fill="none" stroke-linecap="round"/>':''}</svg>`;
+}
+/* aviso de medalha nova, lá em cima */
+const TOAST={q:[],busy:false};
+function toast(x){TOAST.q.push(x);if(!TOAST.busy)toastNext();}
+function toastNext(){
+  const el=document.getElementById('medToast'),x=TOAST.q.shift();
+  if(!x){TOAST.busy=false;el.hidden=true;return;}
+  TOAST.busy=true;
+  if(x.kind==='medal'){const T=TIERS[x.m.tier];el.innerHTML=`${medalBadge(x.m,true)}<div><p class="mt-k">Medalha nova! · ${T.name}</p><p class="mt-n">${x.m.name}</p><p class="mt-c">+${T.coins} moedas</p></div>`;}
+  else el.innerHTML=`${trophySvg(x.w,true)}<div><p class="mt-k">Troféu novo!</p><p class="mt-n">Mundo ${x.w+1} · ${WORLD_NAMES[x.w]}</p><p class="mt-c">+${TROPHY_COINS} moedas</p></div>`;
+  el.hidden=false;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
+  [1047,1319,1568,2093].forEach((f,i)=>tone(f,.16,'triangle',.05,.05+i*.08));
+  setTimeout(()=>{el.classList.remove('show');setTimeout(toastNext,380);},2700);
+}
+/* a estante */
+function renderMedals(){
+  const bosses=LEVELS.filter(l=>l.boss).map(l=>l.boss.name),nw=bosses.length;
+  document.getElementById('medWho').innerHTML=PLAYER?`Medalhas de <b>${esc(PLAYER.name)}</b>. Cada medalha dá moedas: bronze 5, prata 10 e ouro 20. Cada troféu dá ${TROPHY_COINS}.`:'';
+  document.getElementById('shelfHead').textContent=`Estante de troféus · ${troCount()} de ${nw}`;
+  let sh='';
+  for(let r=0;r*3<nw;r++){
+    sh+='<div class="shelf-row">';
+    for(let k=0;k<3&&r*3+k<nw;k++){const w=r*3+k,got=!!MED.tro[w];sh+=`<div class="tro-slot${got?'':' lock'}">${trophySvg(w,got)}<span>${got?esc(bosses[w]):`Chefão do Mundo ${w+1}`}</span></div>`;}
+    sh+='</div>';
+  }
+  document.getElementById('shelf').innerHTML=sh;
+  document.getElementById('medHead').textContent=`Medalhas · ${medCount()} de ${MEDALS.length}`;
+  document.getElementById('medGrid').innerHTML=MEDALS.map(m=>{
+    const got=!!MED.got[m.id],v=Math.min(m.goal||0,MED.c[m.c]||0);
+    const prog=!got&&m.goal?`<div class="med-bar" aria-hidden="true"><i style="width:${Math.round(v/m.goal*100)}%"></i></div><p class="med-p">${v} de ${m.goal}</p>`:'';
+    return `<div class="med${got?' got':''}">${medalBadge(m,got)}<div class="med-t"><p class="med-n">${m.name} <span class="tier t${m.tier}">${TIERS[m.tier].name}</span></p><p class="med-d">${got?'✔ ':''}${m.desc}</p>${prog}</div></div>`;
+  }).join('');
+}
+function openMedals(){
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden||!jukeEl.hidden)return;
+  unlockAudio();renderMedals();medEl.hidden=false;medEl.scrollTop=0;
+  try{document.getElementById('medClose').focus({preventScroll:true})}catch(e){}
+}
+function closeMedals(){medEl.hidden=true;}
+document.getElementById('medBtn').addEventListener('click',openMedals);
+document.getElementById('medClose').addEventListener('click',closeMedals);
+medEl.addEventListener('click',e=>{if(e.target===medEl)closeMedals();});
+
 /* ---------- tamanho ---------- */
 function resize(){
   const w=cv.clientWidth||360;const dpr=Math.min(window.devicePixelRatio||1,3);
@@ -1424,6 +1664,7 @@ function loadLevel(i,custom){
   G.p.id=0;G.p.inv=0;G.p.sx=start.x;G.p.sy=start.y;G.ps=[G.p];
   if(COOP.on){const s2=coopSpot(start);G.ps.push({id:1,x:s2.x,y:s2.y,rx:s2.x,ry:s2.y,sx:s2.x,sy:s2.y,face:-1,inv:0});G.lives=G.maxLives=5;}
   if(boss)G.banner={text:L.boss.name,sub:'Pegue a estrela e encoste nele!',t:2600};
+  if(!custom&&i>=5*PER_WORLD)medal('astronauta');
   hud();
 }
 function isWall(x,y){return x<0||y<0||x>=COLS||y>=ROWS||G.walls[y*COLS+x]}
@@ -1455,7 +1696,7 @@ function move(d,pi=0){
   if(v[0])p.face=v[0];
   if(isWall(nx,ny))return;
   p.x=nx;p.y=ny;sfx.step();
-  {const tp=portalAt(nx,ny);if(tp){p.x=p.rx=tp.x;p.y=p.ry=tp.y;portalFx({x:nx,y:ny},tp,true);}}
+  {const tp=portalAt(nx,ny);if(tp){p.x=p.rx=tp.x;p.y=p.ry=tp.y;portalFx({x:nx,y:ny},tp,true);if(!p.bot)medBump('portais');}}
   const ci=G.coins.findIndex(o=>o.x===nx&&o.y===ny);
   if(ci>=0){G.coins.splice(ci,1);G.got++;addCoins(1);addPoints(10);sfx.coin();G.floats.push({x:nx+.5,y:ny+.3,text:'+1',t:700});}
   const ui=G.unis.findIndex(o=>o.x===nx&&o.y===ny);
@@ -1518,7 +1759,7 @@ function checkHit(){
       // estilo Pac-Man: o foguinho some do mapa e cada um vale o dobro do anterior
       const eaten=G.enemies.filter(e=>e.x===p.x&&e.y===p.y);
       for(const e of eaten){
-        G.kills=(G.kills||0)+1;
+        G.kills=(G.kills||0)+1;medBump('fogos');if(G.kills>=3)medal('comecome');
         const pts=Math.min(400,25*Math.pow(2,G.kills-1));
         G.puffs.push({x:e.x+.5,y:e.y+.5,t:650,s:1.25});addPoints(pts,e.x+.5,e.y+.1);
         if(G.kills%3===0){G.power+=1000;G.floats.push({x:e.x+.5,y:e.y-.35,text:'+1 segundo!',t:1300,life:1300,color:'#fff3a0'});[988,1319,1760].forEach((f,i)=>tone(f,.1,'square',.04,.12+i*.06));}
@@ -1580,6 +1821,15 @@ function win(){
     const r=recordTime(G.i,G.elapsed),md=COOP.on?' no co-op':'';G.trec=r.rec;
     G.tline+=r.rec?(r.old?` · Recorde novo${md}! (era ${fmtTime(r.old)})`:` · Primeiro recorde${md}!`):` · Recorde${md}: ${fmtTime(r.old)}`;
     if(r.rec)[1319,1568,2093].forEach((f,i)=>tone(f,.14,'triangle',.05,1.1+i*.09));
+  }
+  if(!G.custom&&PLAYER){
+    medal('primeiro');
+    if(G.lives>=G.maxLives)medal('intocavel');
+    if(G.elapsed<10000)medal('relampago');
+    if(COOP.on)medal('amigos');
+    if(typeof V3!=='undefined'&&V3.on)medal('visao3d');
+    if(LEVELS[G.i].boss){medal('cacador');trophy(Math.floor(G.i/PER_WORLD));}
+    if(G.i===LEVELS.length-1)medal('heroi');
   }
   if(G.custom){
     startVictory(winner,'Fase completa!',sub,()=>show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker()));
@@ -1702,8 +1952,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=29;
-const NEWS=['Portais em todas as fases: entrou no azul, sai no laranja!','Os foguinhos também atravessam os portais. Cuidado!','Portal azul e laranja no Criar fase.'];
+const VERSION=30;
+const NEWS=['Mundo 6: o Espaço Sideral, com 5 fases novas e o chefão Fogão Cósmico!','Medalhas de bronze, prata e ouro: cumpra os desafios!','Estante de troféus: cada chefão vencido dá um troféu.','Toque na medalha lá em cima pra ver tudo.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -1715,7 +1965,7 @@ const ICON={
  coin:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#e8a800"/><circle cx="32" cy="32" r="18" fill="#ffd23f"/><rect x="28" y="21" width="8" height="22" rx="3" fill="#e8a800"/><circle cx="24" cy="24" r="4" fill="#fff6c2"/></svg>`,
  shop:`<svg viewBox="0 0 64 64"><path d="M22 26 V18 A10 10 0 0 1 42 18 V26" fill="none" stroke="#ffd23f" stroke-width="4" stroke-linecap="round"/><rect x="10" y="22" width="44" height="36" rx="8" fill="#7a4cff"/><path d="M32 29 L35.5 37 L44 37.5 L37.5 43 L39.5 51 L32 46.5 L24.5 51 L26.5 43 L20 37.5 L28.5 37Z" fill="#ffe14d"/></svg>`,
  boss:`<svg viewBox="0 0 64 64"><path d="M6 40 Q12 18 20 40Z M22 40 Q32 14 42 40Z M44 40 Q52 18 58 40Z" fill="#ff7a2e"/><rect x="6" y="30" width="52" height="30" rx="10" fill="#ff5a36"/><path d="M20 31 L20 16 L26 22 L32 10 L38 22 L44 16 L44 31Z" fill="#ffcc33"/><circle cx="32" cy="24" r="2.5" fill="#e0322b"/><circle cx="22" cy="46" r="4" fill="#2a0c06"/><circle cx="42" cy="46" r="4" fill="#2a0c06"/><path d="M14 38 L26 42 M50 38 L38 42" stroke="#2a0c06" stroke-width="3.5" stroke-linecap="round"/></svg>`,
- worlds:`<svg viewBox="0 0 64 64"><g font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="11" text-anchor="middle" fill="#f4f1ff"><rect x="4" y="8" width="16" height="20" rx="4" fill="#4a5ea6"/><text x="12" y="22">1</text><rect x="24" y="8" width="16" height="20" rx="4" fill="#9a4a3a"/><text x="32" y="22">2</text><rect x="44" y="8" width="16" height="20" rx="4" fill="#4aa3b8"/><text x="52" y="22">3</text><rect x="14" y="34" width="16" height="20" rx="4" fill="#e3b437"/><text x="22" y="48" fill="#3a2600">4</text><rect x="34" y="34" width="16" height="20" rx="4" fill="#ff8ccf"/><text x="42" y="48" fill="#3a0a24">5</text></g></svg>`,
+ worlds:`<svg viewBox="0 0 64 64"><g font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="11" text-anchor="middle" fill="#f4f1ff"><rect x="4" y="8" width="16" height="20" rx="4" fill="#4a5ea6"/><text x="12" y="22">1</text><rect x="24" y="8" width="16" height="20" rx="4" fill="#9a4a3a"/><text x="32" y="22">2</text><rect x="44" y="8" width="16" height="20" rx="4" fill="#4aa3b8"/><text x="52" y="22">3</text><rect x="4" y="34" width="16" height="20" rx="4" fill="#e3b437"/><text x="12" y="48" fill="#3a2600">4</text><rect x="24" y="34" width="16" height="20" rx="4" fill="#ff8ccf"/><text x="32" y="48" fill="#3a0a24">5</text><rect x="44" y="34" width="16" height="20" rx="4" fill="#8a7cff"/><text x="52" y="48">6</text></g></svg>`,
  tablet:`<svg viewBox="0 0 64 64"><rect x="3" y="14" width="58" height="38" rx="6" fill="#26335f" stroke="#aab4de" stroke-width="2.5"/><rect x="9" y="19" width="22" height="28" rx="3" fill="#4a5ea6"/><rect x="16" y="30" width="7" height="7" rx="2" fill="#ffd23f"/><g fill="#ffd23f"><path d="M46 21 L50 27 H42Z"/><path d="M37 36 L43 32 V40Z"/><path d="M46 45 L50 39 H42Z"/><path d="M55 36 L49 32 V40Z"/></g></svg>`,
  maker:`<svg viewBox="0 0 64 64"><rect x="3" y="4" width="44" height="54" rx="6" fill="#26335f" stroke="#4a5ea6" stroke-width="2"/><rect x="8" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="9" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="32" y="9" width="10" height="10" rx="2" fill="#3ccf7a"/><rect x="8" y="21" width="10" height="10" rx="2" fill="#4a5ea6"/><rect x="20" y="33" width="10" height="10" rx="2" fill="#ff5a36"/><rect x="8" y="45" width="10" height="10" rx="2" fill="#ffd23f"/><path d="M34 60 L36 49 L54 31 L61 38 L43 56Z" fill="#ffd23f"/><path d="M34 60 L36 49 L43 56Z" fill="#f2c09a"/><path d="M51 34 L58 41" stroke="#1b2547" stroke-width="2"/></svg>`,
  music:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#7a4cff" opacity=".3"/><path d="M24 46V16l24-5v30" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linejoin="round"/><circle cx="18" cy="46" r="7" fill="#ffd23f"/><circle cx="42" cy="41" r="7" fill="#ffd23f"/><path d="M24 24l24-5" stroke="#ffd23f" stroke-width="5"/></svg>`,
@@ -1726,6 +1976,7 @@ const ICON={
  clock:`<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="22" fill="#ffe680"/><circle cx="32" cy="36" r="17" fill="#1b2547"/><path d="M32 36V24M32 36l8 5" stroke="#ffe680" stroke-width="4" stroke-linecap="round"/><rect x="26" y="5" width="12" height="7" rx="2" fill="#ffe680"/><path d="M50 14l4-4" stroke="#ffe680" stroke-width="5" stroke-linecap="round"/></svg>`,
  v3d:`<svg viewBox="0 0 64 64"><path d="M32 6 L56 18 L56 46 L32 58 L8 46 L8 18Z" fill="#ffd23f"/><path d="M32 6 L56 18 L32 30 L8 18Z" fill="#ffe680"/><path d="M32 30 L56 18 L56 46 L32 58Z" fill="#d9a400"/><rect x="18" y="34" width="28" height="16" rx="5" fill="#ff5a36" transform="rotate(-8 32 42)"/><text x="32" y="47" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="14" fill="#fff" transform="rotate(-8 32 42)">3D</text></svg>`,
  portal:`<svg viewBox="0 0 64 64"><circle cx="18" cy="34" r="14" fill="#0a0e20" stroke="#4aa3ff" stroke-width="5" stroke-dasharray="9 4"/><circle cx="46" cy="34" r="14" fill="#0a0e20" stroke="#ff9a3c" stroke-width="5" stroke-dasharray="9 4"/><path d="M14 34a4 4 0 0 1 8 0M42 34a4 4 0 0 1 8 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 14 Q32 6 40 14" stroke="#ffd23f" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M36 10 L40 14 L35 16" stroke="#ffd23f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ medal:`<svg viewBox="0 0 64 64"><path d="M18 4h12l6 18H24z" fill="#ff5a6e"/><path d="M34 4h12l-6 18H28z" fill="#5ad1ff"/><circle cx="32" cy="40" r="20" fill="#ffd23f"/><circle cx="32" cy="40" r="14" fill="#e8a800"/><path d="M32 30l3 6.2 6.8.8-5 4.6 1.3 6.7L32 45l-6.1 3.3 1.3-6.7-5-4.6 6.8-.8z" fill="#fff3a0"/></svg>`,
  news:`<svg viewBox="0 0 64 64"><rect x="4" y="18" width="56" height="28" rx="14" fill="#ffd23f"/><text x="32" y="38" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="17" fill="#1b2547">NOVO</text></svg>`
 };
 const TUTORIAL=[
@@ -1745,7 +1996,8 @@ const TUTORIAL=[
  {icon:'waves',title:'Modo Ondas',text:'No mesmo botão tem o Modo Ondas: você e 3 bots (Rosa, Azul e Verde) fogem dos foguinhos que correm pros lados ou pra cima. A setinha amarela avisa de onde eles vão sair. Quantas ondas você aguenta?'},
  {icon:'shop',title:'Loja do Herói',text:'Toque no botão de moedas lá em cima pra abrir a loja. Compre chapéus, capas e rastros mágicos pro seu quadradinho.'},
  {icon:'boss',title:'Chefões',text:'Na última fase de cada mundo tem um chefão gigante que vem atrás de você, e a pessoa fica presa numa jaula. Pegue a estrela e encoste nele 3 vezes pra vencer. A estrela volta a aparecer depois de usar.'},
- {icon:'worlds',title:'5 mundos',text:'São 5 mundos com 5 fases cada: a Noite, o Vulcão, a Caverna de Gelo, o Reino de Ouro (blocos dourados) e o Mundo Rosa (blocos rosa). Os chefões são o Rei Fogão, o Fogão de Lava, o Fogão de Gelo, o Fogão de Ouro e o Fogão Rosa. Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
+ {icon:'worlds',title:'6 mundos',text:'São 6 mundos com 5 fases cada: a Noite, o Vulcão, a Caverna de Gelo, o Reino de Ouro (blocos dourados), o Mundo Rosa (blocos rosa) e o Espaço Sideral (blocos roxos e chão de estrelas). Os chefões são o Rei Fogão, o Fogão de Lava, o Fogão de Gelo, o Fogão de Ouro, o Fogão Rosa e o Fogão Cósmico, que é verde! Antes de cada fase a tela escurece e mostra o nome dela! E quando você passa de mundo, tem uma cena do herói viajando.'},
+ {icon:'medal',title:'Medalhas e troféus',text:'Cumpra desafios pra ganhar medalhas de bronze, prata e ouro, como terminar uma fase sem perder coração ou pegar 3 foguinhos com uma estrela só. Cada chefão vencido dá um troféu pra sua estante! Toque na medalha lá em cima pra ver tudo. Medalhas e troféus também dão moedas.'},
  {icon:'maker',title:'Crie suas fases',text:'Toque em Criar fase, lá em cima na direita. Desenhe paredes, coloque o herói, a pessoa, a casa verde, foguinhos, a estrela e moedas. Toque em Testar pra jogar e em Salvar pra guardar.'},
  {icon:'music',title:'Trilha sonora',text:'Cada mundo tem sua música. O chefão tem música de batalha e a estrela tem música de super-herói! O botão quadrado amarelo com a notinha abre a Trilha Sonora: ouça todas as músicas do jogo e ligue ou desligue a música.'},
  {icon:'v3d',title:'Jogo em 3D',text:'Toque no botão vermelho 3D, no canto de cima à direita, e o jogo vira 3D na hora, sem perder nada! Pra voltar, toque no botão 2D.'},
@@ -1778,7 +2030,7 @@ function endTut(){
 }
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
-document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden)openTutorial();});
+document.getElementById('helpBtn').addEventListener('click',()=>{unlockAudio();if(shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&medEl.hidden)openTutorial();});
 document.getElementById('verTxt').textContent=`Versão ${VERSION}`;
 setTimeout(()=>{document.getElementById('verLine').textContent=document.getElementById('verTxt').textContent;},0);
 
@@ -1944,9 +2196,7 @@ function draw(){
       ctx.fillStyle=TH.edge;ctx.fillRect(x*c,y*c,c,c);
       ctx.fillStyle=TH.wall;rr(x*c+1.5,y*c+1.5,c-3,c-5,c*.16);ctx.fill();
       ctx.fillStyle='rgba(255,255,255,.12)';rr(x*c+c*.18,y*c+c*.14,c*.64,c*.12,c*.06);ctx.fill();
-    }else{
-      ctx.fillStyle=(x+y)%2?TH.f1:TH.f2;ctx.fillRect(x*c,y*c,c,c);
-    }
+    }else tileFloor(x,y,TH,t);
   }
   // casa verde (local seguro)
   const sx=G.safe.x*c,sy=G.safe.y*c,pulse=G.carry?(Math.sin(t*.008)+1)/2:0;
@@ -2037,7 +2287,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&coopEl.hidden&&jukeEl.hidden){
+  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&coopEl.hidden&&jukeEl.hidden&&medEl.hidden){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -2101,6 +2351,7 @@ document.addEventListener('keydown',e=>{
   if(CUT.on){if(e.key==='Enter'||e.key===' '||e.key==='Escape'){e.preventDefault();finishCutscene();}return;}
   if(!makerEl.hidden){if(e.key==='Escape')closeMaker();return;}
   if(!plEl.hidden){if(e.key==='Escape')closePlayers();return;}
+  if(!medEl.hidden){if(e.key==='Escape')closeMedals();return;}
   if(!rankEl.hidden){if(e.key==='Escape')closeRanking();return;}
   if(!coopEl.hidden){if(e.key==='Escape')closeCoop();return;}
   if(!jukeEl.hidden){if(e.key==='Escape')closeJuke();return;}
@@ -2188,14 +2439,14 @@ function shopClick(it){
   if(!it.id){SAVE.eq[it.slot]=null;shopMsg.textContent='Pronto, tirou.';}
   else if(owns(it.id)){SAVE.eq[it.slot]=it.id;shopMsg.textContent=`Usando: ${it.name}.`;}
   else if(SAVE.coins>=it.price){
-    SAVE.coins-=it.price;SAVE.owned.push(it.id);SAVE.eq[it.slot]=it.id;sfx.buy();
+    SAVE.coins-=it.price;SAVE.owned.push(it.id);SAVE.eq[it.slot]=it.id;sfx.buy();medal('estiloso');
     shopMsg.textContent=`Comprou: ${it.name}!`;
   }else{shopMsg.textContent=`Faltam ${it.price-SAVE.coins} moedas pra ${it.name}.`;return;}
   persist();renderShop();
 }
 function openShop(){
   unlockAudio();
-  if(TUT.on||!makerEl.hidden||!plEl.hidden||!rankEl.hidden)return;
+  if(TUT.on||!makerEl.hidden||!plEl.hidden||!rankEl.hidden||!medEl.hidden)return;
   shopEl.hidden=false;shopMsg.textContent='Toque num item pra comprar ou usar.';renderShop();
   setTimeout(()=>{try{document.getElementById('shopClose').focus()}catch(e){}},30);
 }
@@ -2214,7 +2465,7 @@ const TOOLS=[
 ];
 const UNIQUE='PHS*12';
 const SPEEDS=[{name:'Devagar',ms:520},{name:'Normal',ms:420},{name:'Rápido',ms:320}];
-const THEME_NAMES=['Noite','Vulcão','Gelo','Ouro','Rosa'];
+const THEME_NAMES=['Noite','Vulcão','Gelo','Ouro','Rosa','Espaço'];
 const SAMPLE=["#########","#S.....H#","#.......#","#.##.##.#","#...h...#","#.......#","#.##.##.#","#...*...#","#.......#","#P..o..o#","#########"];
 const BLANK=Array.from({length:ROWS},(_,y)=>Array.from({length:COLS},(_,x)=>(x===0||y===0||x===COLS-1||y===ROWS-1)?'#':'.').join(''));
 const FASES_KEY='missao-resgate-fases';
@@ -2224,7 +2475,8 @@ function saveFases(){try{localStorage.setItem(FASES_KEY,JSON.stringify(FASES));}
 const MK={map:SAMPLE.map(r=>[...r]),tool:'#',theme:0,speed:1,editId:null,camp:0};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function withCell(c2,size,fn){const oc=cell,ox=ctx;cell=size;ctx=c2;try{fn()}finally{cell=oc;ctx=ox;}}
-function tileFloor(x,y,TH){ctx.fillStyle=(x+y)%2?TH.f1:TH.f2;ctx.fillRect(x*cell,y*cell,cell,cell);}
+function tileFloor(x,y,TH,t){ctx.fillStyle=(x+y)%2?TH.f1:TH.f2;ctx.fillRect(x*cell,y*cell,cell,cell);
+  if(TH.stars){const h=((x*73856093)^(y*19349663))>>>0;if(h%3!==1){const tw=t==null?1:.55+.45*Math.sin(t*.003+h%17);ctx.globalAlpha=tw;ctx.fillStyle=h%5?'#ffffff':'#ffe178';ctx.beginPath();ctx.arc((x+.15+(h%7)/9)*cell,(y+.15+(h%11)/14)*cell,Math.max(1.2,cell*(.03+(h%4)*.012)),0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}}}
 function tileWall(x,y,TH){
   const c=cell;ctx.fillStyle=TH.edge;ctx.fillRect(x*c,y*c,c,c);
   ctx.fillStyle=TH.wall;rr(x*c+1.5,y*c+1.5,c-3,c-5,c*.16);ctx.fill();
@@ -2326,7 +2578,7 @@ function mkSave(){
   const i=FASES.findIndex(f=>f.id===rec.id);
   if(i>=0)FASES[i]=rec;else FASES.unshift(rec);
   MK.editId=rec.id;mkNameEl.value=rec.name;
-  saveFases();renderList();sfx.buy();
+  saveFases();renderList();sfx.buy();medal('arquiteto');
   mkMsg(`Fase "${rec.name}" salva! Ela está em Minhas fases.`,'good');
 }
 function drawMini(cvs,f){
@@ -2398,7 +2650,7 @@ function buildMaker(){
 }
 function openMaker(){
   unlockAudio();
-  if(!shopEl.hidden||!plEl.hidden||!rankEl.hidden)return;
+  if(!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!medEl.hidden)return;
   if(TUT.on){TUT.first=false;endTut();}
   makerEl.hidden=false;
   document.getElementById('mkBack').hidden=!G.custom;
@@ -2452,7 +2704,7 @@ function loadPlayerData(){
   const v=parseInt(lsGet(PROG_KEY,0),10);SAVED_WORLD=(v>=0&&v<LEVELS.length/PER_WORLD)?v:0;
   SCORE=Object.assign({run:0,best:0,bestWorld:1,checkpoint:0,sent:0},lsGet('missao-resgate-pontos:'+pid,null)||{});
   SCORE.run=SCORE.checkpoint;
-  persistScore();coinHud();scoreHud();
+  medLoad();persistScore();coinHud();scoreHud();
 }
 function scoreHud(){
   if(typeof coopTags==='function'&&document.getElementById('tag1'))coopTags();
@@ -2463,6 +2715,7 @@ function addPoints(n,x,y){
   if(!G||G.custom||!PLAYER||n<=0)return;
   SCORE.run+=n;G.pts+=n;noteWorld();
   if(SCORE.run>SCORE.best)SCORE.best=SCORE.run;
+  if(SCORE.run>=5000)medal('mestre');
   persistScore();scoreHud();
   if(x!=null)G.floats.push({x,y,text:`+${n}`,t:900,life:900,color:'#8de6ff'});
 }
@@ -2584,7 +2837,7 @@ function renderPlayers(){
 function deletePlayer(id){
   const p=PLAYERS.list.find(x=>x.id===id);if(!p)return;
   PLAYERS.list=PLAYERS.list.filter(x=>x.id!==id);
-  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
+  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:','missao-resgate-medalhas:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
   writeMine(cur=>{if(!cur[id])return false;delete cur[id];return true;});
   plMsg(`${p.name} foi apagado.`);
   if(PLAYER&&PLAYER.id===id){
@@ -2596,7 +2849,7 @@ function deletePlayer(id){
 }
 function openPlayers(first){
   unlockAudio();
-  if(!first&&(TUT.on||!makerEl.hidden||!shopEl.hidden||!rankEl.hidden))return;
+  if(!first&&(TUT.on||!makerEl.hidden||!shopEl.hidden||!rankEl.hidden||!medEl.hidden))return;
   PL.first=!!first;plEl.hidden=false;
   document.getElementById('plClose').hidden=PL.first;
   plMsg(PLAYERS.list.length?'Toque no seu nome pra jogar.':'');
@@ -2659,7 +2912,7 @@ function renderCoop(){
 }
 function openCoop(){
   unlockAudio();
-  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden)return;
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!medEl.hidden)return;
   coopEl.hidden=false;renderCoop();
   setTimeout(()=>{try{document.getElementById('coopName').focus({preventScroll:true})}catch(e){}},40);
 }
@@ -2746,7 +2999,7 @@ function wavesTick(dt){
   const W=G.waves;
   if(W.pause>0){
     W.pause-=dt;
-    if(W.pause<=0){nextWave();wavesBanner(`Onda ${W.n}!`,W.n>1&&(W.n-1)%3===0?'+1 coração pra quem está de pé!':'Fuja dos foguinhos!',1300);}
+    if(W.pause<=0){nextWave();if(W.n>=5)medal('surfista');wavesBanner(`Onda ${W.n}!`,W.n>1&&(W.n-1)%3===0?'+1 coração pra quem está de pé!':'Fuja dos foguinhos!',1300);}
     botsTick(dt);return;
   }
   W.clock+=dt;
@@ -2880,6 +3133,7 @@ const JUKE_LIST=[
  {id:'gelo',name:'Caverna de Gelo',where:'Mundo 3',col:'#4aa3b8'},
  {id:'ouro',name:'Reino de Ouro',where:'Mundo 4',col:'#e3b437'},
  {id:'rosa',name:'Mundo Rosa',where:'Mundo 5',col:'#ff8ccf'},
+ {id:'espaco',name:'Espaço Sideral',where:'Mundo 6',col:'#8a7cff'},
  {id:'boss',name:'Batalha',where:'Chefões e Modo Ondas',col:'#ff5a36'},
  {id:'star',name:'Super-herói',where:'Estrela mágica',col:'#ffd23f'},
  {id:'calm',name:'Calminha',where:'Tutorial, loja e Criar fase',col:'#9a6bff'}
@@ -2922,7 +3176,7 @@ function buildJuke(){
 }
 function openJuke(){
   unlockAudio();
-  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden)return;
+  if(TUT.on||!makerEl.hidden||!shopEl.hidden||!plEl.hidden||!rankEl.hidden||!coopEl.hidden||!medEl.hidden)return;
   const cur=G&&G.waves?'boss':G&&!G.custom?WORLD_MUSIC[Math.floor(G.i/PER_WORLD)]:G&&G.custom?WORLD_MUSIC[G.custom.theme]:'noite';
   const k=JUKE_LIST.findIndex(t=>t.id===cur);JUKE.k=k<0?0:k;JUKE.playing=true;
   jukeEl.hidden=false;jukeResize();musGain();renderJuke();
@@ -3405,6 +3659,11 @@ function cut3Build(){
       else if(w===1){g.add(mesh(CONE,tm('#3b1622'),2.4,3.4,2.4,x,1.2,z));g.add(mesh(SPH,tm('#ff5a36',.9),.7,.25,.7,x,2.9,z));}
       else if(w===2){g.add(mesh(CONE,tm('#8de6ff',.25),.45,2.6+j*1.5,.45,x,1.1,z));g.add(mesh(CONE,tm('#d4f6ff',.25),.3,1.6,.3,x+.6,.8,z+.4));}
       else if(w===3){g.add(mesh(BOX,tm('#c99a12'),2.2,2.2,1.2,x,1.1,z));g.add(mesh(BOX,tm('#c99a12'),.7,1.4,.7,x,2.9,z));g.add(mesh(CONE,tm('#ffd23f',.4),.6,.9,.6,x,4,z));}
+      else if(w===5){const PC=['#b07cff','#5ad1ff','#ff8a5c','#5fe08a','#ffd23f'],ps=.45+j*.55,py=4.2+j*2.6,pz=z-8;
+        g.add(mesh(SPH,tm(PC[Math.round(x/4.5+20)%5],.3),ps,ps,ps,x,py,pz,false));
+        if(j>.5){const rg=mesh(CYL,tm('#ffc4e6',.2),ps*2,.02,ps*2,x,py,pz,false);rg.rotation.set(.35,0,.3);g.add(rg);}
+        for(let k=0;k<6;k++)g.add(mesh(SPH,tm('#ffffff',1),.05,.05,.05,x+Math.random()*4.5,1.8+Math.random()*7,z-6-Math.random()*6,false));
+        g.add(mesh(SPH,tm('#2b2550'),1.3,.45,.9,x+2,-.25,z+1.2));}
       else{g.add(mesh(CYL,tm('#ffffff'),.06,2.2,.06,x,1.1,z+2));g.add(mesh(SPH,tm('#ff8ccf',.25),.6,.6,.25,x,2.4,z+2));g.add(mesh(SPH,tm('#ffd1ec',.15),1.3,.8,.8,x+1.5,5+j,z-3));}
     }
     if(w===0){const mo=mesh(SPH,tm('#f4f1ff',.6),1.1,1.1,1.1,0,7,-14);g.add(mo);g.userData.moon=mo;}
@@ -3469,7 +3728,6 @@ function drawCutscene3D(dt){
     }
   });
 }
-
 return {draw3D,drawCutscene3D,r3Resize};
 }
 
