@@ -884,17 +884,17 @@ const LEVELS=[
   "#.#...#.#",
   "#P..h...#",
   "#########"]},
- {speed:278,map:[
+ {speed:305,map:[
   "#########",
   "#S#....H#",
   "#.#.##.##",
   "#.#v...v#",
   "#.#.##..#",
-  "#...#h..#",
+  "#...#...#",
   "###.#.###",
   "#h......#",
   "#.#####.#",
-  "#P..h...#",
+  "#P......#",
   "#########"]},
  {speed:265,map:[
   "#########",
@@ -1700,7 +1700,8 @@ function pickExtras(i,L,walls,start,hpos,safe,spots,beltMap,portals,enemies,fake
       spots.splice(spots.indexOf(c.s),1);spots.splice(spots.indexOf(b),1);X.gates=[c.s];X.button=b;}
   }
   // caixas: fases 2 e 5
-  if(k===1||k===4){X.boxes=[];for(let n=0;n<2;n++){const s=take(q=>dist(q,start)>=3&&!(hpos.x>=0&&dist(q,hpos)<2)&&dist(q,safe)>=2&&!enemies.some(e=>dist(e,q)<2));if(s)X.boxes.push({x:s.x,y:s.y,bump:0});}if(!X.boxes.length)X.boxes=null;}
+  if(k===1||k===4){X.boxes=[];for(let n=0;n<2;n++){const open=q=>[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>!walls[(q.y+dy)*COLS+q.x+dx]).length>=3;
+      const s=take(q=>open(q)&&dist(q,start)>=3&&!(hpos.x>=0&&dist(q,hpos)<2)&&dist(q,safe)>=2&&!enemies.some(e=>dist(e,q)<2)&&!X.boxes.some(b=>dist(b,q)<3));if(s)X.boxes.push({x:s.x,y:s.y,bump:0});}if(!X.boxes.length)X.boxes=null;}
   // canos: fase 4
   if(k===3){const a=take(q=>dist(q,start)<=5),b=a&&take(q=>dist(q,a)>=6);if(a&&b)X.pipes=[a,b];else if(a)spots.push(a);}
   // canhão: fase 3 a partir do mundo 2, e fase 1 a partir do mundo 4
@@ -2895,8 +2896,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=36;
-const NEWS=['Pular fases: a cada 10 game overs na Aventura, você ganha 3 pulos de fase!','Heróis novos, óculos, bigode, mochila a jato e dancinhas na loja.','Modos Sem Fim, Contra o Relógio, Batalha dos Chefões e o Chefão Final.','Dia e noite conforme a hora de verdade.'];
+const VERSION=37;
+const NEWS=['A Fase 2 do Mundo 4 ficou mais fácil: menos foguinhos e mais devagar.','As caixas agora ficam só em lugares abertos, nunca tampando um corredor.','Pular fases: a cada 10 game overs na Aventura, você ganha 3 pulos de fase!'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
