@@ -16,6 +16,9 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Itens novos: botas de velocidade 👟 e bomba de purpurina ✨
 - Caixas de empurrar 📦, botões que fazem paredes sumirem 🔘 e canos verdes
 - Inimigos novos: canhão de fogo e foguinho dorminhoco 😴
+- Modos novos: Sem Fim ♾️ (fases sorteadas), Contra o Relógio ⏰ e Batalha dos Chefões 👑
+- Chefão Final: o Pai de Todos os Fogões, com 9 vidas e 3 fases de luta
+- A Historinha do jogo 📖 (começo, antes do chefão final e final)
 - Medalhas 🏅 de bronze, prata e ouro por desafios, e uma estante com um troféu pra cada chefão vencido
 - Ranking 🏆 com os recordes dos jogadores deste aparelho
 - Moedas nas fases e bônus de rapidez
