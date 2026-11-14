@@ -344,6 +344,20 @@ body.mode3d .b3d{display:inline-block}
   body.coop .padbox[data-pl="1"]{grid-column:3;grid-row:1 / span 3}
   body.coop .pad{grid-template-columns:repeat(3,70px);grid-template-rows:repeat(2,64px);gap:8px}
 }
+/* modos novos e historinha */
+.mode-em{font-size:1.5rem;line-height:1}
+.mode-rec{color:var(--hero)!important;font-weight:700}
+.mode-rec:empty{display:none}
+.story-card{display:flex;flex-direction:column;gap:10px}
+.story-wrap{width:100%;border-radius:14px;overflow:hidden}
+#storyCv{display:block}
+.story-text{margin:0;font-size:1.12rem;line-height:1.35;min-height:4.1em;text-align:center}
+.story-dots{display:flex;gap:6px;justify-content:center}
+.story-dots i{width:9px;height:9px;border-radius:50%;background:#3a4677}
+.story-dots i.on{background:var(--hero);width:22px;border-radius:99px}
+.story-btns{display:flex;gap:10px;justify-content:center;align-items:center}
+.story-btns .big{margin:0}
+.story-btns .mini:disabled{opacity:.35}
 /* mapa dos mundos */
 .lvlchip{display:inline-flex;align-items:center;gap:6px;border:0;color:var(--ink);font:700 .95rem var(--display);cursor:pointer}
 .lvlchip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
@@ -578,6 +592,35 @@ body.mode3d .b3d{display:inline-block}
       <div class="mode-head"><span class="mode-ic four" aria-hidden="true"><span class="sq y"></span><span class="sq p"></span><span class="sq b"></span><span class="sq g"></span></span><div><h4>Ondas com bots 🌊</h4><p>Você contra os foguinhos, junto com 3 bots: Rosa, Azul e Verde. Os foguinhos correm pros lados ou pra cima e somem na parede. Aguente o máximo de ondas!</p><p class="mode-rec" id="wavesRec"></p></div></div>
       <button class="mini play" id="wavesStart" type="button">Começar as Ondas</button>
     </section>
+    <section class="mode">
+      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="mode-em">♾️</span></span><div><h4>Sem Fim</h4><p>Fases sorteadas que nunca acabam e ficam cada vez mais difíceis. Até onde você chega?</p><p class="mode-rec" id="recEndless"></p></div></div>
+      <button class="mini play" id="modeEndless" type="button">Jogar o Sem Fim</button>
+    </section>
+    <section class="mode">
+      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="mode-em">⏰</span></span><div><h4>Contra o Relógio</h4><p>Você tem 2 minutos pra salvar o máximo de pessoas. Cada batida no fogo custa 5 segundos!</p><p class="mode-rec" id="recClock"></p></div></div>
+      <button class="mini play" id="modeClock" type="button">Jogar Contra o Relógio</button>
+    </section>
+    <section class="mode">
+      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="mode-em">👑</span></span><div><h4>Batalha dos Chefões</h4><p>Os 6 Fogões e o Pai de Todos os Fogões, um atrás do outro, com só 5 corações!</p><p class="mode-rec" id="recRush"></p></div></div>
+      <button class="mini play" id="modeRush" type="button">Começar a Batalha</button>
+    </section>
+    <section class="mode">
+      <div class="mode-head"><span class="mode-ic" aria-hidden="true"><span class="mode-em">📖</span></span><div><h4>A Historinha</h4><p>Por que os foguinhos atacaram a vila? Veja a história do jogo.</p></div></div>
+      <button class="mini" id="modeStory" type="button">Ver a historinha</button>
+      <button class="mini play" id="modeFinal" type="button" hidden>Lutar com o Chefão Final de novo</button>
+    </section>
+  </div>
+</div>
+<div class="modal" id="story" hidden>
+  <div class="modal-card story-card" role="dialog" aria-labelledby="storyTitle">
+    <div class="modal-head">
+      <h3 id="storyTitle">A Historinha</h3>
+      <button class="mini" id="storySkip" type="button">Pular</button>
+    </div>
+    <div class="story-wrap" id="storyWrap"><canvas id="storyCv" aria-hidden="true"></canvas></div>
+    <p class="story-text" id="storyText" aria-live="polite"></p>
+    <div class="story-dots" id="storyDots" aria-hidden="true"></div>
+    <div class="story-btns"><button class="mini" id="storyBack" type="button">◀ Voltar</button><button class="big" id="storyNext" type="button">Próximo ▶</button></div>
   </div>
 </div>
 <div class="modal" id="wmap" hidden>
@@ -1025,7 +1068,8 @@ const BOSS_PAL=[
  {f1:'#8de6ff',f2:'#d4f6ff',body:'#3fb4dc',eye:'#0b2a3a'},
  {f1:'#ffcc33',f2:'#fff3a0',body:'#e8a800',eye:'#3a2600'},
  {f1:'#ff8ccf',f2:'#ffd1ec',body:'#e0569f',eye:'#3a0a24'},
- {f1:'#7dff7a',f2:'#e6ffd9',body:'#2fbf5a',eye:'#062a12'}
+ {f1:'#7dff7a',f2:'#e6ffd9',body:'#2fbf5a',eye:'#062a12'},
+ {f1:'#b04cff',f2:'#ffd23f',body:'#3a1650',eye:'#ffe9a8'}
 ];
 const POWER_MS=4000;
 const shopEl=document.getElementById('shop'),makerEl=document.getElementById('maker'),medEl=document.getElementById('medals');
@@ -2045,6 +2089,262 @@ document.getElementById('lvlBtn').addEventListener('click',()=>openMap());
 mapCv.addEventListener('pointerdown',e=>{e.preventDefault();unlockAudio();mapTap(e);});
 mapEl.addEventListener('click',e=>{if(e.target===mapEl)closeMap();});
 
+/* ---------- modos especiais: Sem Fim, Contra o Relógio, Batalha dos Chefões e o Chefão Final ---------- */
+const RUN={kind:null,n:0,lives:3,time:0,elapsed:0,prev:null,sec:-1};
+const CLOCK_MS=120000;
+const FINAL_LEVEL={name:'Pai de Todos os Fogões',speed:250,theme:1,run:true,boss:{speed:540,name:'Pai de Todos os Fogões',pal:6,hp:9,final:true},map:[
+  "#########",
+  "#H.....S#",
+  "#.#...#.#",
+  "#.......#",
+  "#...B...#",
+  "#.......#",
+  "#.......#",
+  "#.#...#.#",
+  "#.......#",
+  "#P......#",
+  "#########"]};
+function modesKey(){return 'missao-resgate-modos:'+(PLAYER?PLAYER.id:'anon');}
+function modesGet(){const r=lsGet(modesKey(),null)||{};return {endless:r.endless||0,clock:r.clock||0,rush:r.rush||0,final:!!r.final};}
+function modesSet(k,v){const r=modesGet();r[k]=v;lsSet(modesKey(),r);}
+function inRun(){return !!(G&&G.custom&&G.custom.run);}
+/* gerador de fases sorteadas (sempre dá pra passar) */
+function genLevel(n,easy){
+  for(let tries=0;tries<200;tries++){
+    const m=[];for(let y=0;y<ROWS;y++){m.push([]);for(let x=0;x<COLS;x++)m[y].push(x===0||y===0||x===COLS-1||y===ROWS-1?'#':(Math.random()<.27?'#':'.'));}
+    const free=()=>{for(let k=0;k<80;k++){const x=1+Math.floor(Math.random()*(COLS-2)),y=1+Math.floor(Math.random()*(ROWS-2));if(m[y][x]==='.')return {x,y};}return null;};
+    const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
+    const P=free();if(!P)continue;m[P.y][P.x]='P';
+    const H=free();if(!H||dist(P,H)<6)continue;m[H.y][H.x]='H';
+    const S=free();if(!S||dist(S,H)<4||dist(S,P)<2)continue;m[S.y][S.x]='S';
+    const walls=[];for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)walls[y*COLS+x]=m[y][x]==='#';
+    const r=reachCount(walls,P);
+    if(!r.has(H.y*COLS+H.x)||!r.has(S.y*COLS+S.x)||r.size<34)continue;
+    const put=(ch,ok)=>{for(let k=0;k<60;k++){const c=free();if(c&&r.has(c.y*COLS+c.x)&&(!ok||ok(c))){m[c.y][c.x]=ch;return c;}}return null;};
+    const fires=easy?1+Math.min(2,Math.floor(n/4)):Math.min(5,1+Math.floor((n+1)/2));
+    for(let k=0;k<fires;k++)put(Math.random()<.5?'h':'v',c=>dist(c,P)>=4&&dist(c,H)>=2&&dist(c,S)>=2);
+    if(!easy&&n>=3&&Math.random()<.5)put('z',c=>dist(c,P)>=5&&dist(c,H)>=2&&dist(c,S)>=2);
+    if(Math.random()<.45){const a=put('1',c=>dist(c,P)>=2);if(a&&!put('2',c=>dist(c,a)>=5))m[a.y][a.x]='.';}
+    if(Math.random()<.6)put(Math.random()<.5?'k':'m',c=>dist(c,P)>=3);
+    if(!easy&&Math.random()<.5)put('X',c=>dist(c,P)>=3&&dist(c,H)>=2&&dist(c,S)>=2);
+    return {map:m.map(row=>row.join('')),speed:easy?Math.max(300,400-n*8):Math.max(205,400-n*13),theme:Math.floor(Math.random()*THEMES.length),run:true};
+  }
+  return Object.assign({},LEVELS[0],{theme:0,run:true});
+}
+function runLabel(){
+  if(RUN.kind==='endless')return `♾ Sem Fim · Fase ${RUN.n+1}`;
+  if(RUN.kind==='clock'){const sc=Math.max(0,Math.ceil(RUN.time/1000));return `⏰ ${Math.floor(sc/60)}:${String(sc%60).padStart(2,'0')} · Salvos: ${RUN.n}`;}
+  if(RUN.kind==='rush')return `👑 Batalha · Chefão ${RUN.n+1}/7`;
+  return '👑 Chefão Final';
+}
+function runLevel(){
+  const k=RUN.kind,n=RUN.n;
+  if(k==='endless'){const L=genLevel(n,false);L.name=`Sem Fim · Fase ${n+1}`;return {L,card:{world:'Modo Sem Fim',num:`Fase ${n+1}`,name:n?'Cada vez mais difícil!':'Até onde você chega?',dots:null,glow:THEMES[L.theme].wall}};}
+  if(k==='clock'){const L=genLevel(n,true);L.name='Contra o Relógio';return {L,card:{world:'Contra o Relógio',num:n?`${n} ${n===1?'salvo':'salvos'}`:'2 minutos',name:n?'Mais um! Corre!':'Salve o máximo de pessoas!',dots:null,glow:'#5ad1ff'}};}
+  if(k==='rush'&&n<6){const i=n*PER_WORLD+PER_WORLD-1,L=Object.assign({},LEVELS[i],{name:LEVELS[i].boss.name,theme:n,run:true});return {L,card:{world:'Batalha dos Chefões',num:`Chefão ${n+1}/7`,name:L.name,dots:null,boss:true,glow:THEMES[n].wall}};}
+  return {L:FINAL_LEVEL,card:{world:k==='rush'?'Batalha dos Chefões · 7/7':'O Chefão Final',num:'Chefão Final!',name:'Pai de Todos os Fogões',dots:null,boss:true,glow:'#b04cff'}};
+}
+function runNext(note){
+  const lv=runLevel();
+  transition(()=>{
+    loadLevel(-1,lv.L);
+    if(RUN.kind==='rush'||RUN.kind==='final'){G.maxLives=5;G.lives=Math.max(1,Math.min(5,RUN.lives));}
+    else if(RUN.kind==='endless'){G.lives=Math.max(1,Math.min(3,RUN.lives));}
+    RUN.sec=-1;hud();scoreHud();
+  },-1,lv.L,note||'',lv.card);
+}
+function runStart(kind){
+  if(TRANS.on||CUT.on)return;
+  closeCoop();ov.hidden=true;ovAction=null;if(TUT.on)endTut();
+  if(G.victory)G.victory=null;
+  if(!inRun()&&!G.waves&&!G.bonus)RUN.prev={i:curLevelIdx()>=0?curLevelIdx():SAVED_WORLD*PER_WORLD};
+  if(!RUN.prev)RUN.prev={i:SAVED_WORLD*PER_WORLD};
+  if(COOP.on){COOP.on=false;coopApply();}
+  RUN.kind=kind;RUN.n=0;RUN.lives=kind==='rush'||kind==='final'?5:3;RUN.time=CLOCK_MS;RUN.elapsed=0;
+  runNext(kind==='clock'?'Cada batida no fogo custa 5 segundos!':kind==='rush'?'5 corações pra todos os chefões!':kind==='endless'?'Você ganha 1 coração a cada fase.':'');
+}
+function runExit(){
+  const i=Math.min(LEVELS.length-1,RUN.prev?RUN.prev.i:SAVED_WORLD*PER_WORLD);RUN.kind=null;
+  ov.hidden=true;ovAction=null;
+  transition(()=>{loadLevel(i);scoreHud();},i,null,'De volta pra Aventura!');
+}
+function runResult(title,html,again){
+  show(title,html+'<p><button class="mini" id="runBack" type="button">Voltar pra Aventura</button></p>','Jogar de novo',again);
+  const b=document.getElementById('runBack');if(b)b.addEventListener('click',runExit);
+}
+function runTick(dt){
+  RUN.elapsed+=dt;
+  if(RUN.kind==='clock'){
+    RUN.time-=dt;const s=Math.ceil(RUN.time/1000);
+    if(RUN.time<=0){runEnd();return;}
+    if(s!==RUN.sec){RUN.sec=s;document.getElementById('lvl').textContent=runLabel();if(s<=5)tone(880,.08,'square',.04);}
+  }
+}
+function runEnd(){
+  G.state='lost';
+  const n=RUN.n,rec=modesGet().clock,isRec=n>rec;if(isRec)modesSet('clock',n);
+  [784,659,523].forEach((f,k)=>tone(f,.18,'triangle',.05,k*.12));
+  if(n>=5)medal('relogio');
+  runResult('Acabou o tempo!',`<p>Você salvou <b>${n}</b> ${n===1?'pessoa':'pessoas'} em 2 minutos!</p><p class="ptsline">${isRec&&n?'Recorde novo! 🎉':`Seu recorde: ${Math.max(rec,n)}`}</p>`,()=>runStart('clock'));
+}
+function runWin(winner,sub){
+  const k=RUN.kind;RUN.n++;
+  if(k==='endless'){
+    RUN.lives=Math.min(3,G.lives+1);if(RUN.n>modesGet().endless)modesSet('endless',RUN.n);
+    if(RUN.n>=10)medal('semfim');
+    startVictory(winner,`Fase ${RUN.n} completa!`,sub,()=>runNext());
+  }else if(k==='clock'){
+    G.floats.push({x:G.safe.x+.5,y:G.safe.y,text:'Salvo!',t:900,color:'#3ccf7a'});
+    G.state='won';runNext(`${RUN.n} ${RUN.n===1?'pessoa salva':'pessoas salvas'}!`);
+  }else if(k==='rush'){
+    RUN.lives=G.lives;
+    if(RUN.n<7)startVictory(winner,'Chefão completo!',`Faltam ${7-RUN.n}! `+sub,()=>runNext());
+    else{
+      const t=RUN.elapsed,old=modesGet().rush,isRec=!old||t<old;if(isRec)modesSet('rush',t);
+      medal('batalha');medal('lenda');modesSet('final',true);
+      startVictory(winner,'Você venceu todos!',sub,()=>runResult('Campeão dos Chefões! 👑',`<p>Você venceu os 6 Fogões e o Pai de Todos os Fogões, um atrás do outro!</p><p class="ptsline">⏱ Tempo: <b>${fmtTime(t)}</b>${isRec?' · Recorde novo! 🎉':` · Recorde: ${fmtTime(old)}`}</p>`,()=>runStart('rush')));
+    }
+  }else{
+    medal('lenda');modesSet('final',true);addPoints(2000);submitBest();
+    startVictory(winner,'Chefão Final completo!',sub,()=>playStory('ending',()=>show('Você é um herói de verdade!',`<p>Você venceu os 6 Fogões e o Pai de Todos os Fogões, e salvou a vila inteira. Parabéns!</p><p class="ptsline">Total de pontos: <b>${fmt(SCORE.run)}</b></p><p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{RUN.kind=null;saveWorld(0);SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();startLevel(0);})));
+  }
+}
+function runLost(){
+  const k=RUN.kind;
+  if(k==='endless'){
+    const n=RUN.n,rec=modesGet().endless;
+    runResult('Fim do Sem Fim!',`<p>O fogo te pegou! Você passou <b>${n}</b> ${n===1?'fase':'fases'}.</p><p class="ptsline">${n&&n>=rec?'Recorde novo! 🎉':`Seu recorde: ${rec} ${rec===1?'fase':'fases'}`}</p>`,()=>runStart('endless'));
+  }else if(k==='rush'){
+    runResult('GAME OVER',`<p>Os chefões te venceram! Você passou por <b>${RUN.n}</b> de 7.</p>`,()=>runStart('rush'));
+  }else{
+    show('GAME OVER','<p>O Pai de Todos os Fogões te venceu! Mas herói não desiste. Tente de novo!</p>','Tentar de novo',()=>startFinal());
+  }
+}
+function startFinal(){
+  RUN.prev={i:LEVELS.length-1};RUN.kind='final';RUN.n=0;RUN.lives=5;RUN.elapsed=0;
+  ov.hidden=true;ovAction=null;if(COOP.on){COOP.on=false;coopApply();}
+  runNext('Ele tem 9 vidas e 3 fases de luta. Use a estrela!');
+}
+/* o Pai de Todos os Fogões: 3 fases de luta */
+function finalPhase(b){return b.hp>6?1:b.hp>3?2:3;}
+function finalSpawn(n){
+  for(let k=0;k<n&&G.enemies.length<5;k++){
+    const ok=G.spots.filter(s=>!isBossAt(s.x,s.y)&&nearestDist(s.x,s.y)>=4&&!G.enemies.some(e=>e.x===s.x&&e.y===s.y)&&!boxAt(s.x,s.y));
+    if(!ok.length)return;const s=ok[Math.floor(Math.random()*ok.length)],h=Math.random()<.5;
+    G.enemies.push({x:s.x,y:s.y,dx:h?1:0,dy:h?0:1,rx:s.x,ry:s.y,sx:s.x,sy:s.y});G.puffs.push({x:s.x+.5,y:s.y+.5,t:500,s:.8,quiet:true});
+  }
+}
+function finalOnHit(b){
+  if(!b.final||b.hp<=0)return;
+  const ph=finalPhase(b);
+  if(ph!==b.phase){
+    b.phase=ph;b.speed=ph===2?470:400;b.shootAcc=0;G.shake=600;
+    G.banner={text:`Fase ${ph} da luta!`,sub:ph===2?'Ele ficou bravo e chamou os foguinhos!':'Agora ele cospe bolas de fogo!',t:2400};
+    [196,165,131,98].forEach((f,k)=>tone(f,.22,'sawtooth',.06,k*.12));
+    finalSpawn(2);
+  }else if(ph>=2)finalSpawn(1);
+}
+function finalTick(dt){
+  const b=G.boss;if(!b||!b.final||b.dead||b.phase!==3||b.stun>0||G.freeze>0)return;
+  b.shootAcc=(b.shootAcc||0)+dt;
+  if(b.shootAcc>=3000){b.shootAcc=0;
+    for(const[x,y,dx,dy]of[[b.x,b.y-1,0,-1],[b.x+1,b.y+2,0,1],[b.x-1,b.y+1,-1,0],[b.x+2,b.y,1,0]])if(!shotBlocked(x,y))G.shots.push({x,y,rx:x-dx,ry:y-dy,dx,dy});
+    tone(120,.18,'sawtooth',.05);
+  }
+}
+
+/* ---------- a historinha do jogo ---------- */
+const storyEl=document.getElementById('story'),storyCv=document.getElementById('storyCv'),storyCtx=storyCv.getContext('2d');
+const STORIES={
+ intro:[
+  {s:'vila',t:'Era uma vez a Vila dos Quadradinhos. Lá todo mundo vivia feliz, brincando debaixo das estrelas.'},
+  {s:'pai',t:'Mas no fundo do vulcão dormia o Pai de Todos os Fogões. Um dia, ele acordou com muita fome de bagunça...'},
+  {s:'ataque',t:'Ele mandou seus 6 filhos, os Fogões, e um monte de foguinhos atacarem a vila. As pessoas ficaram presas, pedindo socorro!'},
+  {s:'heroi',t:'Só sobrou um quadradinho amarelo muito corajoso: você!'},
+  {s:'missao',t:'Sua missão: atravessar os 6 mundos, vencer os chefões e levar cada pessoa até a casa verde. Boa sorte, herói!'}],
+ prefinal:[
+  {s:'seis',t:'Os 6 Fogões foram derrotados! A vila já ia começar a festa...'},
+  {s:'pai',t:'...quando o chão tremeu. O Pai de Todos os Fogões saiu do vulcão, furioso!'},
+  {s:'duelo',t:'Ele prendeu a última pessoa da vila. Ele tem 9 vidas e 3 fases de luta. Pegue a estrela e mostre quem é o herói!'}],
+ ending:[
+  {s:'pequeno',t:'PUF! O Pai de Todos os Fogões foi encolhendo, encolhendo... e virou uma fogueirinha bem pequenininha.'},
+  {s:'festa',t:'Agora ele só serve pra assar marshmallow! A vila fez uma festa enorme, com unicórnios e purpurina.'},
+  {s:'fim',t:'E o quadradinho amarelo ficou conhecido pra sempre como o maior herói de todos os mundos. FIM!'}]};
+const STORY={on:false,key:null,i:0,done:null,W:320,H:200};
+function storyKey(){return 'missao-resgate-historia:'+(PLAYER?PLAYER.id:'anon');}
+function playStory(key,done){
+  STORY.on=true;STORY.key=key;STORY.i=0;STORY.done=done||null;storyEl.hidden=false;storyResize();storyRender();
+  if(key==='intro')lsSet(storyKey(),1);
+  try{document.getElementById('storyNext').focus({preventScroll:true})}catch(e){}
+}
+function storyResize(){
+  const w=document.getElementById('storyWrap').clientWidth||320,h=Math.round(w*.62),dpr=Math.min(window.devicePixelRatio||1,3);
+  STORY.W=w;STORY.H=h;storyCv.style.width=w+'px';storyCv.style.height=h+'px';storyCv.width=Math.round(w*dpr);storyCv.height=Math.round(h*dpr);storyCtx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',()=>{if(STORY.on)storyResize();});
+function storyRender(){
+  const L=STORIES[STORY.key],sl=L[STORY.i];
+  document.getElementById('storyText').textContent=sl.t;
+  document.getElementById('storyDots').innerHTML=L.map((_,k)=>`<i class="${k===STORY.i?'on':''}"></i>`).join('');
+  document.getElementById('storyNext').textContent=STORY.i<L.length-1?'Próximo ▶':(STORY.key==='ending'?'Fim':STORY.key==='prefinal'?'Lutar! ▶':'Começar ▶');
+  document.getElementById('storyBack').disabled=STORY.i===0;
+  tone(660,.05,'triangle',.03);
+}
+function storyStep(d){
+  const L=STORIES[STORY.key];
+  if(d>0&&STORY.i>=L.length-1){storyEnd();return;}
+  STORY.i=Math.max(0,Math.min(L.length-1,STORY.i+d));storyRender();
+}
+function storyEnd(){
+  if(!STORY.on)return;STORY.on=false;storyEl.hidden=true;const f=STORY.done;STORY.done=null;if(f)f();
+}
+function drawStory(){
+  const c=storyCtx,W=STORY.W,H=STORY.H,t=G.t,sl=STORIES[STORY.key][STORY.i].s,u=W/9,gy=H*.72;
+  const sky=(a,b)=>{const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,a);g.addColorStop(1,b);c.fillStyle=g;c.fillRect(0,0,W,H);};
+  const ground=(col,col2)=>{c.fillStyle=col;c.fillRect(0,gy,W,H-gy);c.fillStyle=col2;for(let x=0;x<9;x++)if(x%2)c.fillRect(x*u,gy,u,H-gy);};
+  const stars=(n)=>{const rn=seeded(42);for(let k=0;k<n;k++){const x=rn()*W,y=rn()*gy*.9;c.fillStyle=`rgba(255,255,255,${.4+.4*Math.sin(t*.003+k)})`;c.beginPath();c.arc(x,y,1+rn()*1.3,0,Math.PI*2);c.fill();}};
+  const house=(x,col)=>{c.fillStyle=col;c.beginPath();c.moveTo(x-u*.55,gy-u*.6);c.lineTo(x,gy-u*1.15);c.lineTo(x+u*.55,gy-u*.6);c.closePath();c.fill();c.fillRect(x-u*.42,gy-u*.62,u*.84,u*.62);c.fillStyle='#1b2547';c.fillRect(x-u*.12,gy-u*.36,u*.24,u*.36);};
+  const volcano=()=>{c.fillStyle='#3a1414';c.beginPath();c.moveTo(W*.1,gy);c.lineTo(W*.4,H*.2);c.lineTo(W*.6,H*.2);c.lineTo(W*.9,gy);c.closePath();c.fill();c.fillStyle='#ff6a3d';c.beginPath();c.ellipse(W*.5,H*.2,W*.1,H*.03,0,0,Math.PI*2);c.fill();};
+  const hero=(x,s,face,hop)=>withCtx(c,()=>drawHeroAt(x,gy-s*.5-(hop?Math.abs(Math.sin(t*.008))*s*.25:0),s,face,t,{hat:SAVE.eq.hat,cape:SAVE.eq.cape}));
+  const person=(x,s)=>withCtx(c,()=>drawPerson(x,gy-s*.42,s,t+x*7,true));
+  const fire=(x,sz,pal,yy)=>withCell(c,u,()=>{const gx=x/u-.5*sz,gyy=(yy==null?gy:yy)/u-sz;drawFire({x:gx,y:gyy,rx:gx,ry:gyy},t,sz,pal||null,false);});
+  const cage=(x,s)=>{c.strokeStyle='#c9ced9';c.lineWidth=Math.max(2,u*.06);c.strokeRect(x-s*.5,gy-s,s,s);c.beginPath();for(let k=1;k<4;k++){c.moveTo(x-s*.5+s*k/4,gy-s);c.lineTo(x-s*.5+s*k/4,gy);}c.stroke();};
+  const crown=(x,y,s)=>{c.fillStyle='#ffcc33';c.beginPath();c.moveTo(x-s,y);c.lineTo(x-s,y-s*.8);c.lineTo(x-s*.5,y-s*.35);c.lineTo(x,y-s);c.lineTo(x+s*.5,y-s*.35);c.lineTo(x+s,y-s*.8);c.lineTo(x+s,y);c.closePath();c.fill();};
+  const PAI=BOSS_PAL[6];
+  if(sl==='vila'){sky('#0b1030','#27306b');stars(40);ground('#1b2547','#222d57');house(W*.2,'#3ccf7a');house(W*.8,'#5ad1ff');person(W*.36,u*.9);person(W*.64,u*.9);hero(W*.5,u*.85,1,true);}
+  else if(sl==='pai'){sky('#1a0505','#6b1c10');volcano();ground('#2c1210','#3a1614');fire(W*.5,3.2,PAI,gy);crown(W*.5,gy-u*2.75,u*.5);
+    for(let k=0;k<8;k++){const a=(t*.0012+k/8)%1;c.fillStyle=`rgba(255,${120+k*10},40,${1-a})`;c.beginPath();c.arc(W*(.3+.05*k)+Math.sin(k*3)*u*.3,gy-a*H*.7,u*.07,0,Math.PI*2);c.fill();}}
+  else if(sl==='ataque'){sky('#1a0b22','#5a2440');stars(20);ground('#1b2547','#222d57');house(W*.14,'#3ccf7a');person(W*.5,u*.9);cage(W*.5,u*1.05);
+    for(let k=0;k<4;k++)fire(W*(.22+k*.19)+Math.sin(t*.004+k)*u*.15,k%2?1:1.25,k%2?null:BOSS_PAL[k],gy-(k%2?0:u*.05));
+    withCtx(c,()=>drawBubble(W*.5,gy-u*1.75,t));}
+  else if(sl==='heroi'){sky('#0b1030','#3b3f9a');stars(40);ground('#1b2547','#222d57');
+    c.fillStyle='rgba(255,210,63,.18)';c.beginPath();c.arc(W*.5,gy-u*1.1,u*2.1+Math.sin(t*.005)*u*.1,0,Math.PI*2);c.fill();hero(W*.5,u*2,1,true);}
+  else if(sl==='missao'){sky('#0b1030','#27306b');ground('#1b2547','#222d57');
+    THEMES.forEach((T,k)=>{const x=W*(.1+k*.16),s=u*.9;c.fillStyle=T.edge;c.fillRect(x-s/2,gy-s*1.6+s*.1,s,s);c.fillStyle=T.wall;c.fillRect(x-s/2,gy-s*1.6,s,s);c.fillStyle='#fff';c.font=`800 ${s*.6}px ${FONT}`;c.textAlign='center';c.textBaseline='middle';c.fillText(String(k+1),x,gy-s*1.08);});
+    hero(W*.1,u*.7,1,true);house(W*.92,'#3ccf7a');}
+  else if(sl==='seis'){sky('#0b1030','#27306b');stars(40);ground('#1b2547','#222d57');
+    for(let k=0;k<6;k++){const x=W*(.12+k*.152);c.globalAlpha=.5;fire(x,.8,BOSS_PAL[k],gy);c.globalAlpha=1;c.font=`800 ${u*.3}px ${FONT}`;c.fillStyle='#fff';c.textAlign='center';c.fillText('x_x',x,gy-u*.95);}
+    hero(W*.5,u*.9,1,true);}
+  else if(sl==='duelo'){sky('#1a0505','#6b1c10');ground('#2c1210','#3a1614');fire(W*.68,2.6,PAI,gy);crown(W*.68,gy-u*2.25,u*.42);person(W*.9,u*.7);cage(W*.9,u*.85);hero(W*.2,u*1,1,true);
+    withCtx(c,()=>{drawStar(W*.4,gy-u*1.4+Math.sin(t*.005)*u*.1,u*.4,u*.18,t*.002,'#fff3a0');});}
+  else if(sl==='pequeno'){sky('#0b1030','#27306b');stars(40);ground('#1b2547','#222d57');const k=.45+.1*Math.sin(t*.004);fire(W*.6,k,PAI,gy);hero(W*.35,u*1.1,1,true);
+    for(let j=0;j<5;j++){const a=(t*.001+j/5)%1;c.fillStyle=`rgba(255,255,255,${.5*(1-a)})`;c.beginPath();c.arc(W*.6+Math.sin(j*2)*u*.3,gy-u*.6-a*u*1.5,u*(.12+a*.2),0,Math.PI*2);c.fill();}}
+  else if(sl==='festa'){sky('#141a4a','#4a3fa0');stars(40);ground('#1b2547','#222d57');house(W*.12,'#3ccf7a');fire(W*.5,.5,PAI,gy);
+    person(W*.3,u*.9);person(W*.72,u*.9);hero(W*.42,u*.85,1,true);withCtx(c,()=>drawUnicorn(W*.86,gy-u*.45,u*.95,t,-1));
+    for(let k=0;k<26;k++){const a=(t*.0005+k/26)%1,x=(k*37%100)/100*W;c.fillStyle=`hsl(${k*47%360},100%,70%)`;c.fillRect(x+Math.sin(t*.003+k)*u*.2,a*gy,u*.08,u*.14);}}
+  else{sky('#0b1030','#3b3f9a');stars(60);ground('#1b2547','#222d57');hero(W*.5,u*1.5,1,true);crown(W*.5,gy-u*1.62-Math.abs(Math.sin(t*.008))*u*.37,u*.42);
+    c.font=`800 ${u*.9}px ${FONT}`;c.textAlign='center';c.textBaseline='middle';c.fillStyle='#ffd23f';c.fillText('FIM',W*.5,H*.16);
+    c.font=`700 ${Math.max(11,u*.3)}px ${FONT}`;c.fillStyle='#fff';c.fillText('Um jogo de Rafael Gaklik',W*.5,H*.9);}
+}
+document.getElementById('storyNext').addEventListener('click',()=>{unlockAudio();storyStep(1);});
+document.getElementById('storyBack').addEventListener('click',()=>storyStep(-1));
+document.getElementById('storySkip').addEventListener('click',storyEnd);
+document.getElementById('modeEndless').addEventListener('click',()=>runStart('endless'));
+document.getElementById('modeClock').addEventListener('click',()=>runStart('clock'));
+document.getElementById('modeRush').addEventListener('click',()=>runStart('rush'));
+document.getElementById('modeStory').addEventListener('click',()=>{closeCoop();playStory('intro');});
+document.getElementById('modeFinal').addEventListener('click',()=>{closeCoop();playStory('prefinal',startFinal);});
+
 /* ---------- medalhas e troféus (cada jogador tem os seus) ---------- */
 const MEDALS=[
  {id:'primeiro',name:'Primeiro Resgate',desc:'Salve a primeira pessoa.',ic:'🙋',tier:0},
@@ -2064,7 +2364,11 @@ const MEDALS=[
  {id:'apagador',name:'Apagador de Fogo',desc:'Pegue 25 foguinhos com a estrela.',ic:'🧯',tier:2,goal:25,c:'fogos'},
  {id:'mestre',name:'Mestre dos Pontos',desc:'Faça 5.000 pontos numa partida.',ic:'⭐',tier:2},
  {id:'astronauta',name:'Astronauta',desc:'Chegue no Mundo 6.',ic:'🚀',tier:2},
- {id:'heroi',name:'Herói de Todos os Mundos',desc:'Vença o Fogão Cósmico e zere o jogo.',ic:'🌟',tier:2}
+ {id:'semfim',name:'Maratonista',desc:'Passe 10 fases no Modo Sem Fim.',ic:'♾️',tier:1},
+ {id:'relogio',name:'Mais Rápido que o Tempo',desc:'Salve 5 pessoas no Contra o Relógio.',ic:'⏰',tier:1},
+ {id:'batalha',name:'Campeão dos Chefões',desc:'Vença a Batalha dos Chefões.',ic:'⚔️',tier:2},
+ {id:'lenda',name:'Lenda',desc:'Vença o Pai de Todos os Fogões.',ic:'🔥',tier:2},
+ {id:'heroi',name:'Herói de Todos os Mundos',desc:'Vença o Fogão Cósmico, o chefão do Mundo 6.',ic:'🌟',tier:2}
 ];
 const TIERS=[{name:'Bronze',coins:5},{name:'Prata',coins:10},{name:'Ouro',coins:20}];
 const TROPHY_COINS=15;
@@ -2171,7 +2475,7 @@ function loadLevel(i,custom,opt){
     if(c==='2')pB={x,y};
     if(c==='h')enemies.push({x,y,dx:1,dy:0,rx:x,ry:y,sx:x,sy:y});
     if(c==='v')enemies.push({x,y,dx:0,dy:1,rx:x,ry:y,sx:x,sy:y});
-    if(c==='B')boss={x,y,sx:x,sy:y,rx:x,ry:y,hp:3,stun:0,acc:0,dead:false,speed:L.boss.speed,name:L.boss.name,pal:L.boss.pal};
+    if(c==='B')boss={x,y,sx:x,sy:y,rx:x,ry:y,hp:L.boss.hp||3,maxHp:L.boss.hp||3,final:!!L.boss.final,phase:1,big:L.boss.final?1.3:1,stun:0,acc:0,dead:false,speed:L.boss.speed,name:L.boss.name,pal:L.boss.pal};
   }));
   if(!hpos)hpos={x:-1,y:-1};
   const inBoss=(x,y)=>boss&&x>=boss.x&&x<=boss.x+1&&y>=boss.y&&y<=boss.y+1;
@@ -2216,7 +2520,7 @@ function isBossAt(x,y){const b=G.boss;return bossAlive()&&x>=b.x&&x<=b.x+1&&y>=b
 function bossFits(x,y){return !enemyBlocked(x,y)&&!enemyBlocked(x+1,y)&&!enemyBlocked(x,y+1)&&!enemyBlocked(x+1,y+1)}
 
 function hud(){
-  document.getElementById('lvl').textContent=G.waves?`🌊 Modo Ondas · Onda ${Math.max(1,G.waves.n)}`:G.custom?`✏ ${G.custom.name}`:`Mundo ${Math.floor(G.i/PER_WORLD)+1} · Fase ${G.i%PER_WORLD+1}/${PER_WORLD}`;
+  document.getElementById('lvl').textContent=G.waves?`🌊 Modo Ondas · Onda ${Math.max(1,G.waves.n)}`:G.custom?(G.custom.run?runLabel():`✏ ${G.custom.name}`):`Mundo ${Math.floor(G.i/PER_WORLD)+1} · Fase ${G.i%PER_WORLD+1}/${PER_WORLD}`;
   let h='';
   for(let k=0;k<G.maxLives;k++)h+=`<span class="${k<G.lives?'':'gone'}">♥</span>`;
   document.getElementById('hearts').innerHTML=h;
@@ -2344,15 +2648,18 @@ function bossHit(p){
     if(!onStart){b.x=b.rx=b.sx;b.y=b.ry=b.sy;}
     b.stun=1600;
     G.banner={text:'PUF!',sub:b.hp===1?'Só falta mais 1!':`Faltam ${b.hp} pro chefão`,t:1500};
+    finalOnHit(b);
   }
   hud();
 }
 function hit(p){
   p=p||G.p;
   G.lives--;G.shake=320;if(G.carrier===p.id){G.carry=false;G.carrier=-1;}
+  if(inRun()&&RUN.kind==='clock'){G.lives++;RUN.time-=5000;G.floats.push({x:p.x+.5,y:p.y,text:'-5 segundos!',t:1200,life:1200,color:'#ff5a6e'});}
   p.x=p.rx=p.sx;p.y=p.ry=p.sy;p.inv=1500;
   if(G.lives<=0){
     G.state='lost';sfx.lose();hud();
+    if(inRun()){runLost();return;}
     if(G.custom){const cu=G.custom;show('GAME OVER','<p>O fogo te pegou! Tente sua fase de novo.</p>','Tentar de novo',()=>startLevel(-1,cu));return;}
     const wi=Math.floor(G.i/PER_WORLD),first=wi*PER_WORLD;
     const final=SCORE.run,rec=PLAYER&&final>0&&final>=SCORE.best;submitBest();
@@ -2389,13 +2696,15 @@ function win(){
     if(LEVELS[G.i].boss){medal('cacador');trophy(Math.floor(G.i/PER_WORLD));}
     if(G.i===LEVELS.length-1)medal('heroi');
   }
+  if(inRun()){runWin(winner,sub);return;}
   if(G.custom){
     startVictory(winner,'Fase completa!',sub,()=>show('Você conseguiu!',`<p>Sua fase <b>${esc(G.custom.name)}</b> funciona! Dá pra passar.</p>${line}`,'Voltar pro editor',()=>openMaker()));
     return;
   }
   const w=Math.floor(G.i/PER_WORLD)+1,f=G.i%PER_WORLD+1,next=G.i+1;
   if(G.i===LEVELS.length-1){
-    startVictory(winner,'Chefão completo!',sub,()=>show('Você é um herói!',`<p>Venceu os ${LEVELS.length/PER_WORLD} chefões e salvou todo mundo. Parabéns!</p>${line}<p class="by">Um jogo de <b>Rafael Gaklik</b></p>`,'Jogar de novo',()=>{saveWorld(0);SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();startLevel(0);}));
+    SCORE.checkpoint=SCORE.run;persistScore();
+    startVictory(winner,'Chefão completo!','Mundo 6 completo! '+sub,()=>playStory('prefinal',startFinal));
   }else if(f===PER_WORLD){
     saveWorld(Math.max(w,SAVED_WORLD));SCORE.checkpoint=SCORE.run;persistScore();
     startVictory(winner,'Chefão completo!',`Mundo ${w} completo! `+sub,()=>playCutscene(w-1,w,next));
@@ -2510,8 +2819,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=33;
-const NEWS=['Botas de velocidade e bomba de purpurina!','Caixas de empurrar, botões que fazem paredes sumirem e canos verdes.','Inimigos novos: o canhão de fogo e o foguinho dorminhoco.','Tudo isso também no Criar fase.'];
+const VERSION=34;
+const NEWS=['3 modos novos: Sem Fim, Contra o Relógio e Batalha dos Chefões!','O Chefão Final: o Pai de Todos os Fogões, com 9 vidas e 3 fases de luta.','A Historinha do jogo: veja por que os foguinhos atacaram a vila.','Botas, bomba de purpurina, caixas, botões, canos, canhão e dorminhoco.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -2534,6 +2843,7 @@ const ICON={
  clock:`<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="22" fill="#ffe680"/><circle cx="32" cy="36" r="17" fill="#1b2547"/><path d="M32 36V24M32 36l8 5" stroke="#ffe680" stroke-width="4" stroke-linecap="round"/><rect x="26" y="5" width="12" height="7" rx="2" fill="#ffe680"/><path d="M50 14l4-4" stroke="#ffe680" stroke-width="5" stroke-linecap="round"/></svg>`,
  v3d:`<svg viewBox="0 0 64 64"><path d="M32 6 L56 18 L56 46 L32 58 L8 46 L8 18Z" fill="#ffd23f"/><path d="M32 6 L56 18 L32 30 L8 18Z" fill="#ffe680"/><path d="M32 30 L56 18 L56 46 L32 58Z" fill="#d9a400"/><rect x="18" y="34" width="28" height="16" rx="5" fill="#ff5a36" transform="rotate(-8 32 42)"/><text x="32" y="47" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="14" fill="#fff" transform="rotate(-8 32 42)">3D</text></svg>`,
  portal:`<svg viewBox="0 0 64 64"><circle cx="18" cy="34" r="14" fill="#0a0e20" stroke="#4aa3ff" stroke-width="5" stroke-dasharray="9 4"/><circle cx="46" cy="34" r="14" fill="#0a0e20" stroke="#ff9a3c" stroke-width="5" stroke-dasharray="9 4"/><path d="M14 34a4 4 0 0 1 8 0M42 34a4 4 0 0 1 8 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 14 Q32 6 40 14" stroke="#ffd23f" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M36 10 L40 14 L35 16" stroke="#ffd23f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ modes:`<svg viewBox="0 0 64 64"><circle cx="18" cy="20" r="13" fill="#5ad1ff"/><path d="M18 11v9l6 4" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/><rect x="34" y="26" width="26" height="26" rx="6" fill="#3a1650"/><path d="M38 26q4-14 9-4 4-12 9 4z" fill="#b04cff"/><circle cx="42" cy="38" r="3" fill="#ffe9a8"/><circle cx="52" cy="38" r="3" fill="#ffe9a8"/><path d="M38 20l3-8 6 5 6-5 3 8z" fill="#ffcc33"/><path d="M6 50q6-10 12 0t12 0" fill="none" stroke="#ffd23f" stroke-width="4" stroke-linecap="round"/></svg>`,
  boots:`<svg viewBox="0 0 64 64"><rect x="10" y="10" width="14" height="28" rx="4" fill="#2a8fd6"/><rect x="10" y="32" width="24" height="14" rx="6" fill="#5ad1ff"/><circle cx="47" cy="34" r="13" fill="#ff7fd6"/><circle cx="43" cy="30" r="3" fill="#fff"/><path d="M52 23q4-8 8-3" fill="none" stroke="#6b4423" stroke-width="3"/><path d="M4 50h20M4 57h14" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>`,
  box:`<svg viewBox="0 0 64 64"><rect x="4" y="22" width="26" height="26" rx="3" fill="#b9793f"/><path d="M8 26h18v18H8zM8 26l18 18M26 26L8 44" fill="none" stroke="#7d4f27" stroke-width="3"/><ellipse cx="46" cy="18" rx="12" ry="7" fill="#39405f"/><ellipse cx="46" cy="14" rx="9" ry="5" fill="#ff5a6e"/><ellipse cx="46" cy="46" rx="14" ry="11" fill="#3ccf7a"/><ellipse cx="46" cy="46" rx="9" ry="7" fill="#0b2414"/></svg>`,
  cannon:`<svg viewBox="0 0 64 64"><rect x="18" y="20" width="30" height="16" rx="4" fill="#39405f"/><circle cx="18" cy="28" r="13" fill="#596394"/><circle cx="56" cy="28" r="6" fill="#ff6a3d"/><circle cx="55" cy="27" r="3" fill="#ffd23f"/><text x="30" y="58" font-family="sans-serif" font-weight="800" font-size="16" fill="#fff">z z z</text></svg>`,
@@ -2552,6 +2862,7 @@ const TUTORIAL=[
  {icon:'hearts',title:'GAME OVER',text:'Você tem 3 corações. Se perder os 3, aparece GAME OVER e você volta pra Fase 1 do mundo em que está. Assim você não perde o mundo que já alcançou! Suas moedas continuam guardadas. E se fechar o jogo, ele lembra o mundo em que você parou.'},
  {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles e eles fazem PUF e somem do mapa, igual no Pac-Man! Cada um vale o dobro de pontos: 25, 50, 100, 200... E a cada 3 foguinhos, você ganha +1 segundo de estrela!'},
  {icon:'portal',title:'Portais',text:'Toda fase tem um portal azul e um laranja. Entrou num, sai no outro do outro lado do mapa! Cuidado: os foguinhos também atravessam os portais.'},
+ {icon:'modes',title:'Modos novos e o Chefão Final',text:'No botão dos modos tem 3 jogos novos: Sem Fim (fases sorteadas que nunca acabam), Contra o Relógio (2 minutos pra salvar o máximo de pessoas) e Batalha dos Chefões. E depois do Mundo 6 aparece o Pai de Todos os Fogões, com 9 vidas e 3 fases de luta! Lá também dá pra ver a historinha do jogo.'},
  {icon:'boots',title:'Botas e bomba',text:'Dois itens novos aparecem nas fases. As botas azuis fazem você andar de 2 em 2 casinhas por 6 segundos. A bomba de purpurina manda todos os foguinhos de volta pro lugar deles e deixa eles tontos por um tempinho!'},
  {icon:'box',title:'Caixas, botões e canos',text:'Empurre as caixas pra tampar o caminho dos foguinhos (se ela travar, bata 3 vezes que ela quebra). Pise no botão vermelho pra fazer a parede vermelha sumir. Os canos verdes te levam de um pro outro, e os foguinhos não entram neles!'},
  {icon:'cannon',title:'Canhão e dorminhoco',text:'O canhão fica na parede e atira bolinhas de fogo em linha reta: passe na hora certa ou se esconda atrás de uma caixa. O foguinho dorminhoco fica dormindo (z z z), mas se você chegar pertinho ele acorda e corre atrás de você!'},
@@ -2596,7 +2907,7 @@ function renderTut(){
 function endTut(){
   TUT.on=false;ovBack.hidden=true;ovSkip.hidden=true;ovBody.removeAttribute('style');
   if(TUT.prev){const p=TUT.prev;TUT.prev=null;show(p.t,p.b,p.btn,p.a);}
-  else{ov.hidden=true;ovAction=null;TUT.done=true;if(TUT.first){TUT.first=false;const nm=PLAYER?PLAYER.name:'';transition(null,G.i,G.custom,!G.custom&&SAVED_WORLD>0&&G.i===SAVED_WORLD*PER_WORLD?`Continuando de onde você parou${nm?', '+nm:''}!`:(nm?`Boa sorte, ${nm}!`:''));}}
+  else{if(!lsGet(storyKey(),0))setTimeout(()=>{if(!STORY.on&&ov.hidden&&!CUT.on)playStory('intro');},TUT.first?2700:150);ov.hidden=true;ovAction=null;TUT.done=true;if(TUT.first){TUT.first=false;const nm=PLAYER?PLAYER.name:'';transition(null,G.i,G.custom,!G.custom&&SAVED_WORLD>0&&G.i===SAVED_WORLD*PER_WORLD?`Continuando de onde você parou${nm?', '+nm:''}!`:(nm?`Boa sorte, ${nm}!`:''));}}
 }
 ovBack.addEventListener('click',()=>{if(TUT.on&&TUT.i>0){TUT.i--;renderTut();}});
 ovSkip.addEventListener('click',()=>{if(TUT.on)endTut();});
@@ -2682,14 +2993,15 @@ function drawBoss(t){
   const b=G.boss;if(!bossAlive())return;
   const c=cell*2,cx=b.rx*cell+c/2,y=b.ry*cell;
   if(b.stun>0&&Math.floor(b.stun/120)%2)ctx.globalAlpha=.45;
-  drawFire(b,t,2,BOSS_PAL[b.pal]);
-  drawCrown(cx,y+c*.33,c*.42);
+  if(b.big>1){const k=b.big,ox=b.rx*cell+c/2,oy=b.ry*cell+c;ctx.save();ctx.translate(ox,oy);ctx.scale(k,k);ctx.translate(-ox,-oy);drawFire(b,t,2,BOSS_PAL[b.pal]);drawCrown(cx,y+c*.33,c*.42);ctx.restore();}
+  else{drawFire(b,t,2,BOSS_PAL[b.pal]);
+  drawCrown(cx,y+c*.33,c*.42);}
   ctx.globalAlpha=1;
   // vida do chefão
   const fs=Math.max(10,cell*.36);
   ctx.font=`800 ${fs}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-  let s='';for(let k=0;k<3;k++)s+=k<b.hp?'♥':'♡';
-  ctx.fillStyle='rgba(0,0,0,.55)';rr(cx-fs*1.7,y+c*.9,fs*3.4,fs*1.15,fs*.5);ctx.fill();
+  const nh=b.maxHp||3;let s='';for(let k=0;k<nh;k++)s+=k<b.hp?'♥':'♡';
+  const hw=Math.max(fs*3.4,ctx.measureText(s).width+fs*.6);ctx.fillStyle='rgba(0,0,0,.55)';rr(cx-hw/2,y+c*.9,hw,fs*1.15,fs*.5);ctx.fill();
   ctx.fillStyle='#ff5a36';ctx.fillText(s,cx,y+c*.9+fs*.6);
 }
 function drawCape(cx,cy,s,face,t,id){
@@ -2861,7 +3173,7 @@ function draw(){
 /* ---------- laço ---------- */
 function frame(ts){
   const dt=Math.min(50,ts-(last||ts));last=ts;G.t+=dt;
-  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&coopEl.hidden&&jukeEl.hidden&&medEl.hidden&&mapEl.hidden){
+  if(G.state==='play'&&!TRANS.on&&!CUT.on&&ov.hidden&&shopEl.hidden&&makerEl.hidden&&plEl.hidden&&rankEl.hidden&&coopEl.hidden&&jukeEl.hidden&&medEl.hidden&&mapEl.hidden&&!STORY.on){
     G.elapsed+=dt;
     const spd=G.power>0?G.speed*1.35:G.speed;
     G.acc+=dt;
@@ -2877,6 +3189,8 @@ function frame(ts){
     for(const q of G.ps)if(q.inv>0)q.inv-=dt;
     if(G.belts)beltsTick(dt);
     if(G.state==='play')extrasTick(dt);
+    if(G.state==='play')finalTick(dt);
+    if(G.state==='play'&&inRun())runTick(dt);
     if(G.bonus&&!G.leaving){G.bonusT-=dt;const sec=Math.ceil(G.bonusT/1000);if(G.bonusT<=0)leaveSecret('time');else if(sec!==G.bonusS){G.bonusS=sec;hud();if(sec<=3)tone(880,.08,'square',.04);}}
     if(G.waves)wavesTick(dt);
     if(G.power>0){G.power-=dt;if(G.power<=0){G.power=0;G.kills=0;hud();}}
@@ -2917,6 +3231,7 @@ function frame(ts){
   if(!makerEl.hidden)drawMaker(G.t);
   if(!jukeEl.hidden)drawJuke(dt);
   if(!mapEl.hidden)drawMap(dt);
+  if(STORY.on)drawStory();
   if(!shopEl.hidden)drawHeroPreview(document.getElementById('shopPrev'),SAVE.eq,G.t);
   requestAnimationFrame(frame);
 }
@@ -2929,6 +3244,7 @@ document.addEventListener('keydown',e=>{
   if(CUT.on){if(e.key==='Enter'||e.key===' '||e.key==='Escape'){e.preventDefault();finishCutscene();}return;}
   if(!makerEl.hidden){if(e.key==='Escape')closeMaker();return;}
   if(!plEl.hidden){if(e.key==='Escape')closePlayers();return;}
+  if(STORY.on){if(e.key==='Escape')storyEnd();else if(e.key==='Enter'||e.key===' '||e.key==='ArrowRight'){e.preventDefault();storyStep(1);}else if(e.key==='ArrowLeft'){e.preventDefault();storyStep(-1);}return;}
   if(!medEl.hidden){if(e.key==='Escape')closeMedals();return;}
   if(!mapEl.hidden){
     if(e.key==='Escape')closeMap();
@@ -3441,7 +3757,7 @@ function renderPlayers(){
 function deletePlayer(id){
   const p=PLAYERS.list.find(x=>x.id===id);if(!p)return;
   PLAYERS.list=PLAYERS.list.filter(x=>x.id!==id);
-  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:','missao-resgate-medalhas:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
+  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:','missao-resgate-medalhas:','missao-resgate-modos:','missao-resgate-historia:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
   writeMine(cur=>{if(!cur[id])return false;delete cur[id];return true;});
   plMsg(`${p.name} foi apagado.`);
   if(PLAYER&&PLAYER.id===id){
@@ -3513,6 +3829,11 @@ function renderCoop(){
   const r=wavesRecord();document.getElementById('wavesRec').textContent=r.wave?`Seu recorde: onda ${r.wave} · ${fmt(r.pts)} pts`:'Você ainda não jogou as Ondas.';
   document.getElementById('modeAdv').textContent=G.waves?'Voltar pra Aventura':COOP.on?'Jogar a Aventura sozinho':'Jogar a Aventura';
   document.getElementById('coopP1').textContent=PLAYER?PLAYER.name:'Jogador 1';
+  const md=modesGet();
+  document.getElementById('recEndless').textContent=md.endless?`Seu recorde: ${md.endless} ${md.endless===1?'fase':'fases'}`:'';
+  document.getElementById('recClock').textContent=md.clock?`Seu recorde: ${md.clock} ${md.clock===1?'pessoa salva':'pessoas salvas'}`:'';
+  document.getElementById('recRush').textContent=md.rush?`Seu recorde: ${fmtTime(md.rush)}`:'';
+  document.getElementById('modeFinal').hidden=!md.final;
 }
 function openCoop(){
   unlockAudio();
@@ -3522,7 +3843,7 @@ function openCoop(){
 }
 function closeCoop(){coopEl.hidden=true;}
 function restartHere(note){
-  const src=G.waves&&WAVES.prev?WAVES.prev:{i:G.i,custom:G.custom};if(G.waves)WAVES.prev=null;
+  const src=G.waves&&WAVES.prev?WAVES.prev:inRun()?{i:Math.min(LEVELS.length-1,RUN.prev?RUN.prev.i:0),custom:null}:{i:G.i,custom:G.custom};if(G.waves)WAVES.prev=null;
   const cu=src.custom,i=src.i;
   ov.hidden=true;ovAction=null;
   transition(()=>loadLevel(cu?-1:i,cu||undefined),cu?-1:i,cu||null,note);
@@ -4128,7 +4449,7 @@ function r3Sync(dt){
     const b=G.boss,bk=b.pal+'';
     if(!R.boss||R.bossKey!==bk){if(R.boss)S3.remove(R.boss);R.boss=new THREE.Group();R.boss.add(makeFire(2,BOSS_PAL[b.pal]));const cr=makeCrown();cr.position.y=1.42;cr.scale.setScalar(1.6);R.boss.add(cr);S3.add(R.boss);R.bossKey=bk;}
     R.boss.visible=!b.dead&&!(b.stun>0&&Math.floor(b.stun/120)%2);
-    R.boss.position.set(fX(b.rx+1),0,fZ(b.ry+1));
+    R.boss.position.set(fX(b.rx+1),0,fZ(b.ry+1));R.boss.scale.setScalar(b.big||1);
     const bf=R.boss.children[0];setFireLook(bf,scared);bf.userData.flames.forEach((fl,k)=>fl.scale.y=(k===1?.56:.42)*(1+.25*Math.sin(t*.02+k*2)));
   }else if(R.boss)R.boss.visible=false;
   // moedas, estrela, unicórnios
@@ -4209,7 +4530,7 @@ function draw3D(dt){
     if(!G.carry&&G.hpos.x>=0){const p=proj(cX(G.hpos.x),1.05,cZ(G.hpos.y));drawBubble(p.x,p.y,t);}
     // vida do chefão
     if(bossAlive()){const b=G.boss,p=proj(fX(b.rx+1),2.35,fZ(b.ry+1));const fs=Math.max(10,c*.36);ctx.font=`800 ${fs}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-      let s2='';for(let k=0;k<3;k++)s2+=k<b.hp?'♥':'♡';ctx.fillStyle='rgba(0,0,0,.55)';rr(p.x-fs*1.7,p.y-fs*.6,fs*3.4,fs*1.15,fs*.5);ctx.fill();ctx.fillStyle='#ff5a36';ctx.fillText(s2,p.x,p.y);}
+      let s2='';for(let k=0;k<(b.maxHp||3);k++)s2+=k<b.hp?'♥':'♡';const hw=Math.max(fs*3.4,ctx.measureText(s2).width+fs*.6);ctx.fillStyle='rgba(0,0,0,.55)';rr(p.x-hw/2,p.y-fs*.6,hw,fs*1.15,fs*.5);ctx.fill();ctx.fillStyle='#ff5a36';ctx.fillText(s2,p.x,p.y);}
     // corações dos bots
     for(const p2 of G.ps)if(p2.bot&&!p2.out){const p=proj(fX(p2.rx+.5),1.15,fZ(p2.ry+.5));ctx.font=`${Math.max(8,c*.22)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';let hs='';for(let k=0;k<3;k++)hs+=k<p2.lives?'♥':'♡';ctx.fillStyle='#ff5a36';ctx.fillText(hs,p.x,p.y);}
     // barrinha da estrela
