@@ -19,6 +19,8 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Modos novos: Sem Fim ♾️ (fases sorteadas), Contra o Relógio ⏰ e Batalha dos Chefões 👑
 - Chefão Final: o Pai de Todos os Fogões, com 9 vidas e 3 fases de luta
 - A Historinha do jogo 📖 (começo, antes do chefão final e final)
+- Loja: heróis novos (bolinha, triângulo, estrelinha), óculos escuros, bigode, mochila a jato e dancinhas da vitória
+- Dia e noite ☀️🌙: o jogo muda de cor conforme a hora de verdade
 - Medalhas 🏅 de bronze, prata e ouro por desafios, e uma estante com um troféu pra cada chefão vencido
 - Ranking 🏆 com os recordes dos jogadores deste aparelho
 - Moedas nas fases e bônus de rapidez
