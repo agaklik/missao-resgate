@@ -10,6 +10,9 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - Modo co-op: jogue com um amigo no mesmo aparelho (quadradinho azul; teclado: W A S D e setas)
 - Modo Ondas 🌊: você + 3 bots (Rosa, Azul e Verde) contra ondas de foguinhos que não acabam nunca
 - Speedrun ⏱: relógio em cada fase e recorde de tempo gravado, sozinho e no co-op
+- Mapa dos mundos 🗺️: cada fase completa ganha uma bandeirinha e o quadradinho anda até a próxima; toque em "Mundo · Fase" pra abrir o mapa e escolher uma fase
+- Paredes secretas 🤫: nas fases 2 e 4 de cada mundo, uma parede da borda é falsa e leva pra uma Sala Secreta cheia de moedas
+- Esteiras rolantes ➡️ nas fases 3, 4 e 5 de cada mundo, que empurram o quadradinho
 - Medalhas 🏅 de bronze, prata e ouro por desafios, e uma estante com um troféu pra cada chefão vencido
 - Ranking 🏆 com os recordes dos jogadores deste aparelho
 - Moedas nas fases e bônus de rapidez
