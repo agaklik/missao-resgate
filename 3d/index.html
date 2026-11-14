@@ -358,6 +358,8 @@ body.mode3d .b3d{display:inline-block}
 .story-btns{display:flex;gap:10px;justify-content:center;align-items:center}
 .story-btns .big{margin:0}
 .story-btns .mini:disabled{opacity:.35}
+/* pular fase */
+.skip-row{margin:0 0 8px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-weight:700;color:var(--muted)}
 /* mapa dos mundos */
 .lvlchip{display:inline-flex;align-items:center;gap:6px;border:0;color:var(--ink);font:700 .95rem var(--display);cursor:pointer}
 .lvlchip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
@@ -440,6 +442,7 @@ body.mode3d .b3d{display:inline-block}
     </div>
   </header>
   <p class="goal" id="goal"></p>
+  <p class="skip-row" id="skipRow" hidden><button class="mini play" id="skipBtn" type="button">Pular esta fase ⏭</button><span id="skipTxt"></span></p>
   <div class="board">
     <canvas id="gl" aria-hidden="true" hidden></canvas>
     <canvas id="game" aria-label="Tabuleiro do jogo"></canvas>
@@ -2355,6 +2358,36 @@ document.getElementById('modeRush').addEventListener('click',()=>runStart('rush'
 document.getElementById('modeStory').addEventListener('click',()=>{closeCoop();playStory('intro');});
 document.getElementById('modeFinal').addEventListener('click',()=>{closeCoop();playStory('prefinal',startFinal);});
 
+/* ---------- pular fases: a cada 10 game overs na Aventura, ganha 3 pulos ---------- */
+const SKIP_DEATHS=10,SKIP_GIFT=3;
+let SKIP={d:0,s:0};
+function skipKey(){return 'missao-resgate-pulos:'+(PLAYER?PLAYER.id:'anon');}
+function skipLoad(){const r=lsGet(skipKey(),null)||{};SKIP={d:r.d||0,s:r.s||0};skipHud();}
+function skipSave(){lsSet(skipKey(),SKIP);}
+function canSkipNow(){return !!(G&&G.state==='play'&&!G.custom&&!G.waves&&!G.bonus&&G.i>=0&&!LEVELS[G.i].boss);}
+function skipHud(){
+  const row=document.getElementById('skipRow');if(!row)return;
+  const adv=!!(G&&!G.custom&&!G.waves&&!G.bonus&&G.i>=0);
+  row.hidden=!(adv&&SKIP.s>0);
+  if(row.hidden)return;
+  const boss=!!LEVELS[G.i].boss;
+  document.getElementById('skipBtn').disabled=boss;
+  document.getElementById('skipTxt').textContent=boss?`Chefão não dá pra pular! Pulos guardados: ${SKIP.s}`:`Pulos: ${SKIP.s}`;
+}
+// chamado no game over da Aventura; devolve o texto pra tela de game over
+function skipDeath(){
+  SKIP.d++;let msg;
+  if(SKIP.d>=SKIP_DEATHS){SKIP.d=0;SKIP.s+=SKIP_GIFT;msg=`<p class="ptsline">Você perdeu ${SKIP_DEATHS} vezes, então ganhou <b>${SKIP_GIFT} pulos de fase</b>! Use o botão "Pular esta fase".</p>`;[523,659,784,1047].forEach((f,k)=>tone(f,.14,'triangle',.05,.5+k*.09));}
+  else{const f=SKIP_DEATHS-SKIP.d;msg=`<p class="coinline">Faltam ${f} game ${f===1?'over':'overs'} pra ganhar ${SKIP_GIFT} pulos de fase.</p>`;}
+  skipSave();skipHud();return msg;
+}
+function skipLevel(){
+  if(!canSkipNow()||SKIP.s<=0||TRANS.on||CUT.on||!ov.hidden)return;
+  SKIP.s--;skipSave();
+  const next=G.i+1;sfx.star();
+  transition(()=>{loadLevel(next);},next,null,`Fase pulada! Pulos que sobraram: ${SKIP.s}`);
+}
+document.getElementById('skipBtn').addEventListener('click',()=>{unlockAudio();skipLevel();});
 /* ---------- medalhas e troféus (cada jogador tem os seus) ---------- */
 const MEDALS=[
  {id:'primeiro',name:'Primeiro Resgate',desc:'Salve a primeira pessoa.',ic:'🙋',tier:0},
@@ -2530,6 +2563,7 @@ function isBossAt(x,y){const b=G.boss;return bossAlive()&&x>=b.x&&x<=b.x+1&&y>=b
 function bossFits(x,y){return !enemyBlocked(x,y)&&!enemyBlocked(x+1,y)&&!enemyBlocked(x,y+1)&&!enemyBlocked(x+1,y+1)}
 
 function hud(){
+  if(typeof skipHud==='function')skipHud();
   document.getElementById('lvl').textContent=G.waves?`🌊 Modo Ondas · Onda ${Math.max(1,G.waves.n)}`:G.custom?(G.custom.run?runLabel():`✏ ${G.custom.name}`):`Mundo ${Math.floor(G.i/PER_WORLD)+1} · Fase ${G.i%PER_WORLD+1}/${PER_WORLD}`;
   let h='';
   for(let k=0;k<G.maxLives;k++)h+=`<span class="${k<G.lives?'':'gone'}">♥</span>`;
@@ -2672,9 +2706,9 @@ function hit(p){
     if(inRun()){runLost();return;}
     if(G.custom){const cu=G.custom;show('GAME OVER','<p>O fogo te pegou! Tente sua fase de novo.</p>','Tentar de novo',()=>startLevel(-1,cu));return;}
     const wi=Math.floor(G.i/PER_WORLD),first=wi*PER_WORLD;
-    const final=SCORE.run,rec=PLAYER&&final>0&&final>=SCORE.best;submitBest();
+    const final=SCORE.run,rec=PLAYER&&final>0&&final>=SCORE.best;submitBest();const skipMsg=skipDeath();
     SCORE.run=0;SCORE.checkpoint=0;persistScore();scoreHud();
-    show('GAME OVER',`<p>O fogo te pegou! Agora você volta pra Fase 1 do Mundo ${wi+1}.</p><p class="ptsline">Seus pontos: <b>${fmt(final)}</b>${rec?' · Novo recorde! 🎉':''}</p><p class="coinline">Os pontos foram pro ranking e começam do zero. Suas moedas continuam guardadas.</p>`,`Voltar pro Mundo ${wi+1}`,()=>startLevel(first));
+    show('GAME OVER',`<p>O fogo te pegou! Agora você volta pra Fase 1 do Mundo ${wi+1}.</p><p class="ptsline">Seus pontos: <b>${fmt(final)}</b>${rec?' · Novo recorde! 🎉':''}</p><p class="coinline">Os pontos foram pro ranking e começam do zero. Suas moedas continuam guardadas.</p>${skipMsg}`,`Voltar pro Mundo ${wi+1}`,()=>startLevel(first));
   }else{sfx.hit();hud();}
 }
 function win(){
@@ -2861,8 +2895,8 @@ ovBtn.addEventListener('click',()=>{
 
 /* ---------- tutorial ----------
    Sempre que o jogo ganhar algo novo: aumentar VERSION, trocar NEWS e ajustar os passos do TUTORIAL. */
-const VERSION=35;
-const NEWS=['Heróis novos na loja: bolinha, triângulo e estrelinha!','Óculos escuros, bigode, mochila a jato e dancinhas da vitória.','Dia e noite: o jogo muda de cor conforme a hora de verdade.','Modos Sem Fim, Contra o Relógio, Batalha dos Chefões, o Chefão Final e a Historinha.','Botas, bomba de purpurina, caixas, botões, canos, canhão e dorminhoco.'];
+const VERSION=36;
+const NEWS=['Pular fases: a cada 10 game overs na Aventura, você ganha 3 pulos de fase!','Heróis novos, óculos, bigode, mochila a jato e dancinhas na loja.','Modos Sem Fim, Contra o Relógio, Batalha dos Chefões e o Chefão Final.','Dia e noite conforme a hora de verdade.'];
 const ICON={
  hero:`<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="11" fill="#ffd23f"/><rect x="8" y="44" width="48" height="12" rx="6" fill="#f0b400"/><circle cx="24" cy="28" r="6" fill="#fff"/><circle cx="40" cy="28" r="6" fill="#fff"/><circle cx="26" cy="29" r="3" fill="#1b2547"/><circle cx="42" cy="29" r="3" fill="#1b2547"/><path d="M25 38 Q32 45 39 38" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/></svg>`,
  pad:`<svg viewBox="0 0 64 64"><g fill="#26335f" stroke="#4a5ea6" stroke-width="2"><rect x="23" y="6" width="18" height="16" rx="4"/><rect x="4" y="26" width="18" height="16" rx="4"/><rect x="23" y="26" width="18" height="16" rx="4"/><rect x="42" y="26" width="18" height="16" rx="4"/></g><g fill="#ffd23f"><path d="M32 10 L37 17 H27Z"/><path d="M9 34 L16 29 V39Z"/><path d="M32 38 L37 31 H27Z"/><path d="M55 34 L48 29 V39Z"/></g><path d="M14 54 H50" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/><path d="M44 49 L52 54 L44 59" fill="none" stroke="#aab4de" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -2885,6 +2919,7 @@ const ICON={
  clock:`<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="22" fill="#ffe680"/><circle cx="32" cy="36" r="17" fill="#1b2547"/><path d="M32 36V24M32 36l8 5" stroke="#ffe680" stroke-width="4" stroke-linecap="round"/><rect x="26" y="5" width="12" height="7" rx="2" fill="#ffe680"/><path d="M50 14l4-4" stroke="#ffe680" stroke-width="5" stroke-linecap="round"/></svg>`,
  v3d:`<svg viewBox="0 0 64 64"><path d="M32 6 L56 18 L56 46 L32 58 L8 46 L8 18Z" fill="#ffd23f"/><path d="M32 6 L56 18 L32 30 L8 18Z" fill="#ffe680"/><path d="M32 30 L56 18 L56 46 L32 58Z" fill="#d9a400"/><rect x="18" y="34" width="28" height="16" rx="5" fill="#ff5a36" transform="rotate(-8 32 42)"/><text x="32" y="47" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="14" fill="#fff" transform="rotate(-8 32 42)">3D</text></svg>`,
  portal:`<svg viewBox="0 0 64 64"><circle cx="18" cy="34" r="14" fill="#0a0e20" stroke="#4aa3ff" stroke-width="5" stroke-dasharray="9 4"/><circle cx="46" cy="34" r="14" fill="#0a0e20" stroke="#ff9a3c" stroke-width="5" stroke-dasharray="9 4"/><path d="M14 34a4 4 0 0 1 8 0M42 34a4 4 0 0 1 8 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 14 Q32 6 40 14" stroke="#ffd23f" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M36 10 L40 14 L35 16" stroke="#ffd23f" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ skip:`<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#3ccf7a"/><path d="M18 20l14 12-14 12zM32 20l14 12-14 12z" fill="#fff"/><rect x="46" y="20" width="5" height="24" rx="2" fill="#fff"/></svg>`,
  looks:`<svg viewBox="0 0 64 64"><circle cx="16" cy="22" r="12" fill="#ffd23f"/><path d="M48 8l14 26H34z" fill="#ffd23f" stroke="#ffd23f" stroke-width="3" stroke-linejoin="round"/><rect x="20" y="38" width="24" height="22" rx="6" fill="#ffd23f"/><rect x="22" y="43" width="9" height="6" rx="2" fill="#10142a"/><rect x="33" y="43" width="9" height="6" rx="2" fill="#10142a"/><circle cx="12" cy="20" r="2.5" fill="#1b2547"/><circle cx="20" cy="20" r="2.5" fill="#1b2547"/><circle cx="44" cy="26" r="2" fill="#1b2547"/><circle cx="52" cy="26" r="2" fill="#1b2547"/></svg>`,
  day:`<svg viewBox="0 0 64 64"><path d="M32 4a28 28 0 0 0 0 56z" fill="#5ad1ff"/><path d="M32 4a28 28 0 0 1 0 56z" fill="#1c2a6b"/><circle cx="20" cy="30" r="8" fill="#ffd23f"/><circle cx="44" cy="30" r="8" fill="#fff6c9"/><circle cx="48" cy="27" r="7" fill="#1c2a6b"/><circle cx="50" cy="46" r="1.6" fill="#fff"/><circle cx="40" cy="14" r="1.6" fill="#fff"/></svg>`,
  modes:`<svg viewBox="0 0 64 64"><circle cx="18" cy="20" r="13" fill="#5ad1ff"/><path d="M18 11v9l6 4" fill="none" stroke="#1b2547" stroke-width="3" stroke-linecap="round"/><rect x="34" y="26" width="26" height="26" rx="6" fill="#3a1650"/><path d="M38 26q4-14 9-4 4-12 9 4z" fill="#b04cff"/><circle cx="42" cy="38" r="3" fill="#ffe9a8"/><circle cx="52" cy="38" r="3" fill="#ffe9a8"/><path d="M38 20l3-8 6 5 6-5 3 8z" fill="#ffcc33"/><path d="M6 50q6-10 12 0t12 0" fill="none" stroke="#ffd23f" stroke-width="4" stroke-linecap="round"/></svg>`,
@@ -2906,6 +2941,7 @@ const TUTORIAL=[
  {icon:'hearts',title:'GAME OVER',text:'Você tem 3 corações. Se perder os 3, aparece GAME OVER e você volta pra Fase 1 do mundo em que está. Assim você não perde o mundo que já alcançou! Suas moedas continuam guardadas. E se fechar o jogo, ele lembra o mundo em que você parou.'},
  {icon:'star',title:'A estrela mágica',text:'Toda fase tem uma estrela num lugar diferente. Pegue e fique invencível por 4 segundos! Os foguinhos ficam azuis e fogem. Encoste neles e eles fazem PUF e somem do mapa, igual no Pac-Man! Cada um vale o dobro de pontos: 25, 50, 100, 200... E a cada 3 foguinhos, você ganha +1 segundo de estrela!'},
  {icon:'portal',title:'Portais',text:'Toda fase tem um portal azul e um laranja. Entrou num, sai no outro do outro lado do mapa! Cuidado: os foguinhos também atravessam os portais.'},
+ {icon:'skip',title:'Pular fases',text:'Tá muito difícil? Se você perder os 3 corações (game over) 10 vezes na Aventura, ganha 3 pulos de fase! Aí aparece o botão "Pular esta fase" em cima do tabuleiro. Só não dá pra pular os chefões.'},
  {icon:'looks',title:'Heróis, roupas e dancinhas',text:'Na Loja do Herói agora dá pra trocar o quadradinho por uma bolinha, um triângulo ou uma estrelinha! Também tem óculos escuros, bigode, mochila a jato e dancinhas da vitória: giro, balanço e mortal.'},
  {icon:'day',title:'Dia e noite',text:'O jogo olha a hora de verdade: de manhã fica mais clarinho, de tarde normal, no pôr do sol fica alaranjado e de noite fica azul escuro, com lua e estrelinhas no cantinho do tabuleiro.'},
  {icon:'modes',title:'Modos novos e o Chefão Final',text:'No botão dos modos tem 3 jogos novos: Sem Fim (fases sorteadas que nunca acabam), Contra o Relógio (2 minutos pra salvar o máximo de pessoas) e Batalha dos Chefões. E depois do Mundo 6 aparece o Pai de Todos os Fogões, com 9 vidas e 3 fases de luta! Lá também dá pra ver a historinha do jogo.'},
@@ -3701,7 +3737,7 @@ function loadPlayerData(){
   const v=parseInt(lsGet(PROG_KEY,0),10);SAVED_WORLD=(v>=0&&v<LEVELS.length/PER_WORLD)?v:0;
   SCORE=Object.assign({run:0,best:0,bestWorld:1,checkpoint:0,sent:0},lsGet('missao-resgate-pontos:'+pid,null)||{});
   SCORE.run=SCORE.checkpoint;
-  medLoad();persistScore();coinHud();scoreHud();
+  medLoad();skipLoad();persistScore();coinHud();scoreHud();
 }
 function scoreHud(){
   if(typeof coopTags==='function'&&document.getElementById('tag1'))coopTags();
@@ -3834,7 +3870,7 @@ function renderPlayers(){
 function deletePlayer(id){
   const p=PLAYERS.list.find(x=>x.id===id);if(!p)return;
   PLAYERS.list=PLAYERS.list.filter(x=>x.id!==id);
-  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:','missao-resgate-medalhas:','missao-resgate-modos:','missao-resgate-historia:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
+  ['missao-resgate-loja:','missao-resgate-mundo:','missao-resgate-pontos:','missao-resgate-medalhas:','missao-resgate-modos:','missao-resgate-historia:','missao-resgate-pulos:'].forEach(k=>{try{localStorage.removeItem(k+id);}catch(e){}});
   writeMine(cur=>{if(!cur[id])return false;delete cur[id];return true;});
   plMsg(`${p.name} foi apagado.`);
   if(PLAYER&&PLAYER.id===id){
