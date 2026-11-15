@@ -21,6 +21,7 @@ Jogo de labirinto: você é o quadradinho amarelo e precisa salvar a pessoa que 
 - A Historinha do jogo 📖 (começo, antes do chefão final e final)
 - Loja: heróis novos (bolinha, triângulo, estrelinha), óculos escuros, bigode, mochila a jato e dancinhas da vitória
 - Dia e noite ☀️🌙: o jogo muda de cor conforme a hora de verdade
+- **Vira app!** 📲 No site aparece um aviso no canto de baixo, à direita: toque em "Instalar o app" e o ícone do quadradinho vai pra tela. O jogo abre em tela cheia, sem a barra do navegador, e funciona até sem internet (no iPad/iPhone: Compartilhar → Adicionar à Tela de Início)
 - Medalhas 🏅 de bronze, prata e ouro por desafios, e uma estante com um troféu pra cada chefão vencido
 - Ranking 🏆 com os recordes dos jogadores deste aparelho
 - Moedas nas fases e bônus de rapidez
