@@ -1,5 +1,5 @@
 // Missão Resgate: deixa o jogo funcionar como app, até sem internet.
-const CACHE='missao-resgate-v41';
+const CACHE='missao-resgate-v42';
 const CORE=['./','./index.html','./3d/','./3d/index.html','./tabue/','./tabue/index.html','./tabue/icon-192.png','./bolinha/','./bolinha/index.html','./manifest.webmanifest','./3d/manifest.webmanifest',
   './icons/icon-192.png','./icons/icon-512.png','./icons/icon3d-192.png','./icons/icon3d-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'];
