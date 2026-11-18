@@ -126,7 +126,6 @@ function kill(e){
   beep(e.t==='boss'?120:300,.2,'sawtooth',.05,-200);
   const n=Math.min(8,e.coin);let left=e.coin;
   for(let i=0;i<n;i++){const v=i===n-1?left:Math.max(1,Math.floor(e.coin/n));left-=v;const a=Math.random()*6.28,s=60+Math.random()*120;drops.push({k:'coin',x:e.x,y:e.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,v,t:0})}
-  if(Math.random()<(e.t==='boss'?1:.12)){const a=Math.random()*6.28;drops.push({k:'heart',x:e.x,y:e.y,vx:Math.cos(a)*80,vy:Math.sin(a)*80,t:0})}
 }
 
 // ---------- Update ----------
@@ -160,10 +159,9 @@ function update(dt){
           const nx=dx/d,ny=dy/d;b.x=e.x+nx*(b.r+e.r+.5);b.y=e.y+ny*(b.r+e.r+.5);
           const dot=b.vx*nx+b.vy*ny;if(dot<0){b.vx-=2*dot*nx;b.vy-=2*dot*ny}
           if(b.hitCd<=0){
-            b.hitCd=.12;e.hp-=st.dmg;e.flash=.12;b.hp-=e.atk;b.flash=.2;
-            txt(e.x,e.y-e.r,'-'+st.dmg,'#fff');txt(b.x,b.y-b.r-6,'-'+e.atk,'#ff6b6b');
+            b.hitCd=.12;e.hp-=st.dmg;e.flash=.12;
+            txt(e.x,e.y-e.r,'-'+st.dmg,'#fff');
             burst(b.x-nx*b.r,b.y-ny*b.r,'#fff',6,140);shake=Math.max(shake,3);beep(220,.07,'square',.05,-80);
-            if(b.hp<=0){b.alive=false;burst(b.x,b.y,b.col,26,240);shake=Math.max(shake,8);beep(160,.35,'sawtooth',.06,-120);txt(b.x,b.y,'💥','#fff');updHud()}
           }
           if(!b.alive)break;
         }
@@ -286,7 +284,6 @@ function draw(){
     ctx.fillStyle=b.flash>0?'#ff5d5d':b.col;ctx.shadowColor=b.col;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,7);ctx.fill();ctx.shadowBlur=0;
     ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(b.x-b.r*.35,b.y-b.r*.4,b.r*.25,0,7);ctx.fill();
     eyes(b.x,b.y+1,b.r,b.x+b.vx,b.y+b.vy,false);
-    bar(b.x,b.y-b.r-9,26,b.hp/b.max,b.hp/b.max>.4?'#5ee07a':'#ff5d5d');
     // magnet ring
     if(S.lvMag>0){ctx.strokeStyle='rgba(255,216,74,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(b.x,b.y,stats().mag+b.r,0,7);ctx.stroke()}
   }
@@ -314,7 +311,6 @@ function hideOv(){ov.classList.remove('show')}
 const ITEMS=[
   {k:'balls',ic:'⚪',name:'+1 Bolinha',desc:()=>'Você tem '+S.balls+' bolinha'+(S.balls>1?'s':''),cost:()=>Math.round(30*Math.pow(2.1,S.balls-1)),max:()=>S.balls>=8},
   {k:'lvDmg',ic:'⚔️',name:'Força',desc:()=>'Dano '+(2+S.lvDmg)+' → '+(3+S.lvDmg),cost:()=>10+S.lvDmg*12,max:()=>false},
-  {k:'lvHp',ic:'❤️',name:'Vida',desc:()=>'Vida '+(10+S.lvHp*5)+' → '+(15+S.lvHp*5),cost:()=>8+S.lvHp*10,max:()=>false},
   {k:'lvSpd',ic:'💨',name:'Velocidade',desc:()=>'Nível '+S.lvSpd+' de 6',cost:()=>15+S.lvSpd*15,max:()=>S.lvSpd>=6},
   {k:'lvMag',ic:'🧲',name:'Ímã de moedas',desc:()=>'Nível '+S.lvMag+' de 6',cost:()=>12+S.lvMag*14,max:()=>S.lvMag>=6}
 ];
@@ -323,8 +319,8 @@ function buy(i){const it=ITEMS[i],c=it.cost();if(it.max()||S.coins<c)return;S.co
 function showMenu(){
   state='menu';updHud();
   showOv(`<h1>Bolinha<br>Guerreira</h1>
-  <p>Toque na tela para lançar suas bolinhas. Elas quicam nas paredes e batem nos monstros — mas <b>cada batida também tira vida da bolinha!</b></p>
-  <p>Toque de novo para mandar as bolinhas na direção do dedo. Pegue 🪙 moedinhas e ❤️ corações. Encoste na 🔴 bola vermelha para ficar 10 vezes mais rápido! Use as moedas para comprar mais bolinhas e ficar mais forte. Cada dia é mais difícil, e a cada 5 dias vem um chefão!</p>
+  <p>Toque na tela para lançar suas bolinhas. Elas quicam nas paredes e batem nos monstros. <b>Só os monstros perdem vida: suas bolinhas nunca se machucam!</b></p>
+  <p>Toque de novo para mandar as bolinhas na direção do dedo. Pegue 🪙 moedinhas. Encoste na 🔴 bola vermelha para ficar 10 vezes mais rápido! Use as moedas para comprar mais bolinhas e ficar mais forte. Cada dia é mais difícil, e a cada 5 dias vem um chefão!</p>
   <button class="btn" onclick="showShop()">${S.day>1?'Continuar — Dia '+S.day:'Jogar'}</button>
   ${S.day>1?'<button class="btn sec" id="rst" onclick="resetAll(this)">Começar do zero</button>':''}`);
 }
