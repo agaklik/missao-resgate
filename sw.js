@@ -1,6 +1,6 @@
 // Missão Resgate: deixa o jogo funcionar como app, até sem internet.
-const CACHE='missao-resgate-v40';
-const CORE=['./','./index.html','./3d/','./3d/index.html','./manifest.webmanifest','./3d/manifest.webmanifest',
+const CACHE='missao-resgate-v41';
+const CORE=['./','./index.html','./3d/','./3d/index.html','./tabue/','./tabue/index.html','./tabue/icon-192.png','./bolinha/','./bolinha/index.html','./manifest.webmanifest','./3d/manifest.webmanifest',
   './icons/icon-192.png','./icons/icon-512.png','./icons/icon3d-192.png','./icons/icon3d-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));});
@@ -11,7 +11,7 @@ self.addEventListener('fetch',e=>{
   // páginas do jogo: tenta a internet primeiro (pra pegar a versão nova); sem internet, usa a guardada
   if(r.mode==='navigate'){
     e.respondWith(fetch(r).then(res=>{if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp));}return res;})
-      .catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match(u.pathname.includes('/3d')?'./3d/':'./'))));
+      .catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match(u.pathname.includes('/3d')?'./3d/':u.pathname.includes('/tabue')?'./tabue/':u.pathname.includes('/bolinha')?'./bolinha/':'./'))));
     return;
   }
   // ícones, three.js e fontes: usa o guardado e atualiza por trás

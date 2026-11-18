@@ -4960,5 +4960,31 @@ if(FORCE3D||lsGet('missao-resgate-3d',0))set3D(true,true);
 requestAnimationFrame(frame);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(shopList.children.length)buildShop();});
 </script>
+
+<!-- Coleção de Jogos -->
+<style>
+#cj-btn{position:fixed;left:calc(10px + env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:2147483000;width:48px;height:48px;border-radius:14px;border:3px solid #fff;background:#ff7a1a;box-shadow:0 4px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#cj-btn i{display:block;width:22px;height:4px;border-radius:2px;background:#fff}
+#cj-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+#cj-pane{position:fixed;inset:0;z-index:2147483001;background:rgba(10,8,30,.72);display:none;align-items:flex-end;justify-content:flex-start;padding:12px;padding-bottom:calc(70px + env(safe-area-inset-bottom,0px));padding-left:calc(10px + env(safe-area-inset-left,0px))}
+#cj-pane.on{display:flex}
+#cj-box{background:#2b1b58;color:#fff;border:3px solid #fff;border-radius:20px;padding:14px;width:min(340px,100%);font-family:system-ui,-apple-system,sans-serif;box-shadow:0 8px 0 rgba(0,0,0,.35);text-align:left}
+#cj-box h3{margin:0 0 6px;font-size:22px;color:#ffd84a;text-align:center;font-weight:800}
+.cj-g{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.12);color:#fff!important;text-decoration:none!important;margin-top:8px;font-weight:700;font-size:17px;line-height:1.2}
+.cj-g:active{background:rgba(255,255,255,.22)}
+.cj-ic{font-size:28px;width:34px;text-align:center;flex:none}
+.cj-tx{flex:1;min-width:0}
+.cj-tx small{display:block;font-weight:400;font-size:13px;opacity:.8}
+.cj-g em{font-style:normal;font-size:13px;background:#ffd84a;color:#3a2600;border-radius:999px;padding:4px 9px;white-space:nowrap}
+.cj-cur{outline:3px solid #ffd84a}
+.cj-cur em{background:rgba(255,255,255,.2);color:#fff}
+#cj-x{display:block;width:100%;margin-top:12px;border:0;border-radius:12px;padding:10px;font:700 16px system-ui,sans-serif;background:#5a44a8;color:#fff;cursor:pointer}
+</style>
+<button id="cj-btn" type="button" aria-label="Coleção de Jogos" title="Coleção de Jogos"><i></i><i></i><i></i></button>
+<div id="cj-pane" role="dialog" aria-label="Coleção de Jogos"><div id="cj-box"><h3>🎮 Coleção de Jogos</h3><div class="cj-g cj-cur"><span class="cj-ic">🟨</span><span class="cj-tx">Missão Resgate<small>O quadradinho que salva pessoas</small></span><em>Você está aqui</em></div><a class="cj-g" href="./tabue/"><span class="cj-ic">✖️</span><span class="cj-tx">Tabuê<small>A tabuada que vira jogo</small></span><em>Jogar ▶</em></a><a class="cj-g" href="./bolinha/"><span class="cj-ic">⚪</span><span class="cj-tx">Bolinha Guerreira<small>Quique e derrote os monstros</small></span><em>Jogar ▶</em></a><button id="cj-x" type="button">Fechar</button></div></div>
+<script>(function(){var b=document.getElementById('cj-btn'),p=document.getElementById('cj-pane');
+['pointerdown','touchstart','mousedown','keydown'].forEach(function(t){b.addEventListener(t,function(e){e.stopPropagation()});p.addEventListener(t,function(e){e.stopPropagation()})});
+b.addEventListener('click',function(e){e.stopPropagation();p.classList.add('on')});
+p.addEventListener('click',function(e){e.stopPropagation();if(e.target===p||e.target.id==='cj-x')p.classList.remove('on')});})();</script>
 </body>
 </html>
